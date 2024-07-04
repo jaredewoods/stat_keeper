@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLi
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QCursor
 
-from basketball_tracker.config.config_manager import ConfigManager  # Import ConfigManager
 
 class RoundButton(QPushButton):
     def __init__(self, color, hover_color, pressed_color, text, parent=None):
