@@ -1,4 +1,3 @@
-# config.txt
 # Configuration file for Basketball Statistics Tracker
 
 # Path to the roster CSV file

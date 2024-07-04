@@ -91,8 +91,10 @@ class PlayerSelectionFrame(QWidget):
     def on_item_clicked(self, item):
         print(f"Selected player: {item.text()}")  # Placeholder for actual functionality
 
+
 class FloatingControls(QWidget):
     def __init__(self):
+
         super().__init__()
         self.setWindowTitle("Floating Controls")
         self.setGeometry(400, 100, 300, 500)

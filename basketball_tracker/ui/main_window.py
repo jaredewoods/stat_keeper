@@ -1,10 +1,14 @@
 # main_window.py
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QVBoxLayout, QWidget
-from floating_controls import FloatingControls  # Import the FloatingControls class from its module
+import os
+from basketball_tracker.config.config_manager import ConfigManager
+from ui.floating_controls import FloatingControls
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, config_manager):
+        self.config_manager = config_manager
+
         super().__init__()
         self.setWindowTitle("Basketball Statistics Tracker")
         self.setGeometry(100, 100, 800, 600)
