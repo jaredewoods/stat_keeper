@@ -7,5 +7,4 @@ class SignalDistributor(QObject):
     """Central hub for distributing signals across the application."""
 
     SIG_DebugMessage = pyqtSignal(str)
-
-
+    print("1 SignalDistributor Initialized")
