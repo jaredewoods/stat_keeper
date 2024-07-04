@@ -51,4 +51,4 @@ class PlayerSelectionFrame(QWidget):
 
     @staticmethod
     def on_item_clicked(item):
-        print(f"Selected player: {item.text()}")
+        self.sd.SIG_DebugMessage.emit(f"Selected player: {item.text()}")

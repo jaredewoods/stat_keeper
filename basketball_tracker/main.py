@@ -21,7 +21,7 @@ class Main(QObject):
         super().__init__()
         self.app = QApplication(sys.argv)
         self.sd = SignalDistributor()
-        self.sm = StateManager()
+        self.sm = StateManager(self.sd)
 
         self.load_configurations()
 
@@ -59,7 +59,7 @@ class Main(QObject):
 
     def connect_signals_to_slots(self):
         self.sd.SIG_DebugMessage.connect(self.debug_log_display.append_debug_message)
-        print("Signals and Slots connected")
+        print("5 Signals and Slots connected")
 
 if __name__ == "__main__":
     Main()

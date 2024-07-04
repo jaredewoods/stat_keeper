@@ -23,6 +23,7 @@ class FloatingControls(QWidget):
         self.layout.addWidget(self.undo_button)
 
         self.setLayout(self.layout)
+        print("5 FloatingControls Initialized")
 
         self.capture_button.clicked.connect(self.show_player_selection)
 
@@ -30,7 +31,6 @@ class FloatingControls(QWidget):
         self.player_selection_frame = PlayerSelectionFrame(self.events_csv_path)
         self.player_selection_frame.show()
 
-    print("5 FloatingControls Initialized")
 
 # Test the FloatingControls window
 if __name__ == "__main__":
