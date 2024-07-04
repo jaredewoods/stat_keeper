@@ -15,7 +15,7 @@ EVENTS_CSV_PATH = ""
 LOGS_FOLDER_PATH = ""
 VIDEO_BROWSER_PATH = ""
 
-def load_config():
+def load_configurations():
     global DEBUG_MODE_STATE, ROSTER_CSV_PATH, EVENTS_CSV_PATH, LOGS_FOLDER_PATH, VIDEO_BROWSER_PATH
     settings = QSettings('config.ini', QSettings.Format.IniFormat)
 
@@ -26,7 +26,7 @@ def load_config():
     VIDEO_BROWSER_PATH = settings.value('Paths/VIDEO_BROWSER_PATH', "")
 
 def main():
-    load_config()
+    load_configurations()
     app = QApplication(sys.argv)
 
     print(f"Debug Mode State: {DEBUG_MODE_STATE}")
