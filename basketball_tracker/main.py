@@ -7,6 +7,8 @@ from core.signal_distributor import SignalDistributor
 from core.state_manager import StateManager
 from ui.debug_log_display import DebugLogDisplay
 from ui.floating_controls import FloatingControls
+from video.video_window import VideoWindow
+from video.video_control_window import VideoControlWindow
 from ui.main_window import MainWindow
 
 # GLOBAL_VARIABLES from 'config.ini'
@@ -28,6 +30,8 @@ class Main(QObject):
         self.debug_log_display = DebugLogDisplay(self.sd, self.sm)
         self.main_window = MainWindow(self.sd, self.sm)
         self.floating_controls = FloatingControls(self.sd, self.sm, ROSTER_CSV_PATH, EVENTS_CSV_PATH)
+        self.video_window = VideoWindow()
+        self.video_control_window = VideoControlWindow(self.video_window)
 
         self.connect_signals_to_slots()
 
@@ -35,7 +39,8 @@ class Main(QObject):
         if DEBUG_MODE_STATE:
             self.debug_log_display.show()
         self.floating_controls.show()
-
+        self.video_control_window.show()
+        self.video_window.show()
         self.emit_test_debug_signals()
 
         sys.exit(self.app.exec())

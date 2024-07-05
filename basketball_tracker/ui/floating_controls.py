@@ -13,7 +13,6 @@ class FloatingControls(QWidget):
         self.sm = state_manager
 
         self.setWindowTitle("Floating Controls")
-        self.setGeometry(400, 100, 300, 500)
 
         self.layout = QVBoxLayout()
         self.capture_button = RoundButton("blue", "lightblue", "darkblue", "CAPTURE")
@@ -23,6 +22,8 @@ class FloatingControls(QWidget):
         self.layout.addWidget(self.undo_button)
 
         self.setLayout(self.layout)
+        self.adjustSize()  # Adjust the window size to fit its contents
+
         print("5 FloatingControls Initialized")
 
         self.capture_button.clicked.connect(self.show_player_selection)
@@ -35,6 +36,6 @@ class FloatingControls(QWidget):
 # Test the FloatingControls window
 if __name__ == "__main__":
     app = QApplication([])
-    window = FloatingControls()
+    window = FloatingControls(None, None, None, None)  # Pass dummy values for testing
     window.show()
     app.exec()
