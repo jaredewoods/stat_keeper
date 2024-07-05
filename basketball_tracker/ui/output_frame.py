@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox, QPushButton, QTreeWidget, QTreeWidgetItem
+    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox, QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem
 )
 from PyQt6.QtCore import Qt
+import sqlite3
 
 
 class OutputFrame(QWidget):
@@ -12,18 +13,21 @@ class OutputFrame(QWidget):
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
 
-        self.setup_event_log_frame()
-        self.setup_file_management_frame()
-        self.setup_sorted_stats_tree()
+        self.tabs = QTabWidget(self)
 
+        self.setup_event_log_tab()
+        self.setup_database_tab()
+        self.setup_stats_tab()
+        self.setup_help_tab()
+
+        main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
 
-    def setup_event_log_frame(self):
-        self.event_log_frame = QFrame(self)
-        self.event_log_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        layout = QVBoxLayout(self.event_log_frame)
+    def setup_event_log_tab(self):
+        self.event_log_tab = QWidget()
+        layout = QVBoxLayout(self.event_log_tab)
 
-        self.event_log_text = QTextEdit(self.event_log_frame)
+        self.event_log_text = QTextEdit(self.event_log_tab)
         self.event_log_text.setPlainText(
             "1/24/82,16:30,United Center,Bulls,Full Game,03:37.24,Bakou,Isaac,M3P\n"
             "1/24/82,16:30,United Center,Bulls,Full Game,04:06.21,Bolf,Will,3-P\n"
@@ -49,74 +53,76 @@ class OutputFrame(QWidget):
         self.event_log_text.setReadOnly(True)
         layout.addWidget(self.event_log_text)
 
-        self.event_log_frame.setLayout(layout)
-        self.layout().addWidget(self.event_log_frame)
+        self.event_log_tab.setLayout(layout)
+        self.tabs.addTab(self.event_log_tab, "Log")
 
-    def setup_file_management_frame(self):
-        self.file_management_frame = QFrame(self)
-        self.file_management_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        layout = QGridLayout(self.file_management_frame)
+    def setup_database_tab(self):
+        self.database_tab = QWidget()
+        layout = QVBoxLayout(self.database_tab)
 
-        self.view_checkbox = QCheckBox("View Stats", self.file_management_frame)
-        self.view_checkbox.stateChanged.connect(lambda: print("View Stats checkbox toggled"))
-        layout.addWidget(self.view_checkbox, 0, 0)
+        self.table_widget = QTableWidget(self.database_tab)
+        layout.addWidget(self.table_widget)
 
-        self.speedbuttons_checkbox = QCheckBox("Speed Buttons", self.file_management_frame)
-        self.speedbuttons_checkbox.stateChanged.connect(lambda: print("Speed Buttons checkbox toggled"))
-        layout.addWidget(self.speedbuttons_checkbox, 1, 0)
+        self.load_database_data()
 
-        self.clock_checkbox = QCheckBox("Display Clock", self.file_management_frame)
-        self.clock_checkbox.stateChanged.connect(lambda: print("Display Clock checkbox toggled"))
-        layout.addWidget(self.clock_checkbox, 0, 1)
+        self.database_tab.setLayout(layout)
+        self.tabs.addTab(self.database_tab, "Database")
 
-        self.controls_checkbox = QCheckBox("Floating Controls", self.file_management_frame)
-        self.controls_checkbox.stateChanged.connect(lambda: print("Floating Controls checkbox toggled"))
-        layout.addWidget(self.controls_checkbox, 1, 1)
+    def load_database_data(self):
+        connection = sqlite3.connect('data/player_stats.sqlite')
+        cursor = connection.cursor()
 
-        self.export_button = QPushButton("Export", self.file_management_frame)
-        self.export_button.clicked.connect(lambda: print("Export button clicked"))
-        layout.addWidget(self.export_button, 0, 2)
+        cursor.execute("SELECT * FROM player_stats")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
 
-        self.import_button = QPushButton("Import", self.file_management_frame)
-        self.import_button.clicked.connect(lambda: print("Import button clicked"))
-        layout.addWidget(self.import_button, 1, 2)
+        self.table_widget.setColumnCount(len(headers))
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setRowCount(len(data))
 
-        self.edit_log_button = QPushButton("Edit Log", self.file_management_frame)
-        self.edit_log_button.clicked.connect(lambda: print("Edit Log button clicked"))
-        layout.addWidget(self.edit_log_button, 0, 3)
+        for row_idx, row_data in enumerate(data):
+            for col_idx, col_data in enumerate(row_data):
+                self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
-        self.reload_button = QPushButton("Reload", self.file_management_frame)
-        self.reload_button.clicked.connect(lambda: print("Reload button clicked"))
-        layout.addWidget(self.reload_button, 1, 3)
+        connection.close()
 
-        self.save_as_button = QPushButton("Save As", self.file_management_frame)
-        self.save_as_button.clicked.connect(lambda: print("Save As button clicked"))
-        layout.addWidget(self.save_as_button, 0, 4)
+    def setup_stats_tab(self):
+        self.stats_tab = QWidget()
+        layout = QVBoxLayout(self.stats_tab)
 
-        self.quit_button = QPushButton("Quit", self.file_management_frame)
-        self.quit_button.clicked.connect(lambda: print("Quit button clicked"))
-        layout.addWidget(self.quit_button, 1, 4)
+        self.stats_label = QLabel("stats will go here", self.stats_tab)
+        layout.addWidget(self.stats_label)
 
-        self.file_management_frame.setLayout(layout)
-        self.layout().addWidget(self.file_management_frame)
+        self.stats_tab.setLayout(layout)
+        self.tabs.addTab(self.stats_tab, "Stats")
 
-    def setup_sorted_stats_tree(self):
-        self.sorted_stats_frame = QFrame(self)
-        self.sorted_stats_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        layout = QVBoxLayout(self.sorted_stats_frame)
+    def setup_help_tab(self):
+        self.help_tab = QWidget()
+        layout = QVBoxLayout(self.help_tab)
 
-        self.sorted_stats_tree = QTreeWidget(self.sorted_stats_frame)
-        layout.addWidget(self.sorted_stats_tree)
+        self.help_text = QTextEdit(self.help_tab)
+        self.help_text.setPlainText(
+            "Event Codes:\n"
+            "M3P - Made 3-pointer\n"
+            "3-P - 3-pointer Attempt\n"
+            "DRB - Defensive Rebound\n"
+            "STL - Steal\n"
+            "F-T - Free Throw\n"
+            "POI - Points in the Paint\n"
+            "M2P - Made 2-pointer\n"
+            "ORB - Offensive Rebound\n"
+            "2-P - 2-pointer Attempt\n"
+        )
+        self.help_text.setReadOnly(True)
+        layout.addWidget(self.help_text)
 
-        self.sorted_stats_frame.setLayout(layout)
-        self.layout().addWidget(self.sorted_stats_frame)
-
-        self.sorted_stats_frame.hide()  # Initially hide the sorted stats frame
+        self.help_tab.setLayout(layout)
+        self.tabs.addTab(self.help_tab, "Help")
 
 
 # Example usage
 if __name__ == "__main__":
-    from PyQt6.QtWidgets import QApplication, QGridLayout
+    from PyQt6.QtWidgets import QApplication, QVBoxLayout
 
     app = QApplication([])
     window = QWidget()

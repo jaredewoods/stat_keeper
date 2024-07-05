@@ -1,12 +1,11 @@
 # main_window.py
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
-from PyQt6.QtCore import Qt
 from ui.control_frame import ControlFrame
 from ui.input_frame import InputFrame
 from ui.output_frame import OutputFrame
 
 class MainWindow(QMainWindow):
-    def __init__(self, signal_distributor, state_manager):
+    def __init__(self, signal_distributor=None, state_manager=None):
         super().__init__()
         self.sd = signal_distributor
         self.sm = state_manager
@@ -19,16 +18,18 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout(central_widget)
 
         self.control_frame = ControlFrame(self)
-        layout.addWidget(self.control_frame)
-
         self.input_frame = InputFrame(self)
-        layout.addWidget(self.input_frame)
-
         self.output_frame = OutputFrame(self)
-        layout.addWidget(self.output_frame)
 
-        self.adjustSize()
-        self.setFixedSize(self.size())
+        # Set fixed widths for control and input frames
+        self.control_frame.setFixedWidth(200)  # Adjust the width as needed
+        self.input_frame.setFixedWidth(200)    # Adjust the width as needed
+
+        layout.addWidget(self.control_frame)
+        layout.addWidget(self.input_frame)
+        layout.addWidget(self.output_frame, stretch=1)  # Stretch factor for output frame
+
+        self.resize(1000, 400)  # Adjust the size here if needed
 
         self.center_window()
         self.update_output_frame_from_file(self.backup_file_path)

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QApplication
 import sqlite3
 
 class InputFrame(QWidget):
@@ -15,14 +15,17 @@ class InputFrame(QWidget):
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
 
+        # Create Tab Widget
+        self.tabs = QTabWidget(self)
+        main_layout.addWidget(self.tabs)
+
         self.create_game_info_frame()
         self.create_event_entry_frame()
         self.create_team_roster_frame()
-        print("InputFrame initialized")
+        print("4 InputFrame initialized")
 
     def create_game_info_frame(self):
-        self.game_info_frame = QFrame(self)
-        self.game_info_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.game_info_frame = QWidget()
         layout = QVBoxLayout(self.game_info_frame)
 
         # Labels and Entry Fields
@@ -48,11 +51,10 @@ class InputFrame(QWidget):
                 self.opponent_entry = entry
 
         self.game_info_frame.setLayout(layout)
-        self.layout().addWidget(self.game_info_frame)
+        self.tabs.addTab(self.game_info_frame, "Game Info")
 
     def create_event_entry_frame(self):
-        self.event_entry_frame = QFrame(self)
-        self.event_entry_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.event_entry_frame = QWidget()
         layout = QVBoxLayout(self.event_entry_frame)
 
         for text in InputFrame.event_entry_labels:
@@ -69,7 +71,7 @@ class InputFrame(QWidget):
             layout.addLayout(h_layout)
 
         self.event_entry_frame.setLayout(layout)
-        self.layout().addWidget(self.event_entry_frame)
+        self.tabs.addTab(self.event_entry_frame, "Event Entry")
 
     def create_team_roster_frame(self):
         self.team_roster_frame = QFrame(self)

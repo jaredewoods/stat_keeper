@@ -24,7 +24,6 @@ class Main(QObject):
         self.sm = StateManager(self.sd)
 
         self.load_configurations()
-
         self.debug_log_display = DebugLogDisplay(self.sd, self.sm)
         self.main_window = MainWindow(self.sd, self.sm)
         self.main_window.move(840, 0)
