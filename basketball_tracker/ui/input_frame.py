@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame
-from PyQt6.QtCore import Qt
-
+import sqlite3
 
 class InputFrame(QWidget):
     game_info_labels = ["Date", "Time", "Venue", "Opponent"]
@@ -56,26 +55,18 @@ class InputFrame(QWidget):
         self.event_entry_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.event_entry_frame)
 
-        self.period_combobox = QComboBox(self.event_entry_frame)
-        self.period_combobox.addItems(InputFrame.context_labels)
-        self.period_combobox.setCurrentText("Full_Game")
-        layout.addWidget(self.period_combobox)
-
-        # Labels and Entry Fields for Event Info
         for text in InputFrame.event_entry_labels:
             h_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
-            entry = QLineEdit(self.event_entry_frame)
+            if text == "Context":
+                entry = QComboBox(self.event_entry_frame)
+                entry.addItems(InputFrame.context_labels)
+                entry.setCurrentText("Full_Game")
+            else:
+                entry = QLineEdit(self.event_entry_frame)
             h_layout.addWidget(label)
             h_layout.addWidget(entry)
             layout.addLayout(h_layout)
-
-            if text == "VideoTime":
-                self.video_time_entry = entry
-            elif text == "Player":
-                self.jersey_number_entry = entry
-            elif text == "Event":
-                self.event_code_entry = entry
 
         self.event_entry_frame.setLayout(layout)
         self.layout().addWidget(self.event_entry_frame)
@@ -85,42 +76,26 @@ class InputFrame(QWidget):
         self.team_roster_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.team_roster_frame)
 
-        roster_label = QLabel("TEAM ROSTER", self.team_roster_frame)
-        roster_label.setStyleSheet("font: bold 14pt Arial;")
-        layout.addWidget(roster_label)
+        roster_data = self.get_roster_data()
+        for player in roster_data:
+            player_label = QLabel(f"{player[0]} - {player[1]} - {player[2]}")
+            layout.addWidget(player_label)
 
         self.team_roster_frame.setLayout(layout)
         self.layout().addWidget(self.team_roster_frame)
 
-    # Placeholder methods for event handling
-    def check_all_fields_filled(self):
-        print("Checking all fields...")
-        # Placeholder logic
+    def get_roster_data(self):
+        connection = sqlite3.connect('data/Rosters.sqlite')
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM RMHS_roster")
+        roster_data = cursor.fetchall()
+        connection.close()
+        return roster_data
 
-    def display_team_roster(self):
-        print("Displaying team roster...")
-        # Placeholder logic
 
-    def on_listbox_select(self, event):
-        print("Listbox item selected")
-        # Placeholder logic
-
-    def update_event_code_entry_and_log(self, data):
-        print(f"Updating event code entry with data: {data}")
-        # Placeholder logic
-
-    def open_and_load_roster(self):
-        print("Opening and loading roster...")
-        # Placeholder logic
-
-    def import_roster(self, file_path):
-        print(f"Importing roster from {file_path}")
-        # Placeholder logic
-
-    def update_video_time_with_quicktime_playtime(self, spinbox_value):
-        print(f"Updating video time with QuickTime playtime, spinbox value: {spinbox_value}")
-        # Placeholder logic
-
-    def callback_for_ui_data(self, player, event):
-        print(f"Callback received Player: {player}, Event: {event}")
-        # Placeholder logic
+# Test the InputFrame
+if __name__ == "__main__":
+    app = QApplication([])
+    window = InputFrame()
+    window.show()
+    app.exec()
