@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/basketball_tracker/data/player_stats.sqlite</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="RMHS_roster" uuid="f8b3f160-cba6-4295-bbb3-304e7c8ea6b0">
+    <data-source source="LOCAL" name="Rosters" uuid="f8b3f160-cba6-4295-bbb3-304e7c8ea6b0">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
