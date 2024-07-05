@@ -104,14 +104,3 @@ class VideoControlWindow(QMainWindow):
         seconds = seconds % 60
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    from video_window import VideoWindow  # Ensure this import matches your actual module name
-
-    video_window = VideoWindow()
-    video_window.show()
-
-    control_window = VideoControlWindow(video_window)
-    control_window.show()
-
-    sys.exit(app.exec())

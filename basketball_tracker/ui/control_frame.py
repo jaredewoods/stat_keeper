@@ -146,7 +146,7 @@ class ControlFrame(QWidget):
 
     def enter_action(self):
         self.log_action()
-        self.play_action()
+        self.run_action()
         print("Performing the action for ENTER state")
 
     def set_event_code(self, code):

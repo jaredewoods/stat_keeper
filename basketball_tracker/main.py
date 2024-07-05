@@ -29,18 +29,24 @@ class Main(QObject):
 
         self.debug_log_display = DebugLogDisplay(self.sd, self.sm)
         self.main_window = MainWindow(self.sd, self.sm)
-        self.floating_controls = FloatingControls(self.sd, self.sm, ROSTER_CSV_PATH, EVENTS_CSV_PATH)
+        self.main_window.move(840, 0)
+        self.main_window.show()
+
         self.video_window = VideoWindow()
+        self.video_window.move(0, 440)
+        self.video_window.show()
+        self.floating_controls = FloatingControls(self.sd, self.sm, ROSTER_CSV_PATH, EVENTS_CSV_PATH)
+        self.floating_controls.move(600, 0)
+        self.floating_controls.show()
         self.video_control_window = VideoControlWindow(self.video_window)
+        self.video_control_window.move(800, 640)
+        self.video_control_window.show()
 
         self.connect_signals_to_slots()
 
-        self.main_window.show()
         if DEBUG_MODE_STATE:
             self.debug_log_display.show()
-        self.floating_controls.show()
-        self.video_control_window.show()
-        self.video_window.show()
+            self.debug_log_display.move(0, 0)
         self.emit_test_debug_signals()
 
         sys.exit(self.app.exec())
