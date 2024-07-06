@@ -1,6 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGridLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import Qt, QPoint
-import sqlite3
 import sys
 import os
 from data.rosters_dao import RostersDAO
@@ -9,44 +8,6 @@ from data.events_dao import EventsDAO
 # Set up the paths for images
 script_dir = os.path.dirname(os.path.abspath(__file__))
 images_dir = os.path.join(script_dir, '../images/')
-
-# Function to create a button with different states
-def create_button(image_name):
-    btn_floating_control = QPushButton()
-    btn_floating_control.setStyleSheet(f"""
-        QPushButton {{
-            border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
-            border-radius: 100px;
-            background: transparent;
-        }}
-        QPushButton:hover {{
-            border-image: url({os.path.join(images_dir, image_name + '_hover.png')});
-        }}
-        QPushButton:pressed {{
-            border-image: url({os.path.join(images_dir, image_name + '_pressed.png')});
-        }}
-    """)
-    btn_floating_control.setFixedSize(200, 200)
-    return btn_floating_control
-
-# Function to create navigation buttons with different states
-def create_nav_button(image_name):
-    btn = QPushButton()
-    btn.setStyleSheet(f"""
-        QPushButton {{
-            border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
-            border: none;
-            background: transparent;
-        }}
-        QPushButton:hover {{
-            border-image: url({os.path.join(images_dir, image_name + '_hover.png')});
-        }}
-        QPushButton:pressed {{
-            border-image: url({os.path.join(images_dir, image_name + '_pressed.png')});
-        }}
-    """)
-    btn.setFixedSize(80, 56)  # Adjust size as needed
-    return btn
 
 class FloatingControl(QWidget):
     def __init__(self, signal_distributor=None, state_manager=None):
@@ -61,10 +22,12 @@ class FloatingControl(QWidget):
 
         main_layout = QVBoxLayout(self)
 
+        # Apply a transparent background to the stacked widget
         self.stacked_widget = QStackedWidget()
-        self.stacked_widget.setStyleSheet("background: transparent;")
+        self.stacked_widget.setStyleSheet("background: transparent; border: none;")
         main_layout.addWidget(self.stacked_widget)
 
+        # Add pages to the stacked widget
         self.stacked_widget.addWidget(self.create_page_1())
         self.stacked_widget.addWidget(self.create_page_2())
         self.stacked_widget.addWidget(self.create_page_3())
@@ -72,9 +35,10 @@ class FloatingControl(QWidget):
 
         self.stacked_widget.setCurrentIndex(0)
 
+        # Create navigation layout with buttons
         nav_layout = QHBoxLayout()
-        prev_button = create_nav_button('left_arrow')
-        next_button = create_nav_button('right_arrow')
+        prev_button = self.create_nav_button('left_arrow')
+        next_button = self.create_nav_button('right_arrow')
         prev_button.clicked.connect(self.show_previous_page)
         next_button.clicked.connect(self.show_next_page)
         nav_layout.addWidget(prev_button)
@@ -86,49 +50,142 @@ class FloatingControl(QWidget):
 
     def create_page_1(self):
         page = QWidget()
-        page.setStyleSheet("background: transparent;")
+        page.setStyleSheet("background: transparent; border: none;")
         layout = QVBoxLayout(page)
-        capture_button = create_button('capture')
-        undo_button = create_button('undo')
+
+        capture_button = QPushButton()
+        capture_button.setStyleSheet(f"""
+            QPushButton {{
+                border-image: url({os.path.join(images_dir, 'capture_dim.png')});
+                border-radius: 100px;
+                background: transparent;
+            }}
+            QPushButton:hover {{
+                border-image: url({os.path.join(images_dir, 'capture_hover.png')});
+            }}
+            QPushButton:pressed {{
+                border-image: url({os.path.join(images_dir, 'capture_pressed.png')});
+            }}
+        """)
+        capture_button.setFixedSize(200, 200)
         layout.addWidget(capture_button)
+
+        undo_button = QPushButton()
+        undo_button.setStyleSheet(f"""
+            QPushButton {{
+                border-image: url({os.path.join(images_dir, 'undo_dim.png')});
+                border-radius: 100px;
+                background: transparent;
+            }}
+            QPushButton:hover {{
+                border-image: url({os.path.join(images_dir, 'undo_hover.png')});
+            }}
+            QPushButton:pressed {{
+                border-image: url({os.path.join(images_dir, 'undo_pressed.png')});
+            }}
+        """)
+        undo_button.setFixedSize(200, 200)
         layout.addWidget(undo_button)
+
         return page
 
     def create_page_2(self):
         page = QWidget()
-        page.setStyleSheet("background: transparent;")
+        page.setStyleSheet(f"""
+            QWidget {{
+                background-image: url({os.path.join(images_dir, 'basketball.png')});
+                background-repeat: no-repeat;
+                background-position: center;
+                border: none;
+            }}
+        """)
         layout = QVBoxLayout(page)
 
         roster_data = self.rosters_dao.get_all_roster_data()
         for player in roster_data:
             player_label = QLabel(f"{player[0]} - {player[1]} - {player[2]}")
-            player_label.setStyleSheet("color: white;")
+            player_label.setStyleSheet("color: white; background: transparent; border: none;")
             layout.addWidget(player_label)
 
         return page
 
     def create_page_3(self):
         page = QWidget()
-        page.setStyleSheet("background: transparent;")
+        page.setStyleSheet(f"""
+            QWidget {{
+                background-image: url({os.path.join(images_dir, 'basketball.png')});
+                background-repeat: no-repeat;
+                background-position: center;
+                border: none;
+            }}
+        """)
         layout = QVBoxLayout(page)
 
         events = self.events_dao.get_all_events()
         for event in events:
             label = QLabel(f"{event[0]}: {event[1]}")
-            label.setStyleSheet("color: white;")
+            label.setStyleSheet("color: white; background: transparent; border: none;")
             layout.addWidget(label)
 
         return page
 
     def create_page_4(self):
         page = QWidget()
-        page.setStyleSheet("background: transparent;")
+        page.setStyleSheet("background: transparent; border: none;")
         layout = QVBoxLayout(page)
-        confirm_button = create_button('confirm')
-        edit_button = create_button('edit')
+
+        confirm_button = QPushButton()
+        confirm_button.setStyleSheet(f"""
+            QPushButton {{
+                border-image: url({os.path.join(images_dir, 'confirm_dim.png')});
+                border-radius: 100px;
+                background: transparent;
+            }}
+            QPushButton:hover {{
+                border-image: url({os.path.join(images_dir, 'confirm_hover.png')});
+            }}
+            QPushButton:pressed {{
+                border-image: url({os.path.join(images_dir, 'confirm_pressed.png')});
+            }}
+        """)
+        confirm_button.setFixedSize(200, 200)
         layout.addWidget(confirm_button)
+
+        edit_button = QPushButton()
+        edit_button.setStyleSheet(f"""
+            QPushButton {{
+                border-image: url({os.path.join(images_dir, 'edit_dim.png')});
+                border-radius: 100px;
+                background: transparent;
+            }}
+            QPushButton:hover {{
+                border-image: url({os.path.join(images_dir, 'edit_hover.png')});
+            }}
+            QPushButton:pressed {{
+                border-image: url({os.path.join(images_dir, 'edit_pressed.png')});
+            }}
+        """)
+        edit_button.setFixedSize(200, 200)
         layout.addWidget(edit_button)
+
         return page
+
+    def create_nav_button(self, image_name):
+        btn = QPushButton()
+        btn.setStyleSheet(f"""
+            QPushButton {{
+                border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
+                background: transparent;
+            }}
+            QPushButton:hover {{
+                border-image: url({os.path.join(images_dir, image_name + '_hover.png')});
+            }}
+            QPushButton:pressed {{
+                border-image: url({os.path.join(images_dir, image_name + '_pressed.png')});
+            }}
+        """)
+        btn.setFixedSize(80, 56)  # Adjust size as needed
+        return btn
 
     def show_previous_page(self):
         current_index = self.stacked_widget.currentIndex()
