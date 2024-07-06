@@ -10,16 +10,16 @@ class RostersDAO:
         return sqlite3.connect(self.db_path)
 
     def get_all_roster_data(self):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM basketball_events")
-        data = cursor.fetchall()
-        connection.close()
-        return data
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM RMHS_roster")
+            return cursor.fetchall()
 
-    def update_roster(self, player_id, new_data):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("UPDATE basketball_events SET data=? WHERE id=?", (new_data, player_id))
-        connection.commit()
-        connection.close()
+    def update_roster(self, jersey_no, last_name, first_name):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE RMHS_roster SET LastName=?, FirstName=? WHERE JerseyNo=?",
+                (last_name, first_name, jersey_no)
+            )
+            connection.commit()

@@ -2,7 +2,6 @@
 
 import sqlite3
 
-
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
@@ -10,18 +9,18 @@ class PlayerStatsDAO:
     def connect(self):
         return sqlite3.connect(self.db_path)
 
-    def get_player_stats(self, player_id):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM player_stats WHERE player_id=?", (player_id,))
-        data = cursor.fetchall()
-        connection.close()
-        return data
+    def get_player_stats(self, jersey_no):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
+            return cursor.fetchall()
 
-    def update_player_stats(self, player_id, new_data):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("UPDATE player_stats SET data=? WHERE player_id=?", (new_data, player_id))
-        connection.commit()
-        connection.close()
-
+    def update_player_stat(self, date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, code):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """UPDATE player_stats SET Time=?, Venue=?, Opponent=?, Context=?, VideoTime=?, LastName=?, FirstName=?, Code=?
+                   WHERE Date=? AND JerseyNo=?""",
+                (time, venue, opponent, context, video_time, last_name, first_name, code, date, jersey_no)
+            )
+            connection.commit()

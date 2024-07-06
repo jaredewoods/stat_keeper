@@ -66,7 +66,7 @@ def create_page_2():
     def get_roster_data():
         connection = sqlite3.connect(os.path.join(script_dir, '../data/rosters.sqlite'))
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM basketball_events")
+        cursor.execute("SELECT * FROM RMHS_roster")
         roster_data = cursor.fetchall()
         connection.close()
         return roster_data

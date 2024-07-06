@@ -10,16 +10,16 @@ class EventsDAO:
         return sqlite3.connect(self.db_path)
 
     def get_all_events(self):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM events")
-        data = cursor.fetchall()
-        connection.close()
-        return data
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM basketball_events")
+            return cursor.fetchall()
 
-    def update_event(self, event_id, new_data):
-        connection = self.connect()
-        cursor = connection.cursor()
-        cursor.execute("UPDATE events SET data=? WHERE id=?", (new_data, event_id))
-        connection.commit()
-        connection.close()
+    def update_event(self, code, description):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE basketball_events SET Description=? WHERE Code=?",
+                (description, code)
+            )
+            connection.commit()
