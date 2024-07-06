@@ -89,7 +89,7 @@ class InputFrame(QWidget):
     def get_roster_data(self):
         connection = sqlite3.connect('data/rosters.sqlite')
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM RMHS_roster")
+        cursor.execute("SELECT * FROM basketball_events")
         roster_data = cursor.fetchall()
         connection.close()
         return roster_data

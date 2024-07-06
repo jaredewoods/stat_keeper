@@ -19,7 +19,7 @@ action_buttons = [
 class ControlFrame(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.adjusted_value_label = None
+        self.adjusted_value_label = No3-Pne
         self.value_spinbox = None
         self.total_time_label = None
         self.omni_button = None
