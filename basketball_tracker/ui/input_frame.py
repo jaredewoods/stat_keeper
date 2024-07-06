@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QApplication
 import sqlite3
+from data.rosters_dao import RostersDAO
+
 
 class InputFrame(QWidget):
     game_info_labels = ["Date", "Time", "Venue", "Opponent"]
@@ -10,6 +12,7 @@ class InputFrame(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.rosters_dao = RostersDAO()
 
         # Set the main layout for InputFrame
         main_layout = QVBoxLayout(self)
@@ -78,22 +81,13 @@ class InputFrame(QWidget):
         self.team_roster_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.team_roster_frame)
 
-        roster_data = self.get_roster_data()
+        roster_data = self.rosters_dao.get_all_roster_data()  # Use RostersDAO to get roster data
         for player in roster_data:
             player_label = QLabel(f"{player[0]} - {player[1]} - {player[2]}")
             layout.addWidget(player_label)
 
         self.team_roster_frame.setLayout(layout)
         self.layout().addWidget(self.team_roster_frame)
-
-    def get_roster_data(self):
-        connection = sqlite3.connect('data/rosters.sqlite')
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM RMHS_roster")
-        roster_data = cursor.fetchall()
-        connection.close()
-        return roster_data
-
 
 # Test the InputFrame
 if __name__ == "__main__":

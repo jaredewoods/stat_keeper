@@ -5,6 +5,9 @@ from PyQt6.QtWidgets import QApplication
 
 from core.signal_distributor import SignalDistributor
 from core.state_manager import StateManager
+from data.rosters_dao import RostersDAO
+from data.events_dao import EventsDAO
+from data.player_stats_dao import PlayerStatsDAO
 from ui.debug_log_display import DebugLogDisplay
 from ui.floating_control import FloatingControl
 from video.video_window import VideoWindow
@@ -22,6 +25,9 @@ class Main(QObject):
         self.app = QApplication(sys.argv)
         self.sd = SignalDistributor()
         self.sm = StateManager(self.sd)
+        self.rosters_dao = RostersDAO()
+        self.events_dao = EventsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
 
         self.load_configurations()
         self.debug_log_display = DebugLogDisplay(self.sd, self.sm)
