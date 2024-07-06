@@ -64,7 +64,7 @@ def create_page_2():
     layout = QVBoxLayout(page)
 
     def get_roster_data():
-        connection = sqlite3.connect(os.path.join(script_dir, '../data/Rosters.sqlite'))
+        connection = sqlite3.connect(os.path.join(script_dir, '../data/rosters.sqlite'))
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM RMHS_roster")
         roster_data = cursor.fetchall()

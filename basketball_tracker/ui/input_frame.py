@@ -87,7 +87,7 @@ class InputFrame(QWidget):
         self.layout().addWidget(self.team_roster_frame)
 
     def get_roster_data(self):
-        connection = sqlite3.connect('data/Rosters.sqlite')
+        connection = sqlite3.connect('data/rosters.sqlite')
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM RMHS_roster")
         roster_data = cursor.fetchall()
