@@ -2,6 +2,7 @@ import sqlite3
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
+from data.player_stats_dao import PlayerStatsDAO
 
 
 class OutputFrame(QWidget):
@@ -67,12 +68,8 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.database_tab, "Database")
 
     def load_database_data(self):
-        connection = sqlite3.connect('data/player_stats.sqlite')
-        cursor = connection.cursor()
-
-        cursor.execute("SELECT * FROM player_stats")
-        data = cursor.fetchall()
-        headers = [description[0] for description in cursor.description]
+        dao = PlayerStatsDAO('data/player_stats.sqlite')
+        headers, data = dao.fetch_all('player_stats')
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)
@@ -81,8 +78,6 @@ class OutputFrame(QWidget):
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
                 self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
-
-        connection.close()
 
     def setup_stats_tab(self):
         self.stats_tab = QWidget()
