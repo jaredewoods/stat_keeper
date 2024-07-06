@@ -105,8 +105,10 @@ def create_page_4():
 
 # Main Control Frame
 class FloatingControl(QWidget):
-    def __init__(self):
+    def __init__(self, signal_distributor, state_manager):
         super().__init__()
+        self.sd = signal_distributor
+        self.sm = state_manager
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove window frame
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Set window background to transparent
 

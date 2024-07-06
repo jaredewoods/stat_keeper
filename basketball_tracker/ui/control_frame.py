@@ -19,7 +19,11 @@ action_buttons = [
 class ControlFrame(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.omni_state = "RUN\nVIDEO"
+        self.adjusted_value_label = None
+        self.value_spinbox = None
+        self.total_time_label = None
+        self.omni_button = None
+        self.omni_state = "RUN VIDEO"
         self.spin_value = -2  # Initialize with the starting value for the Spinbox
         self.setup_ui()
 
@@ -62,11 +66,14 @@ class ControlFrame(QWidget):
 
     def create_omni_button(self, layout):
         self.omni_button = QPushButton(self.omni_state, self)
-        self.omni_button.setStyleSheet("font: 20pt Arial;")
+        self.omni_button.setStyleSheet("font: 16pt Arial;"
+                                       "padding, 10px;"
+                                       "border: 2px solid grey;"
+                                       "border-radius: 10px;")
         self.omni_button.clicked.connect(self.toggle_omni)
         self.omni_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.omni_button.setFixedHeight(100)
         layout.addWidget(self.omni_button)
-
 
     def create_action_buttons(self, layout):
         action_layout = QGridLayout()
@@ -76,37 +83,48 @@ class ControlFrame(QWidget):
             action_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(action_layout)
 
-    def undo_action(self):
+    @staticmethod
+    def undo_action():
         print("Undo")
 
-    def default_action(self):
+    @staticmethod
+    def default_action():
         print("Default action")
 
-    def start_action(self):
+    @staticmethod
+    def start_action():
         print("Start action")
 
-    def edit_roster_action(self):
+    @staticmethod
+    def edit_roster_action():
         print("Edit")
 
-    def offset_action(self):
+    @staticmethod
+    def offset_action():
         print("< Offset button pressed")
 
-    def load_roster_action(self):
+    @staticmethod
+    def load_roster_action():
         print("Current Roster is Loaded")
 
-    def time_capture_action(self):
+    @staticmethod
+    def time_capture_action():
         print("Time Capture button pressed")
 
-    def tc_and_pause_action(self):
+    @staticmethod
+    def tc_and_pause_action():
         print("Time Capture and Pause button pressed")
 
-    def pause_action(self):
+    @staticmethod
+    def pause_action():
         print("Pausing the QuickTime video")
 
-    def fast_forward_action(self):
+    @staticmethod
+    def fast_forward_action():
         print("FFWD button pressed")
 
-    def log_action(self):
+    @staticmethod
+    def log_action():
         print("LOG button pressed")
 
     def collect_data(self):
@@ -125,23 +143,25 @@ class ControlFrame(QWidget):
 
     def toggle_omni(self):
         current_state = self.omni_state
-        if current_state == "RUN\nVIDEO":
-            self.omni_state = "CAPTURE\nVIDEO TIME"
+        if current_state == "RUN VIDEO":
+            self.omni_state = "CAPTURE TIME"
             self.run_action()
-        elif current_state == "CAPTURE\nVIDEO TIME":
-            self.omni_state = "ENTER\nLOG"
+        elif current_state == "CAPTURE TIME":
+            self.omni_state = "ENTER LOG"
             self.capture_action()
-        elif current_state == "ENTER\nLOG":
-            self.omni_state = "CAPTURE\nVIDEO TIME"
+        elif current_state == "ENTER LOG":
+            self.omni_state = "CAPTURE TIME"
             self.enter_action()
         else:
-            self.omni_state = "RUN\nVIDEO"
+            self.omni_state = "RUN VIDEO"
         self.omni_button.setText(self.omni_state)
 
-    def run_action(self):
+    @staticmethod
+    def run_action():
         print("Performing the action for RUN state")
 
-    def capture_action(self):
+    @staticmethod
+    def capture_action():
         print("Performing the action for CAPTURE state")
 
     def enter_action(self):
@@ -152,8 +172,10 @@ class ControlFrame(QWidget):
     def set_event_code(self, code):
         self.input_frame.event_code_entry.setText(code)
 
-    def rewind_and_play(self, rewind_seconds):
+    @staticmethod
+    def rewind_and_play(rewind_seconds):
         print(f"rewindAndPlay{rewind_seconds}")
 
-    def update_total_time_label(self):
+    @staticmethod
+    def update_total_time_label():
         print(f"Failed to get video length: {e}")
