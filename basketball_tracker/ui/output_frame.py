@@ -1,8 +1,7 @@
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox, QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem
-)
-from PyQt6.QtCore import Qt
 import sqlite3
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
+                             QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
 
 
 class OutputFrame(QWidget):
@@ -12,7 +11,6 @@ class OutputFrame(QWidget):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-
         self.tabs = QTabWidget(self)
 
         self.setup_event_log_tab()
@@ -103,15 +101,15 @@ class OutputFrame(QWidget):
         self.help_text = QTextEdit(self.help_tab)
         self.help_text.setPlainText(
             "Event Codes:\n"
-            "M3P - Made 3-pointer\n"
-            "3-P - 3-pointer Attempt\n"
+            "M3P - Missed 3-pointer\n"
+            "3-P - 3-pointer Made\n"
             "DRB - Defensive Rebound\n"
             "STL - Steal\n"
-            "F-T - Free Throw\n"
-            "POI - Points in the Paint\n"
-            "M2P - Made 2-pointer\n"
+            "F-T - Free Throw Made\n"
+            "POI - Play of Interest \n"
+            "M2P - Missed 2-pointer\n"
             "ORB - Offensive Rebound\n"
-            "2-P - 2-pointer Attempt\n"
+            "2-P - 2-pointer Made\n"
         )
         self.help_text.setReadOnly(True)
         layout.addWidget(self.help_text)
@@ -120,7 +118,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.help_tab, "Help")
 
 
-# Example usage
+"""# Example usage
 if __name__ == "__main__":
     from PyQt6.QtWidgets import QApplication, QVBoxLayout
 
@@ -132,3 +130,4 @@ if __name__ == "__main__":
     window.setLayout(layout)
     window.show()
     app.exec()
+"""

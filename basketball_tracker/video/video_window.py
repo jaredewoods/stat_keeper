@@ -10,25 +10,18 @@ class VideoWindow(QMainWindow):
         self.setWindowTitle("Video Window")
         self.setGeometry(100, 100, 800, 600)
 
-        # Set up the media player
         self.media_player = QMediaPlayer(self)
         self.video_widget = QVideoWidget()
-
-        # Set up the UI
         self.widget = QWidget(self)
         self.setCentralWidget(self.widget)
         self.layout = QVBoxLayout()
         self.widget.setLayout(self.layout)
-
         self.layout.addWidget(self.video_widget)
         self.media_player.setVideoOutput(self.video_widget)
-
-        # Slider for video position
         self.position_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.position_slider.setRange(0, 0)
         self.position_slider.sliderMoved.connect(self.set_position)
         self.layout.addWidget(self.position_slider)
-
         self.show()
 
     def open_file(self, filename):

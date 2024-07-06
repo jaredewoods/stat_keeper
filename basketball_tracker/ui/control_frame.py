@@ -72,7 +72,7 @@ class ControlFrame(QWidget):
                                        "border-radius: 10px;")
         self.omni_button.clicked.connect(self.toggle_omni)
         self.omni_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.omni_button.setFixedHeight(100)
+        self.omni_button.setFixedHeight(40)
         layout.addWidget(self.omni_button)
 
     def create_action_buttons(self, layout):
@@ -126,20 +126,6 @@ class ControlFrame(QWidget):
     @staticmethod
     def log_action():
         print("LOG button pressed")
-
-    def collect_data(self):
-        data_list = [
-            self.input_frame.date_entry.text(),
-            self.input_frame.start_time_entry.text(),
-            self.input_frame.venue_entry.text(),
-            self.input_frame.opponent_entry.text(),
-            self.input_frame.period_combobox.currentText(),
-            self.input_frame.video_time_entry.text(),
-            self.input_frame.jersey_number_entry.text(),
-            self.input_frame.event_code_entry.text()
-        ]
-        data_string = ','.join(data_list) + '\n'
-        return data_string
 
     def toggle_omni(self):
         current_state = self.omni_state
