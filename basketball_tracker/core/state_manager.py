@@ -1,6 +1,6 @@
 # state_manager.py
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject
 
 
 class StateManager(QObject):

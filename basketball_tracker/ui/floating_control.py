@@ -12,8 +12,8 @@ images_dir = os.path.join(script_dir, '../images/')
 
 # Function to create a button with different states
 def create_button(image_name):
-    btn = QPushButton()
-    btn.setStyleSheet(f"""
+    btn_floating_control = QPushButton()
+    btn_floating_control.setStyleSheet(f"""
         QPushButton {{
             border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
             border-radius: 100px;
@@ -26,8 +26,8 @@ def create_button(image_name):
             border-image: url({os.path.join(images_dir, image_name + '_pressed.png')});
         }}
     """)
-    btn.setFixedSize(200, 200)
-    return btn
+    btn_floating_control.setFixedSize(200, 200)
+    return btn_floating_control
 
 # Function to create navigation buttons with different states
 def create_nav_button(image_name):
