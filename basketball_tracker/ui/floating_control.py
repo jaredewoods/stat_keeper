@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
+import sqlite3
 import sys
 import os
 
@@ -14,6 +15,7 @@ def create_button(image_name):
         QPushButton {{
             border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
             border-radius: 100px;
+            background: transparent;
         }}
         QPushButton:hover {{
             border-image: url({os.path.join(images_dir, image_name + '_hover.png')});
@@ -32,6 +34,7 @@ def create_nav_button(image_name):
         QPushButton {{
             border-image: url({os.path.join(images_dir, image_name + '_dim.png')});
             border: none;
+            background: transparent;
         }}
         QPushButton:hover {{
             border-image: url({os.path.join(images_dir, image_name + '_hover.png')});
@@ -46,6 +49,7 @@ def create_nav_button(image_name):
 # Page 1: Capture and Undo Buttons
 def create_page_1():
     page = QWidget()
+    page.setStyleSheet("background: transparent;")
     layout = QVBoxLayout(page)
     capture_button = create_button('capture')
     undo_button = create_button('undo')
@@ -56,28 +60,42 @@ def create_page_1():
 # Page 2: Player Roster
 def create_page_2():
     page = QWidget()
+    page.setStyleSheet("background: transparent;")
     layout = QVBoxLayout(page)
-    # Mock roster data for testing
-    roster = ["1 John Doe", "2 Jane Smith", "3 Alex Johnson"]
-    for player in roster:
-        label = QLabel(player)
-        layout.addWidget(label)
+
+    def get_roster_data():
+        connection = sqlite3.connect(os.path.join(script_dir, '../data/Rosters.sqlite'))
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM RMHS_roster")
+        roster_data = cursor.fetchall()
+        connection.close()
+        return roster_data
+
+    roster_data = get_roster_data()
+    for player in roster_data:
+        player_label = QLabel(f"{player[0]} - {player[1]} - {player[2]}")
+        player_label.setStyleSheet("color: white;")  # Set text color to white or any other color for visibility
+        layout.addWidget(player_label)
+
     return page
 
 # Page 3: Event Descriptions
 def create_page_3():
     page = QWidget()
+    page.setStyleSheet("background: transparent;")
     layout = QVBoxLayout(page)
     # Mock event descriptions for testing
     events = ["Event 1: Description", "Event 2: Description", "Event 3: Description"]
     for event in events:
         label = QLabel(event)
+        label.setStyleSheet("color: white;")  # Set text color to white or any other color for visibility
         layout.addWidget(label)
     return page
 
 # Page 4: Confirm and Undo Buttons
 def create_page_4():
     page = QWidget()
+    page.setStyleSheet("background: transparent;")
     layout = QVBoxLayout(page)
     confirm_button = create_button('confirm')
     edit_button = create_button('edit')
@@ -89,10 +107,14 @@ def create_page_4():
 class FloatingControl(QWidget):
     def __init__(self):
         super().__init__()
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove window frame
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Set window background to transparent
+
         main_layout = QVBoxLayout(self)
 
         # Create the stacked widget
         self.stacked_widget = QStackedWidget()
+        self.stacked_widget.setStyleSheet("background: transparent;")
         main_layout.addWidget(self.stacked_widget)
 
         # Add pages to the stacked widget
