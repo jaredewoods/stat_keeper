@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QApplication
 from core.signal_distributor import SignalDistributor
 from core.state_manager import StateManager
 from ui.debug_log_display import DebugLogDisplay
-from ui.floating_controls import FloatingControls
+from ui.floating_control import FloatingControl
 from video.video_window import VideoWindow
 from video.video_control_window import VideoControlWindow
 from ui.main_window import MainWindow
@@ -32,9 +32,9 @@ class Main(QObject):
         self.video_window = VideoWindow()
         self.video_window.move(0, 440)
         self.video_window.show()
-        self.floating_controls = FloatingControls(self.sd, self.sm)
-        self.floating_controls.move(600, 0)
-        self.floating_controls.show()
+        self.floating_control = FloatingControl(self.sd, self.sm)
+        self.floating_control.move(600, 0)
+        self.floating_control.show()
         self.video_control_window = VideoControlWindow(self.video_window)
         self.video_control_window.move(800, 640)
         self.video_control_window.show()
