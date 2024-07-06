@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QPoint
 import sqlite3
 import sys
 import os
@@ -136,6 +136,9 @@ class FloatingControl(QWidget):
 
         main_layout.addLayout(nav_layout)
 
+        # Variables to track dragging
+        self.old_pos = QPoint()
+
     def show_previous_page(self):
         current_index = self.stacked_widget.currentIndex()
         self.stacked_widget.setCurrentIndex((current_index - 1) % self.stacked_widget.count())
@@ -143,6 +146,20 @@ class FloatingControl(QWidget):
     def show_next_page(self):
         current_index = self.stacked_widget.currentIndex()
         self.stacked_widget.setCurrentIndex((current_index + 1) % self.stacked_widget.count())
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.old_pos = event.globalPosition().toPoint()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.MouseButton.LeftButton:
+            delta = QPoint(event.globalPosition().toPoint() - self.old_pos)
+            self.move(self.x() + delta.x(), self.y() + delta.y())
+            self.old_pos = event.globalPosition().toPoint()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.old_pos = QPoint()
 
 # Run the application
 if __name__ == "__main__":
