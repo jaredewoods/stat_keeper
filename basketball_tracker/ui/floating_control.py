@@ -22,7 +22,7 @@ class ShadowLabel(QLabel):
         effect = QGraphicsDropShadowEffect(self)
         effect.setBlurRadius(5)
         effect.setColor(QColor(0, 0, 0))
-        effect.setOffset(2, 2)
+        effect.setOffset(3, 3)
         return effect
 
 class FloatingControl(QWidget):
@@ -122,7 +122,7 @@ class FloatingControl(QWidget):
         roster_data = self.rosters_dao.get_all_roster_data()
         for player in roster_data:
             player_label = ShadowLabel(f"{player[0]} - {player[1]} - {player[2]}")
-            player_label.setStyleSheet("color: white; background: transparent; border: none;")
+            player_label.setStyleSheet("color: white; background: transparent; border: none; font-weight: bold")
             layout.addWidget(player_label)
 
         return page
