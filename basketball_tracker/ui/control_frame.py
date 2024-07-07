@@ -156,7 +156,7 @@ class ControlFrame(QWidget):
         print("Performing the action for ENTER state")
 
     def set_event_code(self, code):
-        self.input_frame.event_code_entry.setText(code)
+        print(f"Setting event code {code}")
 
     @staticmethod
     def rewind_and_play(rewind_seconds):

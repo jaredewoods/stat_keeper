@@ -123,6 +123,7 @@ class FloatingControl(QWidget):
         for player in roster_data:
             player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2]}")
             player_label.setStyleSheet("color: white; background: transparent; border: none; font-weight: bold")
+            player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the layout
             layout.addWidget(player_label)
 
         return page
