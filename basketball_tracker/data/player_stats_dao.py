@@ -10,10 +10,10 @@ class PlayerStatsDAO:
     def connect(self):
         return sqlite3.connect(self.db_path)
 
-    def fetch_all(self, table_name):
+    def fetch_all(self):
         with self.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM {table_name}")
+            cursor.execute(f"SELECT * FROM player_stats")
             data = cursor.fetchall()
             headers = [description[0] for description in cursor.description]
             return headers, data

@@ -69,7 +69,7 @@ class OutputFrame(QWidget):
 
     def load_database_data(self):
         dao = PlayerStatsDAO('data/player_stats.sqlite')
-        headers, data = dao.fetch_all('player_stats')
+        headers, data = dao.fetch_all()
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)
