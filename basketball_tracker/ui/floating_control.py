@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGridLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
+from PyQt6.QtGui import QPainter, QColor, QFont
 from PyQt6.QtCore import Qt, QPoint
 import sys
 import os
@@ -8,6 +9,21 @@ from data.events_dao import EventsDAO
 # Set up the paths for images
 script_dir = os.path.dirname(os.path.abspath(__file__))
 images_dir = os.path.join(script_dir, '../images/')
+
+
+class ShadowLabel(QLabel):
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+        self.setFont(QFont("Arial", 18))
+        self.setStyleSheet("color: white;")
+        self.setGraphicsEffect(self.create_shadow_effect())
+
+    def create_shadow_effect(self):
+        effect = QGraphicsDropShadowEffect(self)
+        effect.setBlurRadius(5)
+        effect.setColor(QColor(0, 0, 0))
+        effect.setOffset(2, 2)
+        return effect
 
 class FloatingControl(QWidget):
     def __init__(self, signal_distributor=None, state_manager=None):
@@ -51,7 +67,9 @@ class FloatingControl(QWidget):
     def create_page_1(self):
         page = QWidget()
         page.setStyleSheet("background: transparent; border: none;")
+
         layout = QVBoxLayout(page)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the layout
 
         capture_button = QPushButton()
         capture_button.setStyleSheet(f"""
@@ -68,7 +86,7 @@ class FloatingControl(QWidget):
             }}
         """)
         capture_button.setFixedSize(200, 200)
-        layout.addWidget(capture_button)
+        layout.addWidget(capture_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
 
         undo_button = QPushButton()
         undo_button.setStyleSheet(f"""
@@ -85,7 +103,7 @@ class FloatingControl(QWidget):
             }}
         """)
         undo_button.setFixedSize(200, 200)
-        layout.addWidget(undo_button)
+        layout.addWidget(undo_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
 
         return page
 
@@ -93,7 +111,7 @@ class FloatingControl(QWidget):
         page = QWidget()
         page.setStyleSheet(f"""
             QWidget {{
-                background-image: url({os.path.join(images_dir, 'basketball.png')});
+                background-image: url({os.path.join(images_dir, 'basketballs.png')});
                 background-repeat: no-repeat;
                 background-position: center;
                 border: none;
@@ -103,7 +121,7 @@ class FloatingControl(QWidget):
 
         roster_data = self.rosters_dao.get_all_roster_data()
         for player in roster_data:
-            player_label = QLabel(f"{player[0]} - {player[1]} - {player[2]}")
+            player_label = ShadowLabel(f"{player[0]} - {player[1]} - {player[2]}")
             player_label.setStyleSheet("color: white; background: transparent; border: none;")
             layout.addWidget(player_label)
 
@@ -113,7 +131,7 @@ class FloatingControl(QWidget):
         page = QWidget()
         page.setStyleSheet(f"""
             QWidget {{
-                background-image: url({os.path.join(images_dir, 'basketball.png')});
+                background-image: url({os.path.join(images_dir, 'basketballs.png')});
                 background-repeat: no-repeat;
                 background-position: center;
                 border: none;
@@ -123,7 +141,7 @@ class FloatingControl(QWidget):
 
         events = self.events_dao.get_all_events()
         for event in events:
-            label = QLabel(f"{event[0]}: {event[1]}")
+            label = ShadowLabel(f"{event[0]}: {event[1]}")
             label.setStyleSheet("color: white; background: transparent; border: none;")
             layout.addWidget(label)
 
@@ -133,6 +151,7 @@ class FloatingControl(QWidget):
         page = QWidget()
         page.setStyleSheet("background: transparent; border: none;")
         layout = QVBoxLayout(page)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the layout
 
         confirm_button = QPushButton()
         confirm_button.setStyleSheet(f"""
@@ -149,7 +168,7 @@ class FloatingControl(QWidget):
             }}
         """)
         confirm_button.setFixedSize(200, 200)
-        layout.addWidget(confirm_button)
+        layout.addWidget(confirm_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
 
         edit_button = QPushButton()
         edit_button.setStyleSheet(f"""
@@ -166,7 +185,7 @@ class FloatingControl(QWidget):
             }}
         """)
         edit_button.setFixedSize(200, 200)
-        layout.addWidget(edit_button)
+        layout.addWidget(edit_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
 
         return page
 
