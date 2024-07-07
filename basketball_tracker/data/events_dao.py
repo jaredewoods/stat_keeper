@@ -9,7 +9,7 @@ class EventsDAO:
     def connect(self):
         return sqlite3.connect(self.db_path)
 
-    def get_all_events(self):
+    def fetch_all(self):
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute("SELECT * FROM basketball_events")
