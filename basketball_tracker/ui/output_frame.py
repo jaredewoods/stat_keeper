@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLa
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
 from data.player_stats_dao import PlayerStatsDAO
 from data.rosters_dao import RostersDAO
+from data.events_dao import EventsDAO
 
 
 class OutputFrame(QWidget):
@@ -18,8 +19,7 @@ class OutputFrame(QWidget):
         self.setup_event_log_tab()
         self.setup_database_tab()
         self.setup_roster_tab()
-        self.setup_stats_tab()
-        self.setup_help_tab()
+        self.setup_events_tab()
 
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
@@ -104,50 +104,27 @@ class OutputFrame(QWidget):
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
                 self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
-    def setup_stats_tab(self):
-        self.stats_tab = QWidget()
-        layout = QVBoxLayout(self.stats_tab)
 
-        self.stats_label = QLabel("stats will go here", self.stats_tab)
-        layout.addWidget(self.stats_label)
+    def setup_events_tab(self):
+        self.events_tab = QWidget()
+        layout = QVBoxLayout(self.events_tab)
 
-        self.stats_tab.setLayout(layout)
-        self.tabs.addTab(self.stats_tab, "Stats")
+        self.table_widget = QTableWidget(self.events_tab)
+        layout.addWidget(self.table_widget)
 
-    def setup_help_tab(self):
-        self.help_tab = QWidget()
-        layout = QVBoxLayout(self.help_tab)
+        self.load_events_tab()
 
-        self.help_text = QTextEdit(self.help_tab)
-        self.help_text.setPlainText(
-            "Event Codes:\n"
-            "M3P - Missed 3-pointer\n"
-            "3-P - 3-pointer Made\n"
-            "DRB - Defensive Rebound\n"
-            "STL - Steal\n"
-            "F-T - Free Throw Made\n"
-            "POI - Play of Interest \n"
-            "M2P - Missed 2-pointer\n"
-            "ORB - Offensive Rebound\n"
-            "2-P - 2-pointer Made\n"
-        )
-        self.help_text.setReadOnly(True)
-        layout.addWidget(self.help_text)
+        self.events_tab.setLayout(layout)
+        self.tabs.addTab(self.events_tab, "Events")
 
-        self.help_tab.setLayout(layout)
-        self.tabs.addTab(self.help_tab, "Help")
+    def load_events_tab(self):
+        dao = EventsDAO('data/events.sqlite')
+        headers, data = dao.fetch_all_events()
 
+        self.table_widget.setColumnCount(len(headers))
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setRowCount(len(data))
 
-"""# Example usage
-if __name__ == "__main__":
-    from PyQt6.QtWidgets import QApplication, QVBoxLayout
-
-    app = QApplication([])
-    window = QWidget()
-    layout = QVBoxLayout(window)
-    output_frame = OutputFrame()
-    layout.addWidget(output_frame)
-    window.setLayout(layout)
-    window.show()
-    app.exec()
-"""
+        for row_idx, row_data in enumerate(data):
+            for col_idx, col_data in enumerate(row_data):
+                self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
