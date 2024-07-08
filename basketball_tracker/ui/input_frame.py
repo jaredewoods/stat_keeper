@@ -81,7 +81,7 @@ class InputFrame(QWidget):
         self.team_roster_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.team_roster_frame)
 
-        roster_data = self.rosters_dao.fetch_all()  # Use RostersDAO to get roster data
+        roster_data = self.rosters_dao.fetch_roster_sans_headers()  # Use RostersDAO to get roster data
         for player in roster_data:
             player_label = QLabel(f"{player[0]} {player[1]} {player[2]}")
             layout.addWidget(player_label)

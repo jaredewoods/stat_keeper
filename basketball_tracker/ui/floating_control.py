@@ -119,7 +119,7 @@ class FloatingControl(QWidget):
         """)
         layout = QVBoxLayout(page)
 
-        roster_data = self.rosters_dao.fetch_all()
+        roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
             player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2]}")
             player_label.setStyleSheet("color: white; background: transparent; border: none; font-weight: bold")
@@ -140,7 +140,7 @@ class FloatingControl(QWidget):
         """)
         layout = QVBoxLayout(page)
 
-        events = self.events_dao.fetch_all()
+        events = self.events_dao.fetch_events_sans_headers()
         for event in events:
             label = ShadowLabel(f"{event[0]}: {event[1]}")
             label.setStyleSheet("color: white; background: transparent; border: none;")

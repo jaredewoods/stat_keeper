@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
 from data.player_stats_dao import PlayerStatsDAO
+from data.rosters_dao import RostersDAO
 
 
 class OutputFrame(QWidget):
@@ -16,6 +17,7 @@ class OutputFrame(QWidget):
 
         self.setup_event_log_tab()
         self.setup_database_tab()
+        self.setup_roster_tab()
         self.setup_stats_tab()
         self.setup_help_tab()
 
@@ -69,7 +71,7 @@ class OutputFrame(QWidget):
 
     def load_database_data(self):
         dao = PlayerStatsDAO('data/player_stats.sqlite')
-        headers, data = dao.fetch_all()
+        headers, data = dao.fetch_all_player_stats()
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)
@@ -79,6 +81,29 @@ class OutputFrame(QWidget):
             for col_idx, col_data in enumerate(row_data):
                 self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
+    def setup_roster_tab(self):
+        self.roster_tab = QWidget()
+        layout = QVBoxLayout(self.roster_tab)
+
+        self.table_widget = QTableWidget(self.roster_tab)
+        layout.addWidget(self.table_widget)
+
+        self.load_roster_tab()
+
+        self.roster_tab.setLayout(layout)
+        self.tabs.addTab(self.roster_tab, "Roster")
+
+    def load_roster_tab(self):
+        dao = RostersDAO('data/rosters.sqlite')
+        headers, data = dao.fetch_all_roster()
+
+        self.table_widget.setColumnCount(len(headers))
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setRowCount(len(data))
+
+        for row_idx, row_data in enumerate(data):
+            for col_idx, col_data in enumerate(row_data):
+                self.table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
     def setup_stats_tab(self):
         self.stats_tab = QWidget()
         layout = QVBoxLayout(self.stats_tab)

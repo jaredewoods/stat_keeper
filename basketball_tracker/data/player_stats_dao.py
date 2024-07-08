@@ -10,7 +10,7 @@ class PlayerStatsDAO:
     def connect(self):
         return sqlite3.connect(self.db_path)
 
-    def fetch_all(self):
+    def fetch_all_player_stats(self):
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(f"SELECT * FROM player_stats")
@@ -18,7 +18,7 @@ class PlayerStatsDAO:
             headers = [description[0] for description in cursor.description]
             return headers, data
 
-    def get_player_stats(self, jersey_no):
+    def fetch_player_stats_sans_headers(self, jersey_no):
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
