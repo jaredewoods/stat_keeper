@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
-from PyQt6.QtGui import QPainter, QColor, QFont
+from PyQt6.QtGui import QPainter, QColor, QFont, QPalette
 from PyQt6.QtCore import Qt, QPoint
 import sys
 import os
@@ -14,17 +14,52 @@ images_dir = os.path.join(script_dir, '../images/')
 class ShadowLabel(QLabel):
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
-        self.setFont(QFont("Arial", 18))
-        self.setStyleSheet("color: white;")
-        self.setGraphicsEffect(self.create_shadow_effect())
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 
-    def create_shadow_effect(self):
-        effect = QGraphicsDropShadowEffect(self)
-        effect.setBlurRadius(4)
-        effect.setColor(QColor(0, 0, 0))
-        effect.setOffset(3, 3)
-        return effect
+    def enterEvent(self, event):
+        self.setStyleSheet("""
+            QLabel {
+                color: blue;
+                background: white;
+                border: blue solid;
+                border-radius: 5px;
+                font-size: 24px;
+            }
+        """)
+        super().enterEvent(event)
 
+    def leaveEvent(self, event):
+        self.setStyleSheet("""
+            QLabel {
+                color: white;
+                background: transparent;
+                border: none;
+                font-weight: bold;
+            }
+        """)
+        super().leaveEvent(event)
+
+    def mousePressEvent(self, event):
+        self.setStyleSheet("""
+            QLabel {
+                color: red;
+                background: transparent;
+                border: none;
+                font-weight: bold;
+            }
+        """)
+        super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.setStyleSheet("""
+            QLabel {
+                color: yellow;
+                background: transparent;
+                border: none;
+                font-weight: bold;
+            }
+        """)
+        super().mouseReleaseEvent(event)
 class FloatingControl(QWidget):
     def __init__(self, signal_distributor=None, state_manager=None):
         super().__init__()
@@ -122,8 +157,15 @@ class FloatingControl(QWidget):
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
             player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2]}")
-            player_label.setStyleSheet("color: white; background: transparent; border: none; font-weight: bold")
-            player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the layout
+            player_label.setStyleSheet("""
+                QLabel {
+                    color: white;
+                    background: transparent;
+                    border: none;
+                    font-weight: bold;
+                }
+            """)
+            player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(player_label)
 
         return page
