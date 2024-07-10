@@ -23,7 +23,7 @@ class ShadowLabel(QLabel):
                 background: white;
                 border: blue solid;
                 border-radius: 5px;
-                font-size: 24px;
+                font-size: 18px;
             }
         """)
         super().enterEvent(event)
@@ -184,8 +184,9 @@ class FloatingControl(QWidget):
 
         events = self.events_dao.fetch_events_sans_headers()
         for event in events:
-            label = ShadowLabel(f"{event[0]}: {event[1]}")
+            label = ShadowLabel(f"{event[1]}")
             label.setStyleSheet("color: white; background: transparent; border: none;")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(label)
 
         return page
@@ -270,6 +271,7 @@ class FloatingControl(QWidget):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.old_pos = QPoint()
+
 
 # Run the application
 if __name__ == "__main__":
