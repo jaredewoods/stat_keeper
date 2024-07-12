@@ -2,17 +2,13 @@
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
 from PyQt6.QtCore import Qt
+from data.events_dao import EventsDAO
 
 BUTTON_FONT = ('Arial', 12, 'bold')
 
 control_button_labels = [
     "<< 00:00", "EditRostr", "<< Offset", "LoadRostr", "<< 20s", "VideoTime", "<< 10s", "VT+Pause",
     "<< 05s", "Pause", "Speed", "Undo", "Log", "Play"
-]
-
-action_buttons = [
-    "3-P", "2-P", "F-T", "M3P", "M2P", "MFT", "AST", "POI", "T-O",
-    "ORB", "DRB", "PFL", "BLK", "STL", "SFL"
 ]
 
 
@@ -25,6 +21,7 @@ class ControlFrame(QWidget):
         self.omni_button = None
         self.omni_state = "RUN VIDEO"
         self.spin_value = -2  # Initialize with the starting value for the Spinbox
+        self.events_dao = EventsDAO()  # Initialize EventsDAO instance
         self.setup_ui()
 
     def setup_ui(self):
@@ -77,11 +74,16 @@ class ControlFrame(QWidget):
 
     def create_action_buttons(self, layout):
         action_layout = QGridLayout()
-        for i, name in enumerate(action_buttons):
+        action_button_names = self.events_dao.fetch_event_codes()  # Fetch button names
+
+        for i, name in enumerate(action_button_names):
             button = QPushButton(name)
             button.clicked.connect(lambda checked, n=name: self.set_event_code(n))
             action_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(action_layout)
+
+    def load_action_button_names(self):
+        return self.events_dao.fetch_event_codes()
 
     @staticmethod
     def undo_action():

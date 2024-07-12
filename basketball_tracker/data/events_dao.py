@@ -2,6 +2,7 @@
 
 import sqlite3
 
+
 class EventsDAO:
     def __init__(self, db_path='data/events.sqlite'):
         self.db_path = db_path
@@ -31,3 +32,11 @@ class EventsDAO:
                 (description, code)
             )
             connection.commit()
+
+    def fetch_event_codes(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT Code FROM basketball_events")
+            data = cursor.fetchall()
+            codes = [row[0] for row in data]
+            return codes
