@@ -10,6 +10,11 @@ from data.events_dao import EventsDAO
 class OutputFrame(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.events_tab = QWidget()
+        self.roster_tab = QWidget()
+        self.database_tab = None
+        self.tabs = None
+        self.event_log_tab = None
         self.rosters_dao = RostersDAO()
         self.events_dao = EventsDAO()
         self.player_stats_dao = PlayerStatsDAO()
@@ -84,7 +89,6 @@ class OutputFrame(QWidget):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
     def setup_roster_tab(self):
-        self.roster_tab = QWidget()
         layout = QVBoxLayout(self.roster_tab)
 
         roster_table_widget = QTableWidget(self.roster_tab)
@@ -107,7 +111,6 @@ class OutputFrame(QWidget):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
     def setup_events_tab(self):
-        self.events_tab = QWidget()
         layout = QVBoxLayout(self.events_tab)
 
         events_table_widget = QTableWidget(self.events_tab)
