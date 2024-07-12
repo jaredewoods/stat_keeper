@@ -152,11 +152,11 @@ class FloatingControl(QWidget):
                 border: none;
             }}
         """)
-        layout = QVBoxLayout(page)
+        layout = QGridLayout(page)
 
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
-        for player in roster_data:
-            player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2]}")
+        for i, player in enumerate(roster_data):
+            player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2][0]}.")
             player_label.setStyleSheet("""
                 QLabel {
                     color: white;
@@ -167,8 +167,11 @@ class FloatingControl(QWidget):
                 }
             """)
             player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            layout.addWidget(player_label)
+            row = i // 2
+            col = i % 2
+            layout.addWidget(player_label, row, col)
 
+        page.setLayout(layout)
         return page
 
     def create_page_3(self):
