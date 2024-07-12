@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QGridLayout, QHBoxLayout, QGraphicsDropShadowEffect
 from PyQt6.QtGui import QPainter, QColor, QFont, QPalette
 from PyQt6.QtCore import Qt, QPoint
 import sys
@@ -19,11 +19,10 @@ class ShadowLabel(QLabel):
     def enterEvent(self, event):
         self.setStyleSheet("""
             QLabel {
-                color: blue;
-                background: white;
-                border: blue solid;
-                border-radius: 5px;
-                font-size: 18px;
+                color: black;
+                background: lightgrey;
+                border-radius: 22px;
+                font-size: 18px
             }
         """)
         super().enterEvent(event)
@@ -33,8 +32,8 @@ class ShadowLabel(QLabel):
             QLabel {
                 color: white;
                 background: transparent;
-                border: none;
-                font-weight: bold;
+                border-radius: 22px;
+                font-size: 18px;
             }
         """)
         super().leaveEvent(event)
@@ -42,10 +41,10 @@ class ShadowLabel(QLabel):
     def mousePressEvent(self, event):
         self.setStyleSheet("""
             QLabel {
-                color: red;
-                background: transparent;
-                border: none;
-                font-weight: bold;
+                color: blue;
+                background: white;
+                border-radius: 23px;
+                font-size: 18px;
             }
         """)
         super().mousePressEvent(event)
@@ -53,10 +52,10 @@ class ShadowLabel(QLabel):
     def mouseReleaseEvent(self, event):
         self.setStyleSheet("""
             QLabel {
-                color: yellow;
+                color: white;
                 background: transparent;
-                border: none;
-                font-weight: bold;
+                border-radius: 22px;                
+                font-size: 18px;
             }
         """)
         super().mouseReleaseEvent(event)
@@ -164,6 +163,7 @@ class FloatingControl(QWidget):
                     background: transparent;
                     border: none;
                     font-weight: bold;
+                    font-size: 18px;
                 }
             """)
             player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -178,18 +178,24 @@ class FloatingControl(QWidget):
                 background-image: url({os.path.join(images_dir, 'basketballs.png')});
                 background-repeat: no-repeat;
                 background-position: center;
-                border: none;
             }}
         """)
-        layout = QVBoxLayout(page)
+        layout = QGridLayout(page)
 
-        events = self.events_dao.fetch_events_sans_headers()
-        for event in events:
-            label = ShadowLabel(f"{event[1]}")
-            label.setStyleSheet("color: white; background: transparent; border: none;")
+        events = self.events_dao.fetch_event_codes()
+        for i, event in enumerate(events):
+            label = ShadowLabel(f"{event}")
+            label.setStyleSheet("color: white; "
+                                "background: transparent; "
+                                "border-radius: 22px; "
+                                "font-size: 18px; "
+                                )
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            layout.addWidget(label)
+            row = i // 3
+            col = i % 3
+            layout.addWidget(label, row, col)
 
+        page.setLayout(layout)
         return page
 
     def create_page_4(self):
