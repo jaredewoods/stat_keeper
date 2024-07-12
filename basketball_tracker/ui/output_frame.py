@@ -5,11 +5,15 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLa
 from data.player_stats_dao import PlayerStatsDAO
 from data.rosters_dao import RostersDAO
 from data.events_dao import EventsDAO
+from data.player_stats_dao import PlayerStatsDAO
 
 
 class OutputFrame(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.rosters_dao = RostersDAO()
+        self.events_dao = EventsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -70,8 +74,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.database_tab, "Database")
 
     def load_database_data(self):
-        dao = PlayerStatsDAO('data/player_stats.sqlite')
-        headers, data = dao.fetch_all_player_stats()
+        headers, data = self.player_stats_dao.fetch_all_player_stats()
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)
@@ -94,8 +97,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.roster_tab, "Roster")
 
     def load_roster_tab(self):
-        dao = RostersDAO('data/rosters.sqlite')
-        headers, data = dao.fetch_all_roster()
+        headers, data = self.rosters_dao.fetch_all_roster()
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)
@@ -118,8 +120,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.events_tab, "Events")
 
     def load_events_tab(self):
-        dao = EventsDAO('data/events.sqlite')
-        headers, data = dao.fetch_all_events()
+        headers, data = self.events_dao.fetch_all_events()
 
         self.table_widget.setColumnCount(len(headers))
         self.table_widget.setHorizontalHeaderLabels(headers)

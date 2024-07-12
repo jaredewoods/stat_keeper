@@ -60,6 +60,7 @@ class ShadowLabel(QLabel):
             }
         """)
         super().mouseReleaseEvent(event)
+
 class FloatingControl(QWidget):
     def __init__(self, signal_distributor=None, state_manager=None):
         super().__init__()
