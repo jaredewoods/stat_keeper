@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QLabel, QGridLayout, QHBoxLayout, QGraphicsDropShadowEffect
-from PyQt6.QtGui import QPainter, QColor, QFont, QPalette
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QStackedWidget, QHBoxLayout, QListWidget, QListWidgetItem
 from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtGui import QFont
 import sys
 import os
 from data.rosters_dao import RostersDAO
@@ -9,55 +9,6 @@ from data.events_dao import EventsDAO
 script_dir = os.path.dirname(os.path.abspath(__file__))
 images_dir = os.path.join(script_dir, '../images/')
 
-
-class ShadowLabel(QLabel):
-    def __init__(self, text, parent=None):
-        super().__init__(text, parent)
-        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
-
-    def enterEvent(self, event):
-        self.setStyleSheet("""
-            QLabel {
-                color: black;
-                background: lightgrey;
-                border-radius: 22px;
-                font-size: 18px
-            }
-        """)
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.setStyleSheet("""
-            QLabel {
-                color: white;
-                background: transparent;
-                border-radius: 22px;
-                font-size: 18px;
-            }
-        """)
-        super().leaveEvent(event)
-
-    def mousePressEvent(self, event):
-        self.setStyleSheet("""
-            QLabel {
-                color: blue;
-                background: white;
-                border-radius: 23px;
-                font-size: 18px;
-            }
-        """)
-        super().mousePressEvent(event)
-
-    def mouseReleaseEvent(self, event):
-        self.setStyleSheet("""
-            QLabel {
-                color: white;
-                background: transparent;
-                border-radius: 22px;                
-                font-size: 18px;
-            }
-        """)
-        super().mouseReleaseEvent(event)
 
 class FloatingControl(QWidget):
     def __init__(self, signal_distributor=None, state_manager=None):
@@ -144,25 +95,32 @@ class FloatingControl(QWidget):
                 border: none;
             }}
         """)
-        layout = QGridLayout(page)
+        layout = QVBoxLayout(page)
+        font = QFont("Arial", 22)
+        roster_list = QListWidget()
+        roster_list.setFont(font)
+        roster_list.setStyleSheet("""
+            QListWidget::item {
+                color: white;
+                background: transparent;
+                height: 40px;
+            }
+            QListWidget::item:hover {
+                color: black;
+                background: lightgrey;
+            }
+            QListWidget::item:selected {
+                color: blue;
+                background: white;
+            }
+            """)
 
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
-        for i, player in enumerate(roster_data):
-            player_label = ShadowLabel(f"{player[0]} {player[1]} {player[2][0]}.")
-            player_label.setStyleSheet("""
-                QLabel {
-                    color: white;
-                    background: transparent;
-                    border: none;
-                    font-weight: bold;
-                    font-size: 18px;
-                }
-            """)
-            player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            row = i // 2
-            col = i % 2
-            layout.addWidget(player_label, row, col)
+        for player in roster_data:
+            item = QListWidgetItem(f"{player[0]} {player[1]} {player[2][0]}.")
+            roster_list.addItem(item)
 
+        layout.addWidget(roster_list)
         page.setLayout(layout)
         return page
 
@@ -175,21 +133,31 @@ class FloatingControl(QWidget):
                 background-position: center;
             }}
         """)
-        layout = QGridLayout(page)
+        layout = QVBoxLayout(page)
+        font = QFont("Arial", 22)
+        events_list = QListWidget()
+        events_list.setFont(font)
+        events_list.setStyleSheet("""
+            QListWidget::item {
+                color: white;
+                background: transparent;
+            }
+            QListWidget::item:hover {
+                color: black;
+                background: lightgrey;
+            }
+            QListWidget::item:selected {
+                color: blue;
+                background: white;
+            }
+        """)
 
         events = self.events_dao.fetch_event_codes()
-        for i, event in enumerate(events):
-            label = ShadowLabel(f"{event}")
-            label.setStyleSheet("color: white; "
-                                "background: transparent; "
-                                "border-radius: 22px; "
-                                "font-size: 18px; "
-                                )
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            row = i // 3
-            col = i % 3
-            layout.addWidget(label, row, col)
+        for event in events:
+            item = QListWidgetItem(event)
+            events_list.addItem(item)
 
+        layout.addWidget(events_list)
         page.setLayout(layout)
         return page
 
