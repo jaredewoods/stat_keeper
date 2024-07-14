@@ -8,7 +8,7 @@ BUTTON_FONT = ('Arial', 12, 'bold')
 
 control_button_labels = [
     "<< 00:00", "<< 20s", "<< 10s", "Speed", "VideoTime", "VT+Pause",
-    "Pause", "Log", "Play", "Undo"
+    "Pause", "Undo", "Play", "Log"
 ]
 
 
