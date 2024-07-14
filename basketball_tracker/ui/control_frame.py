@@ -31,7 +31,7 @@ class ControlFrame(QWidget):
         self.create_control_buttons(main_layout)
         self.create_status_widgets(main_layout)
         self.create_omni_button(main_layout)
-        self.create_action_buttons(main_layout)
+        self.create_event_buttons(main_layout)
         self.setLayout(main_layout)
 
     def create_control_buttons(self, layout):
@@ -69,15 +69,15 @@ class ControlFrame(QWidget):
         self.omni_button.setFixedHeight(40)
         layout.addWidget(self.omni_button)
 
-    def create_action_buttons(self, layout):
-        action_layout = QGridLayout()
-        action_button_names = self.events_dao.fetch_event_codes()  # Fetch button names
+    def create_event_buttons(self, layout):
+        event_layout = QGridLayout()
+        event_button_names = self.events_dao.fetch_event_codes()  # Fetch button names
 
-        for i, name in enumerate(action_button_names):
+        for i, name in enumerate(event_button_names):
             button = QPushButton(name)
             button.clicked.connect(lambda checked, n=name: self.set_event_code(n))
-            action_layout.addWidget(button, i // 3, i % 3)
-        layout.addLayout(action_layout)
+            event_layout.addWidget(button, i // 3, i % 3)
+        layout.addLayout(event_layout)
 
     def load_action_button_names(self):
         return self.events_dao.fetch_event_codes()
@@ -140,7 +140,7 @@ class ControlFrame(QWidget):
 
     def set_event_code(self, code):
         self.code = code
-        print(f"Setting event code {self.code}")
+        self.sd.SIG_EventCodeSelected.emit(self.code)
 
     def button_actions(self, n):
         print("Button clicked: " + n)

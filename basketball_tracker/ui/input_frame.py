@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QApplication
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QListWidget, QListWidgetItem, QApplication
 import sqlite3
 from data.rosters_dao import RostersDAO
 
@@ -12,6 +12,7 @@ class InputFrame(QWidget):
 
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.selected_event_code = None
         self.sd = signal_distributor
         self.sm = state_manager
         self.team_roster_frame = None
@@ -20,6 +21,7 @@ class InputFrame(QWidget):
         self.venue_entry = None
         self.start_time_entry = None
         self.date_entry = None
+        self.event_entry = None
         self.game_info_frame = None
         self.rosters_dao = RostersDAO()
 
@@ -54,7 +56,7 @@ class InputFrame(QWidget):
             elif text == "Venue":
                 entry.setText("United Center")
                 self.venue_entry = entry
-            elif text == "Opponent":
+            elif text == "VS":
                 entry.setText("Bulls")
                 self.opponent_entry = entry
 
@@ -74,6 +76,10 @@ class InputFrame(QWidget):
                 entry.setCurrentText("Full_Game")
             else:
                 entry = QLineEdit(self.event_entry_frame)
+                if text == "Event":
+                    self.event_entry = entry  # Store reference to the "Event" QLineEdit
+                elif text == "Player":
+                    self.player_entry = entry  # Store reference to the "Player" QLineEdit
             h_layout.addWidget(label)
             h_layout.addWidget(entry)
             layout.addLayout(h_layout)
@@ -86,13 +92,28 @@ class InputFrame(QWidget):
         self.team_roster_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.team_roster_frame)
 
+        self.roster_list_widget = QListWidget(self.team_roster_frame)
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
-            player_label = QLabel(f"{player[0]} {player[1]} {player[2]}")
-            layout.addWidget(player_label)
+            player_name = f"{player[0]} {player[1]} {player[2]}"
+            QListWidgetItem(player_name, self.roster_list_widget)
+
+        self.roster_list_widget.itemClicked.connect(self.player_selected)
+        layout.addWidget(self.roster_list_widget)
 
         self.team_roster_frame.setLayout(layout)
         self.layout().addWidget(self.team_roster_frame)
+        
+    def player_selected(self, item):
+        player_name = item.text()
+        if self.player_entry:
+            self.player_entry.setText(player_name)
+
+    def event_code_selected(self, code):
+        self.selected_event_code = code
+        self.sd.SIG_DebugMessage.emit(f"Selected event code {self.selected_event_code}")
+        if self.event_entry:
+            self.event_entry.setText(self.selected_event_code)
 
 # Test the InputFrame
 if __name__ == "__main__":

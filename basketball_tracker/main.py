@@ -69,6 +69,7 @@ class Main(QObject):
 
     def connect_signals_to_slots(self):
         self.sd.SIG_DebugMessage.connect(self.debug_log_display.append_debug_message)
+        self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
         print("6 Signals and Slots connected")
 
 if __name__ == "__main__":
