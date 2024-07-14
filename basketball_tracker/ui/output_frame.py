@@ -28,11 +28,11 @@ class OutputFrame(QWidget):
         main_layout = QVBoxLayout(self)
         self.tabs = QTabWidget(self)
 
+        self.setup_debug_log_tab()
         self.setup_event_log_tab()
         self.setup_database_tab()
         self.setup_roster_tab()
         self.setup_events_tab()
-        self.setup_debug_log_tab()
 
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)

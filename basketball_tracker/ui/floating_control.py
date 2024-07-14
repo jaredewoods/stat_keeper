@@ -65,7 +65,7 @@ class FloatingControl(QWidget):
         """)
         capture_button.setFixedSize(200, 200)
         layout.addWidget(capture_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
-
+        capture_button.clicked.connect(self.capture_button_clicked)
         undo_button = QPushButton()
         undo_button.setStyleSheet(f"""
             QPushButton {{
@@ -82,7 +82,7 @@ class FloatingControl(QWidget):
         """)
         undo_button.setFixedSize(200, 200)
         layout.addWidget(undo_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
-
+        undo_button.clicked.connect(self.undo_button_clicked)
         return page
 
     def create_page_2(self):
@@ -117,10 +117,11 @@ class FloatingControl(QWidget):
 
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
-            item = QListWidgetItem(f"{player[0]} {player[1]} {player[2][0]}.")
+            item = QListWidgetItem(f"{player[0]} {player[1]} {player[2]}")
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             roster_list.addItem(item)
 
+        roster_list.itemClicked.connect(self.player_selected)
         layout.addWidget(roster_list)
         page.setLayout(layout)
         return page
@@ -159,6 +160,7 @@ class FloatingControl(QWidget):
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             events_list.addItem(item)
 
+        events_list.itemClicked.connect(self.event_selected)
         layout.addWidget(events_list)
         page.setLayout(layout)
         return page
@@ -185,6 +187,7 @@ class FloatingControl(QWidget):
         """)
         confirm_button.setFixedSize(200, 200)
         layout.addWidget(confirm_button, 0, Qt.AlignmentFlag.AlignCenter)
+        confirm_button.clicked.connect(self.confirm_button_clicked)
 
         edit_button = QPushButton()
         edit_button.setStyleSheet(f"""
@@ -202,6 +205,7 @@ class FloatingControl(QWidget):
         """)
         edit_button.setFixedSize(200, 200)
         layout.addWidget(edit_button, 0, Qt.AlignmentFlag.AlignCenter)
+        edit_button.clicked.connect(self.edit_button_clicked)
 
         return page
 
@@ -243,6 +247,26 @@ class FloatingControl(QWidget):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.old_pos = QPoint()
+
+    def capture_button_clicked(self):
+        self.sd.SIG_CapturePauseButtonClicked.emit()
+
+    def undo_button_clicked(self):
+        self.sd.SIG_DebugMessage.emit("Undo button clicked")
+
+    def player_selected(self, item):
+        player_name = item.text()
+        self.sd.SIG_DebugMessage.emit(f"Player Selected: {player_name}")
+
+    def event_selected(self, item):
+        event_name = item.text()
+        self.sd.SIG_DebugMessage.emit(f"Event Selected: {event_name}")
+
+    def confirm_button_clicked(self):
+        self.sd.SIG_LogEntriesButtonClicked.emit()
+
+    def edit_button_clicked(self):
+        self.sd.SIG_DebugMessage.emit("Edit button clicked")
 
 
 # Run the application
