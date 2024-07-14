@@ -49,7 +49,7 @@ class InputFrame(QWidget):
             label = QLabel(text, self.game_info_frame)
             row_layout.addWidget(label)
             entry = QLineEdit(self.game_info_frame)
-            font = QFont("Arial", 18)
+            font = QFont("Arial", 16)
             entry.setFont(font)
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)

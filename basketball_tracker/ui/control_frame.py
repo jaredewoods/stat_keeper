@@ -8,7 +8,7 @@ from data.events_dao import EventsDAO
 BUTTON_FONT = ('Arial', 16, 'bold')
 CONTROL_BUTTON_LABELS = [
     "|◀◀", "◀ 20", "◀ 10", "▶▶", "📷", "📷 + ❚❚",
-    "❚❚", "↺", "▶", "⏎"
+    "❚❚", "undo", "▶", "⏎"
 ]
 
 
