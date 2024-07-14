@@ -21,8 +21,8 @@ class ControlFrame(QWidget):
         self.total_time_label = None
         self.omni_button = None
         self.omni_state = "RUN VIDEO"
-        self.spin_value = -2  # Initialize with the starting value for the Spinbox
-        self.events_dao = EventsDAO()  # Initialize EventsDAO instance
+        self.spin_value = -2
+        self.events_dao = EventsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -35,9 +35,10 @@ class ControlFrame(QWidget):
 
     def create_control_buttons(self, layout):
         control_layout = QGridLayout()
-        for i, button_text in enumerate(control_button_labels):
-            button = QPushButton(button_text)
-            button.clicked.connect(lambda checked, b=button: self.button_actions.get(b.text(), self.default_action)())
+
+        for i, name in enumerate(control_button_labels):
+            button = QPushButton(name)
+            button.clicked.connect(lambda checked, n=name: self.button_actions(n))
             control_layout.addWidget(button, i // 2, i % 2)
         layout.addLayout(control_layout)
 
@@ -139,6 +140,9 @@ class ControlFrame(QWidget):
     def set_event_code(self, code):
         self.code = code
         print(f"Setting event code {self.code}")
+
+    def button_actions(self, n):
+        print("Button clicked: " + n)
 
     @staticmethod
     def rewind_and_play(rewind_seconds):
