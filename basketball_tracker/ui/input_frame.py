@@ -38,14 +38,14 @@ class InputFrame(QWidget):
     def create_game_info_frame(self):
         self.game_info_frame = QWidget()
         layout = QVBoxLayout(self.game_info_frame)
+        layout.setSpacing(0)
+        layout.setContentsMargins(5, 0, 5, 0)
 
         for text in InputFrame.game_info_labels:
-            h_layout = QHBoxLayout()
             label = QLabel(text, self.game_info_frame)
+            layout.addWidget(label)
             entry = QLineEdit(self.game_info_frame)
-            h_layout.addWidget(label)
-            h_layout.addWidget(entry)
-            layout.addLayout(h_layout)
+            layout.addWidget(entry)
 
             if text == "Date":
                 entry.setText("1/24/82")
@@ -66,10 +66,11 @@ class InputFrame(QWidget):
     def create_event_entry_frame(self):
         self.event_entry_frame = QWidget()
         layout = QVBoxLayout(self.event_entry_frame)
-
+        layout.setSpacing(0)
+        layout.setContentsMargins(5, 0, 5, 0)
         for text in InputFrame.event_entry_labels:
-            h_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
+            layout.addWidget(label)
             if text == "Context":
                 entry = QComboBox(self.event_entry_frame)
                 entry.addItems(InputFrame.context_labels)
@@ -80,9 +81,7 @@ class InputFrame(QWidget):
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
                 elif text == "Player":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
-            h_layout.addWidget(label)
-            h_layout.addWidget(entry)
-            layout.addLayout(h_layout)
+            layout.addWidget(entry)
 
         self.event_entry_frame.setLayout(layout)
         self.tabs.addTab(self.event_entry_frame, "Event Entry")
