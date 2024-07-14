@@ -7,8 +7,8 @@ from data.events_dao import EventsDAO
 BUTTON_FONT = ('Arial', 12, 'bold')
 
 control_button_labels = [
-    "<< 00:00", "EditRostr", "<< Offset", "LoadRostr", "<< 20s", "VideoTime", "<< 10s", "VT+Pause",
-    "<< 05s", "Pause", "Speed", "Undo", "Log", "Play"
+    "<< 00:00", "<< 20s", "<< 10s", "Speed", "VideoTime", "VT+Pause",
+    "Pause", "Log", "Play", "Undo"
 ]
 
 
@@ -43,23 +43,19 @@ class ControlFrame(QWidget):
         layout.addLayout(control_layout)
 
     def create_status_widgets(self, layout):
-        hframe = QHBoxLayout()
+        _hframe = QHBoxLayout()
 
         self.total_time_label = QLabel("Loading...", self)
-        self.total_time_label.setStyleSheet("font: 12pt Arial; color: #BBBBBB;")
-        hframe.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.total_time_label.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
+        _hframe.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.value_spinbox = QSpinBox(self)
         self.value_spinbox.setRange(-59, 0)
         self.value_spinbox.setValue(self.spin_value)
-        self.value_spinbox.setStyleSheet("font: 12pt Arial; background-color: #323232; color: #212121;")
-        hframe.addWidget(self.value_spinbox, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.value_spinbox.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
+        _hframe.addWidget(self.value_spinbox, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        self.adjusted_value_label = QLabel(str(self.spin_value), self)
-        self.adjusted_value_label.setStyleSheet("font: 12pt Arial; color: #BBBBBB;")
-        hframe.addWidget(self.adjusted_value_label, alignment=Qt.AlignmentFlag.AlignCenter)
-
-        layout.addLayout(hframe)
+        layout.addLayout(_hframe)
 
     def create_omni_button(self, layout):
         self.omni_button = QPushButton(self.omni_state, self)
@@ -98,18 +94,6 @@ class ControlFrame(QWidget):
         print("Start action")
 
     @staticmethod
-    def edit_roster_action():
-        print("Edit")
-
-    @staticmethod
-    def offset_action():
-        print("< Offset button pressed")
-
-    @staticmethod
-    def load_roster_action():
-        print("Current Roster is Loaded")
-
-    @staticmethod
     def time_capture_action():
         print("Time Capture button pressed")
 
@@ -120,10 +104,6 @@ class ControlFrame(QWidget):
     @staticmethod
     def pause_action():
         print("Pausing the QuickTime video")
-
-    @staticmethod
-    def fast_forward_action():
-        print("FFWD button pressed")
 
     @staticmethod
     def log_action():

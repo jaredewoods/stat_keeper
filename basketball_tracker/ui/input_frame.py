@@ -4,7 +4,7 @@ from data.rosters_dao import RostersDAO
 
 
 class InputFrame(QWidget):
-    game_info_labels = ["Date", "Time", "Venue", "Opponent"]
+    game_info_labels = ["Date", "Time", "Venue", "VS"]
     event_entry_labels = ["Context", "VideoTime", "Player", "Event"]
     context_labels = ["Full_Game", "1st_Quarter", "2nd_Quarter", "3rd_Quarter", "4th_Quarter", "Overtime",
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
