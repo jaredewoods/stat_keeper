@@ -1,11 +1,12 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QListWidget, QListWidgetItem, QApplication
+from PyQt6.QtGui import QFont
 import sqlite3
 from data.rosters_dao import RostersDAO
 
 
 class InputFrame(QWidget):
-    game_info_labels = ["📅", "🕐", "🏠", "🆚"]
-    event_entry_labels = ["⏳", "📷", "🏃", "🏀"]
+    game_info_labels = ["📅 ", "🕐 ", "🏠 ", "🆚 "]
+    event_entry_labels = ["⏳ ", "📷 ", "🏃 ", "🏀 "]
     context_labels = ["Full_Game", "1st_Quarter", "2nd_Quarter", "3rd_Quarter", "4th_Quarter", "Overtime",
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
     label_width = 7
@@ -48,19 +49,21 @@ class InputFrame(QWidget):
             label = QLabel(text, self.game_info_frame)
             row_layout.addWidget(label)
             entry = QLineEdit(self.game_info_frame)
+            font = QFont("Arial", 18)
+            entry.setFont(font)
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)
 
-            if text == "📅":
+            if text == "📅 ":
                 entry.setText("1/24/82")
                 self.date_entry = entry
-            elif text == "🕐":
+            elif text == "🕐 ":
                 entry.setText("16:30")
                 self.start_time_entry = entry
-            elif text == "🏠":
+            elif text == "🏠 ":
                 entry.setText("United Center")
                 self.venue_entry = entry
-            elif text == "🆚":
+            elif text == "🆚 ":
                 entry.setText("Bulls")
                 self.opponent_entry = entry
 
@@ -75,6 +78,8 @@ class InputFrame(QWidget):
         for text in InputFrame.event_entry_labels:
             row_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
+            font = QFont("Arial", 18)
+            label.setFont(font)
             row_layout.addWidget(label)
             if text == "⏳":
                 entry = QComboBox(self.event_entry_frame)
@@ -82,9 +87,11 @@ class InputFrame(QWidget):
                 entry.setCurrentText("Full_Game")
             else:
                 entry = QLineEdit(self.event_entry_frame)
-                if text == "🏀":
+                font = QFont("Arial", 18)
+                entry.setFont(font)
+                if text == "🏀 ":
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
-                elif text == "🏃":
+                elif text == "🏃 ":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)
