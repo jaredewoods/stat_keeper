@@ -17,9 +17,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QHBoxLayout(central_widget)
 
-        self.control_frame = ControlFrame(self)
-        self.input_frame = InputFrame(self)
-        self.output_frame = OutputFrame(self)
+        self.control_frame = ControlFrame(self, self.sd, self.sm)
+        self.input_frame = InputFrame(self, self.sd, self.sm)
+        self.output_frame = OutputFrame(self, self.sd, self.sm)
 
         self.control_frame.setFixedWidth(200)  # Adjust the width as needed
         self.input_frame.setFixedWidth(200)    # Adjust the width as needed

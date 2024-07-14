@@ -10,15 +10,21 @@ class InputFrame(QWidget):
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
     label_width = 7
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.sd = signal_distributor
+        self.sm = state_manager
+        self.team_roster_frame = None
+        self.event_entry_frame = None
+        self.opponent_entry = None
+        self.venue_entry = None
+        self.start_time_entry = None
+        self.date_entry = None
+        self.game_info_frame = None
         self.rosters_dao = RostersDAO()
 
-        # Set the main layout for InputFrame
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
-
-        # Create Tab Widget
         self.tabs = QTabWidget(self)
         main_layout.addWidget(self.tabs)
 
@@ -31,7 +37,6 @@ class InputFrame(QWidget):
         self.game_info_frame = QWidget()
         layout = QVBoxLayout(self.game_info_frame)
 
-        # Labels and Entry Fields
         for text in InputFrame.game_info_labels:
             h_layout = QHBoxLayout()
             label = QLabel(text, self.game_info_frame)
@@ -81,7 +86,7 @@ class InputFrame(QWidget):
         self.team_roster_frame.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(self.team_roster_frame)
 
-        roster_data = self.rosters_dao.fetch_roster_sans_headers()  # Use RostersDAO to get roster data
+        roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
             player_label = QLabel(f"{player[0]} {player[1]} {player[2]}")
             layout.addWidget(player_label)

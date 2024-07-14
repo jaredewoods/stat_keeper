@@ -12,8 +12,10 @@ CONTROL_BUTTON_LABELS = [
 
 
 class ControlFrame(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.sd = signal_distributor
+        self.sm = state_manager
         self.code = None
         self.adjusted_value_label = None
         self.value_spinbox = None

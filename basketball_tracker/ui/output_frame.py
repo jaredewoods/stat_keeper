@@ -8,8 +8,10 @@ from data.events_dao import EventsDAO
 
 
 class OutputFrame(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.sd = signal_distributor
+        self.sm = state_manager
         self.events_tab = QWidget()
         self.roster_tab = QWidget()
         self.database_tab = None
@@ -32,6 +34,7 @@ class OutputFrame(QWidget):
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
 
+    # noinspection PyAttributeOutsideInit
     def setup_event_log_tab(self):
         self.event_log_tab = QWidget()
         layout = QVBoxLayout(self.event_log_tab)
