@@ -4,10 +4,10 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QSpi
 from PyQt6.QtCore import Qt
 from data.events_dao import EventsDAO
 
-BUTTON_FONT = ('Arial', 12, 'bold')
+BUTTON_FONT = ('Arial', 16, 'bold')
 CONTROL_BUTTON_LABELS = [
-    "<< 00:00", "<< 20s", "<< 10s", "Speed", "VideoTime", "VT+Pause",
-    "Pause", "Undo", "Play", "Log"
+    "|◀◀", "◀ 20", "◀ 10", "▶▶", "📷", "📷+❚❚",
+    "❚❚", "↺", "▶", "⏎"
 ]
 
 
