@@ -6,7 +6,6 @@ import os
 from data.rosters_dao import RostersDAO
 from data.events_dao import EventsDAO
 
-# Set up the paths for images
 script_dir = os.path.dirname(os.path.abspath(__file__))
 images_dir = os.path.join(script_dir, '../images/')
 
@@ -68,25 +67,19 @@ class FloatingControl(QWidget):
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-        self.rosters_dao = RostersDAO()  # Initialize RostersDAO
-        self.events_dao = EventsDAO()  # Initialize EventsDAO
+        self.rosters_dao = RostersDAO()
+        self.events_dao = EventsDAO()
 
         main_layout = QVBoxLayout(self)
-
-        # Apply a transparent background to the stacked widget
         self.stacked_widget = QStackedWidget()
         self.stacked_widget.setStyleSheet("background: transparent; border: none;")
         main_layout.addWidget(self.stacked_widget)
-
-        # Add pages to the stacked widget
         self.stacked_widget.addWidget(self.create_page_1())
         self.stacked_widget.addWidget(self.create_page_2())
         self.stacked_widget.addWidget(self.create_page_3())
         self.stacked_widget.addWidget(self.create_page_4())
-
         self.stacked_widget.setCurrentIndex(0)
 
-        # Create navigation layout with buttons
         nav_layout = QHBoxLayout()
         prev_button = self.create_nav_button('left_arrow')
         next_button = self.create_nav_button('right_arrow')
@@ -96,7 +89,6 @@ class FloatingControl(QWidget):
         nav_layout.addWidget(next_button)
 
         main_layout.addLayout(nav_layout)
-
         self.old_pos = QPoint()
 
     def create_page_1(self):
@@ -205,7 +197,7 @@ class FloatingControl(QWidget):
         page = QWidget()
         page.setStyleSheet("background: transparent; border: none;")
         layout = QVBoxLayout(page)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the layout
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         confirm_button = QPushButton()
         confirm_button.setStyleSheet(f"""
@@ -222,7 +214,7 @@ class FloatingControl(QWidget):
             }}
         """)
         confirm_button.setFixedSize(200, 200)
-        layout.addWidget(confirm_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
+        layout.addWidget(confirm_button, 0, Qt.AlignmentFlag.AlignCenter)
 
         edit_button = QPushButton()
         edit_button.setStyleSheet(f"""
@@ -239,7 +231,7 @@ class FloatingControl(QWidget):
             }}
         """)
         edit_button.setFixedSize(200, 200)
-        layout.addWidget(edit_button, 0, Qt.AlignmentFlag.AlignCenter)  # Center the button
+        layout.addWidget(edit_button, 0, Qt.AlignmentFlag.AlignCenter)
 
         return page
 

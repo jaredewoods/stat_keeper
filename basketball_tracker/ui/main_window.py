@@ -20,14 +20,11 @@ class MainWindow(QMainWindow):
         self.control_frame = ControlFrame(self, self.sd, self.sm)
         self.input_frame = InputFrame(self, self.sd, self.sm)
         self.output_frame = OutputFrame(self, self.sd, self.sm)
-
         self.control_frame.setFixedWidth(200)  # Adjust the width as needed
         self.input_frame.setFixedWidth(200)    # Adjust the width as needed
-
         layout.addWidget(self.control_frame)
         layout.addWidget(self.input_frame)
         layout.addWidget(self.output_frame, stretch=1)  # Stretch factor for output frame
-
         self.resize(1000, 400)  # Adjust the size here if needed
 
         self.center_window()

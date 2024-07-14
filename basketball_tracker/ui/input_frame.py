@@ -12,11 +12,13 @@ class InputFrame(QWidget):
 
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.roster_list_widget = None
         self.selected_event_code = None
         self.sd = signal_distributor
         self.sm = state_manager
         self.team_roster_frame = None
         self.event_entry_frame = None
+        self.player_entry = None
         self.opponent_entry = None
         self.venue_entry = None
         self.start_time_entry = None

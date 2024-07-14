@@ -30,18 +30,20 @@ class Main(QObject):
 
         self.load_configurations()
         self.main_window = MainWindow(self.sd, self.sm)
-        self.main_window.move(840, 0)
+        self.main_window.move(300, 0)
         self.main_window.show()
 
         self.video_window = VideoWindow()
         self.video_window.move(0, 0)
-        self.video_window.show()
+        # self.video_window.show()
+
         self.floating_control = FloatingControl(self.sd, self.sm)
-        self.floating_control.move(520, 30)
+        self.floating_control.move(0, 0)
         self.floating_control.show()
+
         self.video_control_window = VideoControlWindow(self.video_window)
-        self.video_control_window.move(840, 640)
-        self.video_control_window.show()
+        self.video_control_window.move(0, 640)
+        # self.video_control_window.show()
 
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())

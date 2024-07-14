@@ -22,7 +22,6 @@ class VideoWindow(QMainWindow):
         self.position_slider.setRange(0, 0)
         self.position_slider.sliderMoved.connect(self.set_position)
         self.layout.addWidget(self.position_slider)
-        self.show()
 
     def open_file(self, filename):
         if filename:
