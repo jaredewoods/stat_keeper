@@ -95,7 +95,7 @@ class InputFrame(QWidget):
         self.roster_list_widget = QListWidget(self.team_roster_frame)
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
-            player_name = f"{player[0]} {player[1]} {player[2]}"
+            player_name = f"{player[0]}  {player[1]} {player[2]}"
             QListWidgetItem(player_name, self.roster_list_widget)
 
         self.roster_list_widget.itemClicked.connect(self.player_selected)
