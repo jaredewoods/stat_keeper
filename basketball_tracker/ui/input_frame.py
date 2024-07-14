@@ -82,7 +82,7 @@ class InputFrame(QWidget):
             font = QFont("Arial", 18)
             label.setFont(font)
             row_layout.addWidget(label)
-            if text == "⏳":
+            if text == "⏳ ":
                 entry = QComboBox(self.event_entry_frame)
                 entry.addItems(InputFrame.context_labels)
                 entry.setCurrentText("Full_Game")
