@@ -11,5 +11,4 @@ class SignalDistributor(QObject):
     SIG_EventCodeSelected = pyqtSignal(str)
     SIG_UndoButtonClicked = pyqtSignal()
 
-
     print("1 SignalDistributor Initialized")
