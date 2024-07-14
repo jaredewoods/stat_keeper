@@ -118,6 +118,7 @@ class FloatingControl(QWidget):
         roster_data = self.rosters_dao.fetch_roster_sans_headers()
         for player in roster_data:
             item = QListWidgetItem(f"{player[0]} {player[1]} {player[2][0]}.")
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             roster_list.addItem(item)
 
         layout.addWidget(roster_list)
@@ -152,9 +153,10 @@ class FloatingControl(QWidget):
             }
         """)
 
-        events = self.events_dao.fetch_event_codes()
+        events = self.events_dao.fetch_event_descriptions()
         for event in events:
             item = QListWidgetItem(event)
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             events_list.addItem(item)
 
         layout.addWidget(events_list)

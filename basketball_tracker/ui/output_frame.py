@@ -81,7 +81,7 @@ class OutputFrame(QWidget):
         self.load_database_data(database_table_widget)
 
         self.database_tab.setLayout(layout)
-        self.tabs.addTab(self.database_tab, "Database")
+        self.tabs.addTab(self.database_tab, "Database 🔒")
 
     def load_database_data(self, table_widget):
         headers, data = self.player_stats_dao.fetch_all_player_stats()
@@ -103,7 +103,7 @@ class OutputFrame(QWidget):
         self.load_roster_tab(roster_table_widget)
 
         self.roster_tab.setLayout(layout)
-        self.tabs.addTab(self.roster_tab, "Roster")
+        self.tabs.addTab(self.roster_tab, "Roster 🔒")
 
     def load_roster_tab(self, table_widget):
         headers, data = self.rosters_dao.fetch_all_roster()
@@ -125,7 +125,7 @@ class OutputFrame(QWidget):
         self.load_events_tab(events_table_widget)
 
         self.events_tab.setLayout(layout)
-        self.tabs.addTab(self.events_tab, "Events")
+        self.tabs.addTab(self.events_tab, "Events 🔒")
 
     def load_events_tab(self, table_widget):
         headers, data = self.events_dao.fetch_all_events()

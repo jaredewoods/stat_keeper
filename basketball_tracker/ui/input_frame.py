@@ -4,8 +4,8 @@ from data.rosters_dao import RostersDAO
 
 
 class InputFrame(QWidget):
-    game_info_labels = ["Date", "Time", "Venue", "VS"]
-    event_entry_labels = ["Context", "VideoTime", "Player", "Event"]
+    game_info_labels = ["📅", "🕐", "🏠", "🆚"]
+    event_entry_labels = ["⏳", "📷", "🏃", "🏀"]
     context_labels = ["Full_Game", "1st_Quarter", "2nd_Quarter", "3rd_Quarter", "4th_Quarter", "Overtime",
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
     label_width = 7
@@ -44,21 +44,23 @@ class InputFrame(QWidget):
         layout.setContentsMargins(5, 0, 5, 0)
 
         for text in InputFrame.game_info_labels:
+            row_layout = QHBoxLayout()
             label = QLabel(text, self.game_info_frame)
-            layout.addWidget(label)
+            row_layout.addWidget(label)
             entry = QLineEdit(self.game_info_frame)
-            layout.addWidget(entry)
+            row_layout.addWidget(entry)
+            layout.addLayout(row_layout)
 
-            if text == "Date":
+            if text == "📅":
                 entry.setText("1/24/82")
                 self.date_entry = entry
-            elif text == "Time":
+            elif text == "🕐":
                 entry.setText("16:30")
                 self.start_time_entry = entry
-            elif text == "Venue":
+            elif text == "🏠":
                 entry.setText("United Center")
                 self.venue_entry = entry
-            elif text == "VS":
+            elif text == "🆚":
                 entry.setText("Bulls")
                 self.opponent_entry = entry
 
@@ -71,19 +73,21 @@ class InputFrame(QWidget):
         layout.setSpacing(0)
         layout.setContentsMargins(5, 0, 5, 0)
         for text in InputFrame.event_entry_labels:
+            row_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
-            layout.addWidget(label)
-            if text == "Context":
+            row_layout.addWidget(label)
+            if text == "⏳":
                 entry = QComboBox(self.event_entry_frame)
                 entry.addItems(InputFrame.context_labels)
                 entry.setCurrentText("Full_Game")
             else:
                 entry = QLineEdit(self.event_entry_frame)
-                if text == "Event":
+                if text == "🏀":
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
-                elif text == "Player":
+                elif text == "🏃":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
-            layout.addWidget(entry)
+            row_layout.addWidget(entry)
+            layout.addLayout(row_layout)
 
         self.event_entry_frame.setLayout(layout)
         self.tabs.addTab(self.event_entry_frame, "Event Entry")

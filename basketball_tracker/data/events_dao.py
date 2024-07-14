@@ -40,3 +40,11 @@ class EventsDAO:
             data = cursor.fetchall()
             codes = [row[0] for row in data]
             return codes
+
+    def fetch_event_descriptions(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT Description FROM basketball_events")
+            data = cursor.fetchall()
+            descriptions = [row[0] for row in data]
+            return descriptions
