@@ -1,5 +1,5 @@
 import sqlite3
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
 from data.player_stats_dao import PlayerStatsDAO
@@ -10,6 +10,7 @@ from data.events_dao import EventsDAO
 class OutputFrame(QWidget):
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.debug_display = None
         self.sd = signal_distributor
         self.sm = state_manager
         self.events_tab = QWidget()
@@ -17,6 +18,7 @@ class OutputFrame(QWidget):
         self.database_tab = None
         self.tabs = None
         self.event_log_tab = None
+        self.debug_log_tab = None
         self.rosters_dao = RostersDAO()
         self.events_dao = EventsDAO()
         self.player_stats_dao = PlayerStatsDAO()
@@ -30,6 +32,7 @@ class OutputFrame(QWidget):
         self.setup_database_tab()
         self.setup_roster_tab()
         self.setup_events_tab()
+        self.setup_debug_log_tab()
 
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
@@ -134,3 +137,20 @@ class OutputFrame(QWidget):
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
+
+    def setup_debug_log_tab(self):
+        self.debug_log_tab = QWidget()
+        layout = QVBoxLayout(self.debug_log_tab)
+
+        self.debug_display = QTextEdit(self.debug_log_tab)
+        self.debug_display.setReadOnly(True)
+        self.debug_display.append("DebugLogDisplay Initialized.\n")
+
+        layout.addWidget(self.debug_display)
+        self.debug_log_tab.setLayout(layout)
+        self.tabs.addTab(self.debug_log_tab, "Debug Log")
+
+    @pyqtSlot(str)
+    def append_debug_message(self, message):
+        self.debug_display.append(message)
+

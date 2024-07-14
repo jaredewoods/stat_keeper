@@ -8,7 +8,6 @@ from core.state_manager import StateManager
 from data.rosters_dao import RostersDAO
 from data.events_dao import EventsDAO
 from data.player_stats_dao import PlayerStatsDAO
-from ui.debug_log_display import DebugLogDisplay
 from ui.floating_control import FloatingControl
 from video.video_window import VideoWindow
 from video.video_control_window import VideoControlWindow
@@ -30,7 +29,6 @@ class Main(QObject):
         self.player_stats_dao = PlayerStatsDAO()
 
         self.load_configurations()
-        self.debug_log_display = DebugLogDisplay(self.sd, self.sm)
         self.main_window = MainWindow(self.sd, self.sm)
         self.main_window.move(840, 0)
         self.main_window.show()
@@ -46,12 +44,6 @@ class Main(QObject):
         self.video_control_window.show()
 
         self.connect_signals_to_slots()
-
-        if DEBUG_MODE_STATE:
-            self.debug_log_display.show()
-            self.debug_log_display.move(0, 660)
-        self.emit_test_debug_signals()
-
         sys.exit(self.app.exec())
 
     def emit_test_debug_signals(self):
@@ -68,9 +60,9 @@ class Main(QObject):
         VIDEO_BROWSER_PATH = _settings.value('Paths/VIDEO_BROWSER_PATH', "")
 
     def connect_signals_to_slots(self):
-        self.sd.SIG_DebugMessage.connect(self.debug_log_display.append_debug_message)
+        self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
         self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
-        print("6 Signals and Slots connected")
+        print("4 Signals and Slots connected")
 
 if __name__ == "__main__":
     Main()

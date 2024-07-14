@@ -33,7 +33,7 @@ class InputFrame(QWidget):
         self.create_game_info_frame()
         self.create_event_entry_frame()
         self.create_team_roster_frame()
-        print("4 InputFrame initialized")
+        print("3 InputFrame initialized")
 
     def create_game_info_frame(self):
         self.game_info_frame = QWidget()
