@@ -15,6 +15,7 @@ control_button_labels = [
 class ControlFrame(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.code = None
         self.adjusted_value_label = None
         self.value_spinbox = None
         self.total_time_label = None
@@ -26,12 +27,10 @@ class ControlFrame(QWidget):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-
         self.create_control_buttons(main_layout)
         self.create_status_widgets(main_layout)
         self.create_omni_button(main_layout)
         self.create_action_buttons(main_layout)
-
         self.setLayout(main_layout)
 
     def create_control_buttons(self, layout):
@@ -43,19 +42,19 @@ class ControlFrame(QWidget):
         layout.addLayout(control_layout)
 
     def create_status_widgets(self, layout):
-        _hframe = QHBoxLayout()
+        status_layout = QHBoxLayout()
 
         self.total_time_label = QLabel("Loading...", self)
         self.total_time_label.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
-        _hframe.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        status_layout.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.value_spinbox = QSpinBox(self)
         self.value_spinbox.setRange(-59, 0)
         self.value_spinbox.setValue(self.spin_value)
         self.value_spinbox.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
-        _hframe.addWidget(self.value_spinbox, alignment=Qt.AlignmentFlag.AlignCenter)
+        status_layout.addWidget(self.value_spinbox, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        layout.addLayout(_hframe)
+        layout.addLayout(status_layout)
 
     def create_omni_button(self, layout):
         self.omni_button = QPushButton(self.omni_state, self)
@@ -138,7 +137,8 @@ class ControlFrame(QWidget):
         print("Performing the action for ENTER state")
 
     def set_event_code(self, code):
-        print(f"Setting event code {code}")
+        self.code = code
+        print(f"Setting event code {self.code}")
 
     @staticmethod
     def rewind_and_play(rewind_seconds):

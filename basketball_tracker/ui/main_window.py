@@ -21,7 +21,6 @@ class MainWindow(QMainWindow):
         self.input_frame = InputFrame(self)
         self.output_frame = OutputFrame(self)
 
-        # Set fixed widths for control and input frames
         self.control_frame.setFixedWidth(200)  # Adjust the width as needed
         self.input_frame.setFixedWidth(200)    # Adjust the width as needed
 
