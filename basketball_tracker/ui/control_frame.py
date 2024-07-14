@@ -82,64 +82,20 @@ class ControlFrame(QWidget):
             event_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(event_layout)
 
-    def load_action_button_names(self):
-        return self.events_dao.fetch_event_codes()
-
-    @staticmethod
-    def undo_action():
-        print("Undo")
-
-    @staticmethod
-    def default_action():
-        print("Default action")
-
-    @staticmethod
-    def start_action():
-        print("Start action")
-
-    @staticmethod
-    def time_capture_action():
-        print("Time Capture button pressed")
-
-    @staticmethod
-    def tc_and_pause_action():
-        print("Time Capture and Pause button pressed")
-
-    @staticmethod
-    def pause_action():
-        print("Pausing the QuickTime video")
-
-    @staticmethod
-    def log_action():
-        print("LOG button pressed")
-
     def toggle_omni(self):
         current_state = self.omni_state
         if current_state == "RUN VIDEO":
             self.omni_state = "CAPTURE TIME"
-            self.run_action()
+            self.sd.SIG_PlayButtonClicked.emit()
         elif current_state == "CAPTURE TIME":
             self.omni_state = "ENTER LOG"
-            self.capture_action()
+            self.sd.SIG_CapturePauseButtonClicked.emit()
         elif current_state == "ENTER LOG":
             self.omni_state = "CAPTURE TIME"
-            self.enter_action()
+            self.sd.SIG_LogEntriesButtonClicked.emit()
         else:
             self.omni_state = "RUN VIDEO"
         self.omni_button.setText(self.omni_state)
-
-    @staticmethod
-    def run_action():
-        print("Performing the action for RUN state")
-
-    @staticmethod
-    def capture_action():
-        print("Performing the action for CAPTURE state")
-
-    def enter_action(self):
-        self.log_action()
-        self.run_action()
-        print("Performing the action for ENTER state")
 
     def set_event_code(self, code):
         self.code = code
@@ -147,11 +103,24 @@ class ControlFrame(QWidget):
 
     def button_actions(self, n):
         print("Button clicked: " + n)
+        if n == "|◀◀":
+            self.sd.SIG_BackToZeroButtonClicked.emit()
+        if n == "◀ 20":
+            self.sd.SIG_Back20ButtonClicked.emit()
+        if n == "◀ 10":
+            self.sd.SIG_Back10ButtonClicked.emit()
+        if n == "▶▶":
+            self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
+        if n == "📷":
+            self.sd.SIG_CaptureButtonClicked.emit()
+        if n == "📷 + ❚❚":
+            self.sd.SIG_CapturePauseButtonClicked.emit()
+        if n == "❚❚":
+            self.sd.SIG_PauseButtonClicked.emit()
+        if n == "undo":
+            self.sd.SIG_UndoButtonClicked.emit()
+        if n == "▶":
+            self.sd.SIG_PlayButtonClicked.emit()
+        if n == "⏎":
+            self.sd.SIG_LogEntriesButtonClicked.emit()
 
-    @staticmethod
-    def rewind_and_play(rewind_seconds):
-        print(f"rewindAndPlay{rewind_seconds}")
-
-    @staticmethod
-    def update_total_time_label():
-        print(f"Failed to get video length: {e}")

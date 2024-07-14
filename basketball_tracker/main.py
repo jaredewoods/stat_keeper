@@ -41,7 +41,7 @@ class Main(QObject):
         self.floating_control.move(0, 0)
         self.floating_control.show()
 
-        self.video_control_window = VideoControlWindow(self.video_window)
+        self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 640)
         # self.video_control_window.show()
 
@@ -65,7 +65,20 @@ class Main(QObject):
         self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
         self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
         self.sd.SIG_RosterPlayerSelected.connect(self.main_window.input_frame.player_selected)
+        self.sd.SIG_BackToZeroButtonClicked.connect(self.video_control_window.back_to_zero)
+        self.sd.SIG_Back20ButtonClicked.connect(self.video_control_window.back20)
+        self.sd.SIG_Back10ButtonClicked.connect(self.video_control_window.back10)
+        self.sd.SIG_ChangePlaybackSpeedButtonClicked.connect(self.video_control_window.change_playback_speed)
+        self.sd.SIG_CaptureButtonClicked.connect(self.video_control_window.capture_timecode)
+        self.sd.SIG_CapturePauseButtonClicked.connect(self.video_control_window.capture_pause)
+        self.sd.SIG_PauseButtonClicked.connect(self.video_control_window.pause_video)
+        self.sd.SIG_UndoButtonClicked.connect(self.undo)
+        self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)
+        self.sd.SIG_LogEntriesButtonClicked.connect(self.main_window.input_frame.log_entries)
         print("4 Signals and Slots connected")
+
+    def undo(self):
+        self.sd.SIG_DebugMessage.emit("Undo")
 
 if __name__ == "__main__":
     Main()

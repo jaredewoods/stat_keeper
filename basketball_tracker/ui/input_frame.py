@@ -130,7 +130,9 @@ class InputFrame(QWidget):
         if self.event_entry:
             self.event_entry.setText(self.selected_event_code)
 
-# Test the InputFrame
+    def log_entries(self):
+        self.sd.SIG_DebugMessage.emit("Logging Entries")
+
 if __name__ == "__main__":
     app = QApplication([])
     window = InputFrame()
