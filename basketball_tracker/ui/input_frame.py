@@ -108,6 +108,7 @@ class InputFrame(QWidget):
         player_name = item.text()
         if self.player_entry:
             self.player_entry.setText(player_name)
+            self.sd.SIG_DebugMessage.emit(f"Player selected: {player_name}")
 
     def event_code_selected(self, code):
         self.selected_event_code = code
