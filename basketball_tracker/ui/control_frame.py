@@ -5,8 +5,7 @@ from PyQt6.QtCore import Qt
 from data.events_dao import EventsDAO
 
 BUTTON_FONT = ('Arial', 12, 'bold')
-
-control_button_labels = [
+CONTROL_BUTTON_LABELS = [
     "<< 00:00", "<< 20s", "<< 10s", "Speed", "VideoTime", "VT+Pause",
     "Pause", "Undo", "Play", "Log"
 ]
@@ -36,7 +35,7 @@ class ControlFrame(QWidget):
     def create_control_buttons(self, layout):
         control_layout = QGridLayout()
 
-        for i, name in enumerate(control_button_labels):
+        for i, name in enumerate(CONTROL_BUTTON_LABELS):
             button = QPushButton(name)
             button.clicked.connect(lambda checked, n=name: self.button_actions(n))
             control_layout.addWidget(button, i // 2, i % 2)
