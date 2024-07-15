@@ -13,7 +13,7 @@ class EventsDAO:
     def fetch_events_sans_headers(self):
         with self.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM basketball_events")
+            cursor.execute("SELECT Code, Description FROM basketball_events")
             return cursor.fetchall()
 
     def fetch_all_events(self):
@@ -32,6 +32,11 @@ class EventsDAO:
                 (description, code)
             )
             connection.commit()
+
+    def fetch_all_events_sans_headers(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+
 
     def fetch_event_codes(self):
         with self.connect() as connection:

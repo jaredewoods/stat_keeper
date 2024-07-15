@@ -74,11 +74,11 @@ class ControlFrame(QWidget):
 
     def create_event_buttons(self, layout):
         event_layout = QGridLayout()
-        event_button_names = self.events_dao.fetch_event_codes()  # Fetch button names
+        event_button_names = self.events_dao.fetch_events_sans_headers()  # Fetch button names (codes and descriptions)
 
-        for i, name in enumerate(event_button_names):
-            button = QPushButton(name)
-            button.clicked.connect(lambda checked, n=name: self.set_event_code(n))
+        for i, (code, description) in enumerate(event_button_names):
+            button = QPushButton(code)  # Use the event code as the button text
+            button.clicked.connect(lambda checked, desc=description: self.set_event_code(desc))
             event_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(event_layout)
 
