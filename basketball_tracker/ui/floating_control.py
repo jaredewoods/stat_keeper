@@ -255,11 +255,13 @@ class FloatingControl(QWidget):
         self.sd.SIG_DebugMessage.emit("Undo button clicked")
 
     def player_selected(self, item):
-        player_name = item.text()
-        self.sd.SIG_DebugMessage.emit(f"Player Selected: {player_name}")
+        player = item.text()
+        self.sd.SIG_RosterPlayerSelected.emit(player)
+        self.sd.SIG_DebugMessage.emit(f"Player Selected: {player}")
 
     def event_selected(self, item):
         event_name = item.text()
+        self.sd.SIG_EventCodeSelected.emit(event_name)
         self.sd.SIG_DebugMessage.emit(f"Event Selected: {event_name}")
 
     def confirm_button_clicked(self):
