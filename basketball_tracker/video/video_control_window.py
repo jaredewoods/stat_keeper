@@ -66,6 +66,7 @@ class VideoControlWindow(QMainWindow):
             # Extract just the file name without the path
             file_name = filename.split('/')[-1]
             self.file_name_label.setText(f"File: {file_name}")
+            self.sd.SIG_ShowVideoWindow.emit()
 
     def play_video(self):
         self.sd.SIG_DebugMessage.emit("Playing Video")

@@ -43,7 +43,6 @@ class Main(QObject):
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 640)
-        # self.video_control_window.show()
 
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())
@@ -75,6 +74,7 @@ class Main(QObject):
         self.sd.SIG_UndoButtonClicked.connect(self.undo)
         self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)
         self.sd.SIG_LogEntriesButtonClicked.connect(self.main_window.input_frame.log_entries)
+        self.sd.SIG_ShowVideoWindow.connect(self.video_window.show)
         print("4 Signals and Slots connected")
 
     def undo(self):

@@ -19,5 +19,5 @@ class SignalDistributor(QObject):
     SIG_UndoButtonClicked = pyqtSignal()
     SIG_PlayButtonClicked = pyqtSignal()
     SIG_LogEntriesButtonClicked = pyqtSignal()
-
+    SIG_ShowVideoWindow = pyqtSignal()
     print("1 SignalDistributor Initialized")
