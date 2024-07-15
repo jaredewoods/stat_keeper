@@ -272,6 +272,8 @@ class FloatingControl(QWidget):
 
     def edit_button_clicked(self):
         self.sd.SIG_DebugMessage.emit("Edit button clicked")
+        self.show_next_page()
+        self.show_next_page()
 
 
 # Run the application
