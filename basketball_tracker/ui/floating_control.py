@@ -250,6 +250,7 @@ class FloatingControl(QWidget):
 
     def capture_button_clicked(self):
         self.sd.SIG_CapturePauseButtonClicked.emit()
+        self.show_next_page()
 
     def undo_button_clicked(self):
         self.sd.SIG_DebugMessage.emit("Undo button clicked")
@@ -257,14 +258,17 @@ class FloatingControl(QWidget):
     def player_selected(self, item):
         player = item
         self.sd.SIG_RosterPlayerSelected.emit(player)
+        self.show_next_page()
 
     def event_selected(self, item):
         event_name = item.text()
         self.sd.SIG_EventCodeSelected.emit(event_name)
         self.sd.SIG_DebugMessage.emit(f"Event Selected: {event_name}")
+        self.show_next_page()
 
     def confirm_button_clicked(self):
         self.sd.SIG_LogEntriesButtonClicked.emit()
+        self.show_next_page()
 
     def edit_button_clicked(self):
         self.sd.SIG_DebugMessage.emit("Edit button clicked")
