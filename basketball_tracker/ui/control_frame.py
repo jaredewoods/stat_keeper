@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from data.events_dao import EventsDAO
 
-BUTTON_FONT = ('Arial', 16, 'bold')
+BUTTON_FONT = ('Arial', 14, 'bold')
 CONTROL_BUTTON_LABELS = [
     "|◀◀", "◀ 20", "◀ 10", "▶▶", "📷", "📷 + ❚❚",
     "❚❚", "undo", "▶", "⏎"
@@ -40,8 +40,10 @@ class ControlFrame(QWidget):
 
         for i, name in enumerate(CONTROL_BUTTON_LABELS):
             button = QPushButton(name)
-            font = QFont("Arial", 18)
+            font = QFont("Arial", 14)
             button.setFont(font)
+            button.setFixedHeight(36)
+            button.setFixedWidth(80)
             button.clicked.connect(lambda checked, n=name: self.button_actions(n))
             control_layout.addWidget(button, i // 2, i % 2)
         layout.addLayout(control_layout)
@@ -50,13 +52,13 @@ class ControlFrame(QWidget):
         status_layout = QHBoxLayout()
 
         self.total_time_label = QLabel("Loading...", self)
-        self.total_time_label.setStyleSheet("font: 18pt Arial; color: #BBBBBB;")
+        self.total_time_label.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
         status_layout.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.value_spinbox = QSpinBox(self)
         self.value_spinbox.setRange(-59, 0)
         self.value_spinbox.setValue(self.spin_value)
-        self.value_spinbox.setStyleSheet("font: 18pt Arial; color: #BBBBBB;")
+        self.value_spinbox.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
         status_layout.addWidget(self.value_spinbox, alignment=Qt.AlignmentFlag.AlignCenter)
 
         layout.addLayout(status_layout)
