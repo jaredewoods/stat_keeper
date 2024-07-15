@@ -1,12 +1,12 @@
 # signal_distributor.py
 
 from PyQt6.QtCore import QObject, pyqtSignal
-
+from PyQt6.QtWidgets import QListWidgetItem
 
 class SignalDistributor(QObject):
 
     SIG_DebugMessage = pyqtSignal(str)
-    SIG_RosterPlayerSelected = pyqtSignal(str)
+    SIG_RosterPlayerSelected = pyqtSignal(QListWidgetItem)
     SIG_EventCodeSelected = pyqtSignal(str)
 
     SIG_BackToZeroButtonClicked = pyqtSignal()
