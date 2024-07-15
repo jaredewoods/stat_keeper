@@ -39,7 +39,9 @@ class FloatingControl(QWidget):
         nav_layout.addWidget(prev_button)
         nav_layout.addWidget(next_button)
 
-        main_layout.addLayout(nav_layout)
+        # main_layout.addLayout(nav_layout)
+
+
         self.old_pos = QPoint()
 
     def create_page_1(self):
