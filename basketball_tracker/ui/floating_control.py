@@ -59,10 +59,10 @@ class FloatingControl(QWidget):
                 background: transparent;
             }}
             QPushButton:hover {{
-                border-image: url({os.path.join(images_dir, 'capture_hover.png')});
+                border-image: url({os.path.join(images_dir, 'record_hover.png')});
             }}
             QPushButton:pressed {{
-                border-image: url({os.path.join(images_dir, 'capture_pressed.png')});
+                border-image: url({os.path.join(images_dir, 'record_pressed.png')});
             }}
         """)
         capture_button.setFixedSize(200, 200)

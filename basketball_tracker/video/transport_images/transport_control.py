@@ -27,7 +27,7 @@ class TransportControl(QMainWindow):
             ('rewind', 'rewind.png', 'rewind_hover.png', 'rewind_pressed.png', 'rewind_on.png', False),
             ('reverse', 'reverse.png', 'reverse_hover.png', 'reverse_pressed.png', 'reverse_on.png', False),
             ('pause', 'pause.png', 'pause_hover.png', 'pause_pressed.png', 'pause_on.png', False),
-            ('capture', 'capture.png', 'capture_hover.png', 'capture_pressed.png', 'capture_on.png', False),
+            ('capture', 'record.png', 'record_hover.png', 'record_pressed.png', 'record_on.png', False),
             ('play', 'play.png', 'play_hover.png', 'play_pressed.png', 'play_on.png', False),
             ('forward', 'forward.png', 'forward_hover.png', 'forward_pressed.png', 'forward_on.png', False),
         ]
