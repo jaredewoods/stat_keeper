@@ -4,8 +4,10 @@ from PyQt6.QtCore import QSize, Qt
 import os
 
 class TransportControl(QMainWindow):
-    def __init__(self):
+    def __init__(self, signal_distributor=None, state_manager=None):
         super().__init__()
+        self.sd = signal_distributor
+        self.sm = state_manager
         self.initUI()
 
     def initUI(self):
