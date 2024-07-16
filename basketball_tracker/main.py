@@ -11,6 +11,7 @@ from data.player_stats_dao import PlayerStatsDAO
 from ui.floating_control import FloatingControl
 from video.video_window import VideoWindow
 from video.video_control_window import VideoControlWindow
+from video.transport_control import TransportControl
 from ui.main_window import MainWindow
 
 # GLOBAL_VARIABLES from 'config.ini'
@@ -43,6 +44,9 @@ class Main(QObject):
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 640)
+
+        self.transport_control = TransportControl()
+        self.transport_control.show()
 
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())

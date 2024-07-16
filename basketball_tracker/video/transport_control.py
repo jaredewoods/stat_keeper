@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout, QWidget
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QSize, Qt
+import os
 
 class TransportControl(QMainWindow):
     def __init__(self):
@@ -8,6 +9,9 @@ class TransportControl(QMainWindow):
         self.initUI()
 
     def initUI(self):
+        # Ensure working directory is set correctly
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
@@ -24,12 +28,12 @@ class TransportControl(QMainWindow):
 
         # Button configurations
         self.buttons = [
-            ('rewind', 'rewind.png', 'rewind_hover.png', 'rewind_pressed.png', 'rewind_on.png', False),
-            ('reverse', 'reverse.png', 'reverse_hover.png', 'reverse_pressed.png', 'reverse_on.png', False),
-            ('pause', 'pause.png', 'pause_hover.png', 'pause_pressed.png', 'pause_on.png', False),
-            ('capture', 'record.png', 'record_hover.png', 'record_pressed.png', 'record_on.png', False),
-            ('play', 'play.png', 'play_hover.png', 'play_pressed.png', 'play_on.png', False),
-            ('forward', 'forward.png', 'forward_hover.png', 'forward_pressed.png', 'forward_on.png', False),
+            ('rewind', os.path.join(base_dir, 'transport_images/rewind.png')),
+            ('reverse', os.path.join(base_dir, 'transport_images/reverse.png')),
+            ('pause', os.path.join(base_dir, 'transport_images/pause.png')),
+            ('capture', os.path.join(base_dir, 'transport_images/record.png')),
+            ('play', os.path.join(base_dir, 'transport_images/play.png')),
+            ('forward', os.path.join(base_dir, 'transport_images/forward.png')),
         ]
 
         self.button_widgets = []
@@ -55,10 +59,11 @@ class TransportControl(QMainWindow):
             """)  # To remove button borders and add styles
             btn.state = False  # Initial state is off
 
-            btn.enterEvent = lambda event, b=btn, h=button[2]: b.setIcon(QIcon(h))
-            btn.leaveEvent = lambda event, b=btn, o=button[1], on=button[4]: b.setIcon(QIcon(on) if b.state else QIcon(o))
-            btn.mousePressEvent = lambda event, b=btn, p=button[3]: b.setIcon(QIcon(p))
-            btn.mouseReleaseEvent = lambda event, b=btn, o=button[1], on=button[4]: self.on_release(event, b, o, on)
+            # Simplified event handlers
+            btn.enterEvent = self.create_event_handler(btn, button[1].replace('.png', '_hover.png'))
+            btn.leaveEvent = self.create_event_handler(btn, button[1], button[1].replace('.png', '_on.png'))
+            btn.mousePressEvent = self.create_event_handler(btn, button[1].replace('.png', '_pressed.png'))
+            btn.mouseReleaseEvent = self.create_event_handler(btn, button[1], button[1].replace('.png', '_on.png'), True)
 
             self.button_widgets.append(btn)
             layout.addWidget(btn)
@@ -66,10 +71,12 @@ class TransportControl(QMainWindow):
         self.setWindowTitle('Transport Control')
         self.setGeometry(300, 300, 800, 100)
 
-    def on_release(self, event, button, off_icon, on_icon):
-        if event.button() == Qt.MouseButton.LeftButton:
-            button.state = not button.state
-            button.setIcon(QIcon(on_icon) if button.state else QIcon(off_icon))
+    def create_event_handler(self, button, icon_path, on_icon_path=None, toggle_state=False):
+        def handler(event):
+            if toggle_state and event.button() == Qt.MouseButton.LeftButton:
+                button.state = not button.state
+            button.setIcon(QIcon(on_icon_path if button.state and on_icon_path else icon_path))
+        return handler
 
 if __name__ == '__main__':
     app = QApplication([])
