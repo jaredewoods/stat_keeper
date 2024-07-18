@@ -63,6 +63,9 @@ class ControlFrame(QWidget):
 
         layout.addLayout(status_layout)
 
+    def update_time(self, duration):
+        self.total_time_label.setText(duration)
+
     def create_omni_button(self, layout):
         self.omni_button = QPushButton(self.omni_state, self)
         self.omni_button.setStyleSheet("font: 16pt Arial;"
@@ -83,6 +86,7 @@ class ControlFrame(QWidget):
             button.clicked.connect(lambda checked, desc=description: self.set_event_code(desc))
             event_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(event_layout)
+
 
     def toggle_omni(self):
         current_state = self.omni_state
@@ -125,4 +129,3 @@ class ControlFrame(QWidget):
             self.sd.SIG_PlayButtonClicked.emit()
         if n == "⏎":
             self.sd.SIG_LogEntriesButtonClicked.emit()
-

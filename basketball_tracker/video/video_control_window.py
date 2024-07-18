@@ -87,7 +87,10 @@ class VideoControlWindow(QMainWindow):
     def update_time(self):
         position = self.video_window.get_position() // 1000
         duration = self.video_window.get_duration() // 1000
-        self.time_label.setText(f"Time: {self.format_time(position)} / {self.format_time(duration)}")
+        formatted_position = self.format_time(position)
+        formatted_duration = self.format_time(duration)
+        self.time_label.setText(f"Time: {formatted_position} / {formatted_duration}")
+        self.sd.SIG_TimeUpdate.emit(formatted_position)
 
     def back_to_zero(self):
         self.sd.SIG_DebugMessage.emit("Returning video to zero")
