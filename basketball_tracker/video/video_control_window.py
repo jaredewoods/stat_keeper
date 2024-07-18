@@ -101,12 +101,20 @@ class VideoControlWindow(QMainWindow):
 
     def back20(self):
         self.sd.SIG_DebugMessage.emit("Jumping back 20 seconds.")
+        position = self.video_window.get_position()
+        position = max(0, position - 20000)  # Ensure position doesn't go negative
+        self.video_window.set_position(position)
+        print("Jumped back 20 seconds.")
 
     def back10(self):
         self.sd.SIG_DebugMessage.emit("Jumping back 10 seconds")
+        position = self.video_window.get_position()
+        position = max(0, position - 10000)  # Ensure position doesn't go negative
+        self.video_window.set_position(position)
+        print("Jumped back 20 seconds.")
 
     def change_playback_speed(self):
-        self.sd.SIG_DebugMessage.emit("Changing playback speed")
+        self.sd.SIG_DebugMessage.emit("Coming Soon,. Changing playback speed")
 
     @staticmethod
     def format_time(seconds):
