@@ -87,22 +87,26 @@ class TransportControl(QMainWindow):
         return handler
 
     def rewind_action(self):
-        print("Rewind button clicked!")  # Replace with your rewind logic
+        self.sd.SIG_DebugMessage.emit("Back20ButtonClicked")
+        self.sd.SIG_Back20ButtonClicked.emit()
 
     def reverse_action(self):
-        print("Reverse button clicked!")
+        self.sd.SIG_DebugMessage.emit("SIG_Back10ButtonClicked")
+        self.sd.SIG_Back10ButtonClicked.emit()
 
     def pause_action(self):
-        print("Pause button clicked!")
-
+        self.sd.SIG_DebugMessage.emit("PauseButtonClicked")
+        self.sd.SIG_PauseButtonClicked.emit()
     def capture_action(self):
-        print("Capture button clicked!")
+        self.sd.SIG_DebugMessage.emit("CaptureButtonClicked")
+        self.sd.SIG_CaptureButtonClicked.emit()
 
     def play_action(self):
-        print("Play button clicked!")
-
+        self.sd.SIG_DebugMessage.emit("PlayButtonClicked")
+        self.sd.SIG_PlayButtonClicked.emit()
     def forward_action(self):
-        print("Forward button clicked!")
+        self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
+        self.sd.SIG_DebugMessage.emit("ChangePlaybackSpeedButtonClicked")
 
 if __name__ == '__main__':
     app = QApplication([])
