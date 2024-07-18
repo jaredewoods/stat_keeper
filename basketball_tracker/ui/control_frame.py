@@ -1,13 +1,13 @@
 # control_frame.py
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from data.events_dao import EventsDAO
 
 BUTTON_FONT = ('Arial', 14, 'bold')
 CONTROL_BUTTON_LABELS = [
-    "|◀◀", "◀ 20", "◀ 10", "▶▶", "📷", "📷 + ❚❚",
+    "|◀◀", "◀ 20", "◀ 10", "▶▶", "⬤", "⬤ + ❚❚",
     "❚❚", "undo", "▶", "⏎"
 ]
 
@@ -51,7 +51,7 @@ class ControlFrame(QWidget):
     def create_status_widgets(self, layout):
         status_layout = QHBoxLayout()
 
-        self.total_time_label = QLabel("Loading...", self)
+        self.total_time_label = QLineEdit("Loading...", self)
         self.total_time_label.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
         status_layout.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
@@ -87,7 +87,6 @@ class ControlFrame(QWidget):
             event_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(event_layout)
 
-
     def toggle_omni(self):
         current_state = self.omni_state
         if current_state == "RUN VIDEO":
@@ -95,13 +94,19 @@ class ControlFrame(QWidget):
             self.sd.SIG_PlayButtonClicked.emit()
         elif current_state == "CAPTURE TIME":
             self.omni_state = "ENTER LOG"
-            self.sd.SIG_CapturePauseButtonClicked.emit()
+            self.sd.SIG_CaptureButtonClicked.emit()
+            self.sd.SIG_PauseButtonClicked.emit()
         elif current_state == "ENTER LOG":
             self.omni_state = "CAPTURE TIME"
             self.sd.SIG_LogEntriesButtonClicked.emit()
+            self.sd.SIG_PlayButtonClicked.emit()
         else:
             self.omni_state = "RUN VIDEO"
         self.omni_button.setText(self.omni_state)
+
+    def capture_timecode(self):
+        captured_timecode = self.total_time_label.text()
+        self.sd.SIG_EnterCapturedTimecode.emit(captured_timecode)
 
     def set_event_code(self, code):
         self.code = code
@@ -117,10 +122,11 @@ class ControlFrame(QWidget):
             self.sd.SIG_Back10ButtonClicked.emit()
         if n == "▶▶":
             self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
-        if n == "📷":
+        if n == "⬤":
             self.sd.SIG_CaptureButtonClicked.emit()
-        if n == "📷 + ❚❚":
-            self.sd.SIG_CapturePauseButtonClicked.emit()
+        if n == "⬤ + ❚❚":
+            self.sd.SIG_CaptureButtonClicked.emit()
+            self.sd.SIG_PauseButtonClicked.emit()
         if n == "❚❚":
             self.sd.SIG_PauseButtonClicked.emit()
         if n == "undo":

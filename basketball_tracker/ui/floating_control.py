@@ -251,7 +251,7 @@ class FloatingControl(QWidget):
             self.old_pos = QPoint()
 
     def capture_button_clicked(self):
-        self.sd.SIG_CapturePauseButtonClicked.emit()
+        self.sd.SIG_CaptureButtonClicked.emit()
         self.show_next_page()
 
     def undo_button_clicked(self):

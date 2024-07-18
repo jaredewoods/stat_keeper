@@ -13,6 +13,7 @@ class InputFrame(QWidget):
 
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.timecode_entry = None
         self.roster_list_widget = None
         self.selected_event_code = None
         self.sd = signal_distributor
@@ -95,6 +96,9 @@ class InputFrame(QWidget):
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
                 elif text == "🏃 ":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
+                elif text == "📷 ":
+                    self.timecode_entry = entry
+
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)
 
@@ -130,6 +134,9 @@ class InputFrame(QWidget):
         if self.event_entry:
             self.event_entry.setText(self.selected_event_code)
 
+    def enter_captured_timecode(self, timecode):
+        self.timecode_entry.setText(timecode)
+        self.sd.SIG_DebugMessage.emit(f"Captured Time: {timecode}")
 
     def log_entries(self):
         self.sd.SIG_DebugMessage.emit("Logging Entries")

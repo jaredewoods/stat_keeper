@@ -59,6 +59,10 @@ class VideoControlWindow(QMainWindow):
         self.adjustSize()  # Adjust the window size to fit its contents
         self.show()
 
+    # for debugging
+        self.video_window.show()
+        self.video_window.open_file("/Users/jaredwoods/PycharmProjects/stat_keeper/basketball_tracker/video/sample_videos/Screen Recording 2024-06-30 at 14.10.31.mov")
+
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
         if filename:
@@ -100,12 +104,6 @@ class VideoControlWindow(QMainWindow):
 
     def back10(self):
         self.sd.SIG_DebugMessage.emit("Jumping back 10 seconds")
-
-    def capture_timecode(self):
-        self.sd.SIG_DebugMessage.emit("Capturing timecode")
-
-    def capture_pause(self):
-        self.sd.SIG_DebugMessage.emit("Capturing timecode and pausing")
 
     def change_playback_speed(self):
         self.sd.SIG_DebugMessage.emit("Changing playback speed")

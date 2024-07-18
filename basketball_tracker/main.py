@@ -72,14 +72,14 @@ class Main(QObject):
         self.sd.SIG_Back20ButtonClicked.connect(self.video_control_window.back20)
         self.sd.SIG_Back10ButtonClicked.connect(self.video_control_window.back10)
         self.sd.SIG_ChangePlaybackSpeedButtonClicked.connect(self.video_control_window.change_playback_speed)
-        self.sd.SIG_CaptureButtonClicked.connect(self.video_control_window.capture_timecode)
-        self.sd.SIG_CapturePauseButtonClicked.connect(self.video_control_window.capture_pause)
+        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.control_frame.capture_timecode)
         self.sd.SIG_PauseButtonClicked.connect(self.video_control_window.pause_video)
         self.sd.SIG_UndoButtonClicked.connect(self.undo)
         self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)
         self.sd.SIG_LogEntriesButtonClicked.connect(self.main_window.input_frame.log_entries)
         self.sd.SIG_ShowVideoWindow.connect(self.video_window.show)
         self.sd.SIG_TimeUpdate.connect(self.main_window.control_frame.update_time)
+        self.sd.SIG_EnterCapturedTimecode.connect(self.main_window.input_frame.enter_captured_timecode)
         print("4 Signals and Slots connected")
 
     def undo(self):
