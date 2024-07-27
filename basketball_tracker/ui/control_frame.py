@@ -7,8 +7,8 @@ from data.events_dao import EventsDAO
 
 BUTTON_FONT = ('Arial', 14, 'bold')
 CONTROL_BUTTON_LABELS = [
-    "|◀◀", "◀ 20", "◀ 10", "▶▶", "⬤", "⬤ + ❚❚",
-    "❚❚", "undo", "▶", "⏎"
+    "00:00", "< 20", "< 10", ">>", "O", "O + II",
+    "II", "undo", "Play", "Enter"
 ]
 
 
@@ -114,24 +114,24 @@ class ControlFrame(QWidget):
 
     def button_actions(self, n):
         print("Button clicked: " + n)
-        if n == "|◀◀":
+        if n == "00:00":
             self.sd.SIG_BackToZeroButtonClicked.emit()
-        if n == "◀ 20":
+        if n == "< 20":
             self.sd.SIG_Back20ButtonClicked.emit()
-        if n == "◀ 10":
+        if n == "< 10":
             self.sd.SIG_Back10ButtonClicked.emit()
-        if n == "▶▶":
+        if n == ">>":
             self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
-        if n == "⬤":
+        if n == "O":
             self.sd.SIG_CaptureButtonClicked.emit()
-        if n == "⬤ + ❚❚":
+        if n == "O + II":
             self.sd.SIG_CaptureButtonClicked.emit()
             self.sd.SIG_PauseButtonClicked.emit()
-        if n == "❚❚":
+        if n == "II":
             self.sd.SIG_PauseButtonClicked.emit()
         if n == "undo":
             self.sd.SIG_UndoButtonClicked.emit()
-        if n == "▶":
+        if n == "Play":
             self.sd.SIG_PlayButtonClicked.emit()
-        if n == "⏎":
+        if n == "Enter":
             self.sd.SIG_LogEntriesButtonClicked.emit()

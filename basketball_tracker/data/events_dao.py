@@ -37,7 +37,6 @@ class EventsDAO:
         with self.connect() as connection:
             cursor = connection.cursor()
 
-
     def fetch_event_codes(self):
         with self.connect() as connection:
             cursor = connection.cursor()
