@@ -60,6 +60,7 @@ class Main(QObject):
     def load_configurations():
         global DEBUG_MODE_STATE, LOGS_FOLDER_PATH, VIDEO_BROWSER_PATH
         _settings = QSettings('config.ini', QSettings.Format.IniFormat)
+        # The second argument, either false or "" are the fallback settings if the ini file is invalid
         DEBUG_MODE_STATE = _settings.value('States/DEBUG_MODE_STATE', 'false').lower() == 'true'
         LOGS_FOLDER_PATH = _settings.value('Paths/LOGS_FOLDER_PATH', "")
         VIDEO_BROWSER_PATH = _settings.value('Paths/VIDEO_BROWSER_PATH', "")
