@@ -24,4 +24,28 @@ class PlayerStatsDAO:
             cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
             return cursor.fetchall()
 
+    def update_player_stats(self, data):
+        print("Slot update_player_stats called with data:", data)  # Debug message
+        date = data['date']
+        time = data['time']
+        venue = data['venue']
+        opponent = data['opponent']
+        context = data['context']
+        video_time = data['timecode']
+        event = data['event']
+        player_info = data['player'].strip().split()
+        jersey_no = player_info[0]
+        last_name = player_info[1]
+        first_name = " ".join(player_info[2:])
+
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """INSERT INTO player_stats (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
+            )
+            connection.commit()
+        print("Player stats inserted for:", first_name, last_name)  # Debug message
+
 

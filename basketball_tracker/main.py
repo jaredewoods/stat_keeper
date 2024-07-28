@@ -68,7 +68,9 @@ class Main(QObject):
 
     def connect_signals_to_slots(self):
         self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
+        self.sd.SIG_FieldDataRetrieved.connect(self.player_stats_dao.update_player_stats)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.append_event_log)
+        self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_database_tab)
         self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
         self.sd.SIG_RosterPlayerSelected.connect(self.main_window.input_frame.player_selected)
         self.sd.SIG_BackToZeroButtonClicked.connect(self.video_control_window.back_to_zero)

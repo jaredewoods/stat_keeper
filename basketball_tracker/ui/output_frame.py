@@ -83,6 +83,11 @@ class OutputFrame(QWidget):
             for col_idx, col_data in enumerate(row_data):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
+    def refresh_database_tab(self):
+        table_widget = self.database_tab.findChild(QTableWidget)
+        if table_widget:
+            self.load_database_data(table_widget)
+
     def setup_roster_tab(self):
         layout = QVBoxLayout(self.roster_tab)
 
