@@ -24,12 +24,4 @@ class PlayerStatsDAO:
             cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
             return cursor.fetchall()
 
-    def update_player_stat(self, date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, code):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """UPDATE player_stats SET Time=?, Venue=?, Opponent=?, Context=?, VideoTime=?, LastName=?, FirstName=?, Code=?
-                   WHERE Date=? AND JerseyNo=?""",
-                (time, venue, opponent, context, video_time, last_name, first_name, code, date, jersey_no)
-            )
-            connection.commit()
+
