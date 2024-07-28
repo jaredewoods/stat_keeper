@@ -7,7 +7,7 @@ class VideoControlWindow(QMainWindow):
         super().__init__()
         self.sd = signal_distributor
         self.sm = state_manager
-        self.setWindowTitle("Control Window")
+        self.setWindowTitle("Video Control Window")
         self.setGeometry(200, 100, 400, 300)
 
         self.video_window = video_window
