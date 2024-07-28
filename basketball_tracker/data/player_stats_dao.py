@@ -25,7 +25,6 @@ class PlayerStatsDAO:
             return cursor.fetchall()
 
     def update_player_stats(self, data):
-        print("Slot update_player_stats called with data:", data)  # Debug message
         date = data['date']
         time = data['time']
         venue = data['venue']
