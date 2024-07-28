@@ -44,25 +44,21 @@ class OutputFrame(QWidget):
 
         self.event_log_text = QTextEdit(self.event_log_tab)
         self.event_log_text.setPlainText(
-            "1/24/82,16:30,United Center,Bulls,Full Game,03:37.24,Bakou,Isaac,M3P\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,04:06.21,Bolf,Will,3-P\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,10:24.11,Samuels,Zach,DRB\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,01:20.21,Lang,Oliver,STL\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,02:31.21,Bolf,Will,F-T\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,04:28.10,Bolf,Will,DRB\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,08:13.10,Towle,Declan,3-P\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,10:38.11,Samuels,Zach,POI\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,44:00.11,Samuels,Zach,POI\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,09:39.18,Klimek,Jack,M2P\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,01:28.18,Klimek,Jack,M2P\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,10:22.30,Lang,Oliver,STL\n"
-            "1/24/82,16:30,United Center,Bulls,Full Game,00:17.11,Samuels,Zach,ORB\n"
+            "Logged events display below:"
         )
         self.event_log_text.setReadOnly(True)
         layout.addWidget(self.event_log_text)
 
         self.event_log_tab.setLayout(layout)
         self.tabs.addTab(self.event_log_tab, "Log")
+
+    def append_event_log(self, data):
+        # Format the data as needed
+        log_entry = (
+            f"{data['date']},{data['time']},{data['venue']},{data['opponent']},"
+            f"{data['context']},{data['timecode']},{data['player']},{data['event']}\n"
+        )
+        self.event_log_text.append(log_entry)
 
     def setup_database_tab(self):
         self.database_tab = QWidget()

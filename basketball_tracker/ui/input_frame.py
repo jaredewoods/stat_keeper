@@ -13,6 +13,8 @@ class InputFrame(QWidget):
 
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
         super().__init__(parent)
+        self.retrieved_fields = None
+        self.context_combobox = None
         self.timecode_entry = None
         self.roster_list_widget = None
         self.selected_event_code = None
@@ -77,6 +79,7 @@ class InputFrame(QWidget):
         layout = QVBoxLayout(self.event_entry_frame)
         layout.setSpacing(0)
         layout.setContentsMargins(5, 0, 5, 0)
+        
         for text in InputFrame.event_entry_labels:
             row_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
@@ -87,6 +90,7 @@ class InputFrame(QWidget):
                 entry = QComboBox(self.event_entry_frame)
                 entry.addItems(InputFrame.context_labels)
                 entry.setCurrentText("Full_Game")
+                self.context_combobox = entry  # Store reference to the QComboBox
             else:
                 entry = QLineEdit(self.event_entry_frame)
                 entry.setFixedHeight(30)
@@ -97,7 +101,7 @@ class InputFrame(QWidget):
                 elif text == "🏃 ":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
                 elif text == "📷 ":
-                    self.timecode_entry = entry
+                    self.timecode_entry = entry # Store reference to the "Timecode" QLineEdit
 
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)
@@ -139,7 +143,24 @@ class InputFrame(QWidget):
         self.sd.SIG_DebugMessage.emit(f"Captured Time: {timecode}")
 
     def log_entries(self):
-        self.sd.SIG_DebugMessage.emit("Logging Entries")
+        self.retrieved_fields = self.retrieve_fields()
+        self.sd.SIG_FieldDataRetrieved.emit(self.retrieved_fields)
+        self.sd.SIG_DebugMessage.emit(f"Logging Entries\n{self.retrieved_fields}")
+
+    def retrieve_fields(self):
+        # Combine all data into a single dictionary
+        all_fields = {
+            "date": self.date_entry.text(),
+            "time": self.start_time_entry.text(),
+            "venue": self.venue_entry.text(),
+            "opponent": self.opponent_entry.text(),
+            "event": self.event_entry.text(),
+            "player": self.player_entry.text(),
+            "timecode": self.timecode_entry.text(),
+            "context": self.context_combobox.currentText()
+        }
+
+        return all_fields
 
 
 if __name__ == "__main__":

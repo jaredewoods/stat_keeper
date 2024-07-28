@@ -21,4 +21,5 @@ class SignalDistributor(QObject):
     SIG_ShowVideoWindow = pyqtSignal()
     SIG_TimeUpdate = pyqtSignal(str)
     SIG_EnterCapturedTimecode = pyqtSignal(str)
+    SIG_FieldDataRetrieved = pyqtSignal(dict)
     print("1 SignalDistributor Initialized")
