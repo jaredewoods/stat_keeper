@@ -57,13 +57,6 @@ class OutputFrame(QWidget):
             "1/24/82,16:30,United Center,Bulls,Full Game,01:28.18,Klimek,Jack,M2P\n"
             "1/24/82,16:30,United Center,Bulls,Full Game,10:22.30,Lang,Oliver,STL\n"
             "1/24/82,16:30,United Center,Bulls,Full Game,00:17.11,Samuels,Zach,ORB\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:56.23,Towle,Declan,3-P\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,00:45.30,Klimek,Jack,2-P\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:18.11,Samuels,Zach,ORB\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:18.11,Samuels,Zach,DRB\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:18.11,Samuels,Zach,DRB\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:18.11,Samuels,Zach,DRB\n"
-            "1/24/82,16:30,United Center,Bulls,4th Quarter,01:18.11,Samuels,Zach,DRB\n"
         )
         self.event_log_text.setReadOnly(True)
         layout.addWidget(self.event_log_text)
