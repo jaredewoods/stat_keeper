@@ -83,10 +83,15 @@ class OutputFrame(QWidget):
             for col_idx, col_data in enumerate(row_data):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
+        # Scroll to the bottom and to the right
+        if headers:
+            table_widget.scrollToItem(table_widget.item(0, len(headers) - 1))
+
     def refresh_database_tab(self):
         table_widget = self.database_tab.findChild(QTableWidget)
         if table_widget:
             self.load_database_data(table_widget)
+        table_widget.scrollToBottom()
 
     def setup_roster_tab(self):
         layout = QVBoxLayout(self.roster_tab)
