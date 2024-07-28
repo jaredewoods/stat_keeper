@@ -133,7 +133,7 @@ class OutputFrame(QWidget):
 
         self.debug_display = QTextEdit(self.debug_log_tab)
         self.debug_display.setReadOnly(True)
-        self.debug_display.append("DebugLogDisplay Initialized.\n")
+        self.debug_display.append("DebugLogDisplay Initialized")
 
         layout.addWidget(self.debug_display)
         self.debug_log_tab.setLayout(layout)
