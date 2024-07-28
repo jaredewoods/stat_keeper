@@ -48,4 +48,12 @@ class PlayerStatsDAO:
             connection.commit()
         print("Player stats inserted for:", first_name, last_name)  # Debug message
 
-
+    def delete_last_added_row(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """DELETE FROM player_stats
+                   WHERE rowid = (SELECT rowid FROM player_stats ORDER BY rowid DESC LIMIT 1)"""
+            )
+            connection.commit()
+        print("Last added row deleted.")  # Debug message
