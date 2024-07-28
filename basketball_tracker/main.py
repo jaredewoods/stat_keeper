@@ -31,7 +31,7 @@ class Main(QObject):
 
         self.load_configurations()
         self.main_window = MainWindow(self.sd, self.sm)
-        self.main_window.move(300, 0)
+        self.main_window.move(0, 0)
         self.main_window.show()
 
         self.video_window = VideoWindow()
@@ -43,7 +43,7 @@ class Main(QObject):
         self.floating_control.hide()
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
-        self.video_control_window.move(0, 640)
+        self.video_control_window.move(0, 570)
         self.video_control_window.show()
 
         self.transport_control = TransportControl(self.sd, self.sm)
