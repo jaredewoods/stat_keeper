@@ -56,7 +56,7 @@ class OutputFrame(QWidget):
         # Format the data as needed
         log_entry = (
             f"{data['date']},{data['time']},{data['venue']},{data['opponent']},"
-            f"{data['context']},{data['timecode']},{data['player']},{data['event']}\n"
+            f"{data['context']},{data['timecode']},{data['player']},{data['event']}"
         )
         self.event_log_text.append(log_entry)
 
