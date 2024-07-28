@@ -76,6 +76,7 @@ class Main(QObject):
         self.sd.SIG_Back10ButtonClicked.connect(self.video_control_window.back10)
         self.sd.SIG_ChangePlaybackSpeedButtonClicked.connect(self.video_control_window.change_playback_speed)
         self.sd.SIG_CaptureButtonClicked.connect(self.main_window.control_frame.capture_timecode)
+        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.input_frame.show_event_entry_tab)
         self.sd.SIG_PauseButtonClicked.connect(self.video_control_window.pause_video)
         self.sd.SIG_UndoButtonClicked.connect(self.undo)
         self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)

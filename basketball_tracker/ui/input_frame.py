@@ -74,6 +74,9 @@ class InputFrame(QWidget):
         self.game_info_frame.setLayout(layout)
         self.tabs.addTab(self.game_info_frame, "Game Info")
 
+    def show_event_entry_tab(self):
+        self.tabs.setCurrentIndex(1)
+
     def create_event_entry_frame(self):
         self.event_entry_frame = QWidget()
         layout = QVBoxLayout(self.event_entry_frame)
