@@ -40,7 +40,7 @@ class Main(QObject):
 
         self.floating_control = FloatingControl(self.sd, self.sm)
         self.floating_control.move(0, 0)
-        self.floating_control.hide()
+        self.floating_control.show()
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 570)

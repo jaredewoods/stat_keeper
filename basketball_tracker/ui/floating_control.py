@@ -271,6 +271,7 @@ class FloatingControl(QWidget):
 
     def confirm_button_clicked(self):
         self.sd.SIG_LogEntriesButtonClicked.emit()
+        self.sd.SIG_PlayButtonClicked.emit()
         self.show_next_page()
 
     def edit_button_clicked(self):
