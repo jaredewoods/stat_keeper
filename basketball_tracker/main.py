@@ -47,7 +47,7 @@ class Main(QObject):
         self.video_control_window.show()
 
         self.transport_control = TransportControl(self.sd, self.sm)
-        self.transport_control.hide()
+        self.transport_control.show()
 
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())
