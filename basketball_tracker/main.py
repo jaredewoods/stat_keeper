@@ -40,14 +40,14 @@ class Main(QObject):
 
         self.floating_control = FloatingControl(self.sd, self.sm)
         self.floating_control.move(0, 0)
-        self.floating_control.show()
+        self.floating_control.hide()
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 570)
         self.video_control_window.show()
 
         self.transport_control = TransportControl(self.sd, self.sm)
-        self.transport_control.show()
+        self.transport_control.hide()
 
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())
