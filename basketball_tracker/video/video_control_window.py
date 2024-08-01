@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QLabel, QFileDialog
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt, QTimer, pyqtSlot
 
 class VideoControlWindow(QMainWindow):
     def __init__(self, video_window, signal_distributor, state_manager):
@@ -71,6 +71,7 @@ class VideoControlWindow(QMainWindow):
         self.sd.SIG_DebugMessage.emit("Playing Video")
         self.video_window.play_video()
 
+    @pyqtSlot()
     def pause_video(self):
         self.sd.SIG_DebugMessage.emit("Pausing Video")
         self.video_window.pause_video()
@@ -91,9 +92,11 @@ class VideoControlWindow(QMainWindow):
         self.time_label.setText(f"Time: {formatted_position} / {formatted_duration}")
         self.sd.SIG_TimeUpdate.emit(formatted_position)
 
+    @pyqtSlot()
     def back_to_zero(self):
         self.sd.SIG_DebugMessage.emit("Returning video to zero")
 
+    @pyqtSlot()
     def back20(self):
         self.sd.SIG_DebugMessage.emit("Jumping back 20 seconds.")
         position = self.video_window.get_position()
@@ -101,6 +104,7 @@ class VideoControlWindow(QMainWindow):
         self.video_window.set_position(position)
         print("Jumped back 20 seconds.")
 
+    @pyqtSlot()
     def back10(self):
         self.sd.SIG_DebugMessage.emit("Jumping back 10 seconds")
         position = self.video_window.get_position()
@@ -108,6 +112,7 @@ class VideoControlWindow(QMainWindow):
         self.video_window.set_position(position)
         print("Jumped back 20 seconds.")
 
+    @pyqtSlot()
     def change_playback_speed(self):
         self.sd.SIG_DebugMessage.emit("Coming Soon,. Changing playback speed")
 

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit
 from PyQt6.QtGui import QFont
 import sqlite3
 from data.rosters_dao import RostersDAO
+from PyQt6.QtCore import Qt, pyqtSlot
 
 
 class InputFrame(QWidget):
@@ -74,6 +75,7 @@ class InputFrame(QWidget):
         self.game_info_frame.setLayout(layout)
         self.tabs.addTab(self.game_info_frame, "Game Info")
 
+    @pyqtSlot()
     def show_event_entry_tab(self):
         self.tabs.setCurrentIndex(1)
 
@@ -128,23 +130,27 @@ class InputFrame(QWidget):
 
         self.team_roster_frame.setLayout(layout)
         self.layout().addWidget(self.team_roster_frame)
-        
+
+    # TODO: why won't '@pyqtSlot()' work here?
     def player_selected(self, item):
         player_name = item.text()
         if self.player_entry:
             self.player_entry.setText(player_name)
             self.sd.SIG_DebugMessage.emit(f"Player selected: {player_name}")
 
+    @pyqtSlot(str)
     def event_code_selected(self, code):
         self.selected_event_code = code
         self.sd.SIG_DebugMessage.emit(f"Selected event code {self.selected_event_code}")
         if self.event_entry:
             self.event_entry.setText(self.selected_event_code)
 
+    @pyqtSlot(str)
     def enter_captured_timecode(self, timecode):
         self.timecode_entry.setText(timecode)
         self.sd.SIG_DebugMessage.emit(f"Captured Time: {timecode}")
 
+    @pyqtSlot()
     def log_entries(self):
         self.retrieved_fields = self.retrieve_fields()
         self.sd.SIG_FieldDataRetrieved.emit(self.retrieved_fields)

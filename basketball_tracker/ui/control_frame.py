@@ -1,7 +1,7 @@
 # control_frame.py
 
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFont
 from data.events_dao import EventsDAO
 
@@ -63,6 +63,7 @@ class ControlFrame(QWidget):
 
         layout.addLayout(status_layout)
 
+    @pyqtSlot(str)
     def update_time(self, duration):
         self.total_time_label.setText(duration)
 
@@ -104,6 +105,7 @@ class ControlFrame(QWidget):
             self.omni_state = "RUN VIDEO"
         self.omni_button.setText(self.omni_state)
 
+    @pyqtSlot()
     def capture_timecode(self):
         captured_timecode = self.total_time_label.text()
         self.sd.SIG_EnterCapturedTimecode.emit(captured_timecode)

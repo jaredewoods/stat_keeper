@@ -52,6 +52,7 @@ class OutputFrame(QWidget):
         self.event_log_tab.setLayout(layout)
         self.tabs.addTab(self.event_log_tab, "Log")
 
+    @pyqtSlot(dict)
     def append_event_log(self, data):
         # Format the data as needed
         log_entry = (
@@ -87,6 +88,7 @@ class OutputFrame(QWidget):
         if headers:
             table_widget.scrollToItem(table_widget.item(0, len(headers) - 1))
 
+    @pyqtSlot()
     def refresh_database_tab(self):
         table_widget = self.database_tab.findChild(QTableWidget)
         if table_widget:

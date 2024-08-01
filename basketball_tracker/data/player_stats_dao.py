@@ -2,6 +2,7 @@
 
 import sqlite3
 import os
+from PyQt6.QtCore import Qt, pyqtSlot
 
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
@@ -24,6 +25,7 @@ class PlayerStatsDAO:
             cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
             return cursor.fetchall()
 
+    # TODO: why won't '@pyqtSlot()' work here?
     def update_player_stats(self, data):
         date = data['date']
         time = data['time']
