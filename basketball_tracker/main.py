@@ -109,8 +109,9 @@ class Main(QObject):
 
         edit_database_action = QAction("Edit Database", self.main_window)
         edit_menu.addAction(edit_database_action)  # Placeholder, no connection yet
-
-        edit_logs_action = QAction("Edit Logs", self.main_window)
+        edit_logs_action = QAction("Edit Roster", self.main_window)
+        edit_menu.addAction(edit_logs_action)  # Placeholder, no connection yet
+        edit_logs_action = QAction("Edit Events", self.main_window)
         edit_menu.addAction(edit_logs_action)  # Placeholder, no connection yet
 
         self.main_window.setMenuBar(menu_bar)
