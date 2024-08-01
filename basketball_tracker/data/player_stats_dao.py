@@ -48,26 +48,6 @@ class PlayerStatsDAO:
                 (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
             )
             connection.commit()
-
-            # Fetch the updated event data for this player
-            updated_data = self.fetch_player_stats_sans_headers(jersey_no)
-
-            # Convert the fetched data to a DataFrame if needed
-            events_df = pd.DataFrame(updated_data,
-                                     columns=['Date', 'Time', 'Venue', 'Opponent', 'Context', 'VideoTime', 'JerseyNo',
-                                              'LastName', 'FirstName', 'Code'])
-
-            # Calculate aggregate statistics
-            stats_logic = StatisticsLogic(events_df)
-            updated_stats = stats_logic.aggregate_statistics()
-
-            # Use the aggregated stats as needed
-            self.update_sortable_statistics(cursor, updated_stats)
-            connection.commit()
-
-            # Refresh the stats tab to reflect the new statistics
-            self.refresh_stats_tab()
-
         print(f"Player stats updated for: {first_name} {last_name}")
 
     def update_sortable_statistics(self, cursor, updated_stats):
