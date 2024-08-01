@@ -5,12 +5,18 @@ from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFont
 from data.events_dao import EventsDAO
 
-BUTTON_FONT = ('Arial', 14, 'bold')
 CONTROL_BUTTON_LABELS = [
-    "00:00", "< 20", "< 10", ">>", "O", "O + II",
-    "II", "undo", "Play", "Enter"
+    ("00:00", "Reset to zero timecode"),
+    ("< 20", "Go back 20 seconds"),
+    ("< 10", "Go back 10 seconds"),
+    (">>", "Change playback speed"),
+    ("O", "Capture current frame"),
+    ("O + II", "Capture and pause"),
+    ("II", "Pause playback"),
+    ("undo", "Undo last action"),
+    ("Play", "Play the video"),
+    ("Enter", "Log current entries")
 ]
-
 
 class ControlFrame(QWidget):
     def __init__(self, parent=None, signal_distributor=None, state_manager=None):
@@ -38,12 +44,13 @@ class ControlFrame(QWidget):
     def create_control_buttons(self, layout):
         control_layout = QGridLayout()
 
-        for i, name in enumerate(CONTROL_BUTTON_LABELS):
+        for i, (name, tooltip) in enumerate(CONTROL_BUTTON_LABELS):
             button = QPushButton(name)
             font = QFont("Arial", 14)
             button.setFont(font)
             button.setFixedHeight(36)
             button.setFixedWidth(80)
+            button.setToolTip(tooltip)  # Set the tooltip here
             button.clicked.connect(lambda checked, n=name: self.button_actions(n))
             control_layout.addWidget(button, i // 2, i % 2)
         layout.addLayout(control_layout)
@@ -84,6 +91,7 @@ class ControlFrame(QWidget):
 
         for i, (code, description) in enumerate(event_button_names):
             button = QPushButton(code)  # Use the event code as the button text
+            button.setToolTip(description)  # Set the tooltip to the event description
             button.clicked.connect(lambda checked, desc=description: self.set_event_code(desc))
             event_layout.addWidget(button, i // 3, i % 3)
         layout.addLayout(event_layout)
