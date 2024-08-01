@@ -1,7 +1,7 @@
 import sys
-
 from PyQt6.QtCore import QSettings, QObject
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar
+from PyQt6.QtGui import QAction
 
 from core.signal_distributor import SignalDistributor
 from core.state_manager import StateManager
@@ -44,13 +44,118 @@ class Main(QObject):
 
         self.video_control_window = VideoControlWindow(self.video_window, self.sd, self.sm)
         self.video_control_window.move(0, 570)
-        self.video_control_window.show()
+        self.video_control_window.hide()
 
         self.transport_control = TransportControl(self.sd, self.sm)
         self.transport_control.hide()
 
+        self.setup_menu()
         self.connect_signals_to_slots()
         sys.exit(self.app.exec())
+
+    def setup_menu(self):
+        # Set up the menu bar and menus
+        menu_bar = QMenuBar(self.main_window)
+
+        # File Menu
+        file_menu = menu_bar.addMenu("File")
+
+        # Open Action
+        open_action = QAction("Open", self.main_window)
+        open_action.triggered.connect(self.video_control_window.open_file)  # Connect to open_file method
+        file_menu.addAction(open_action)
+
+        quit_action = QAction("Quit", self.main_window)
+        quit_action.triggered.connect(QApplication.instance().quit)
+        file_menu.addAction(quit_action)
+
+        # Window Menu
+        window_menu = menu_bar.addMenu("Window")
+
+        self.video_window_action = QAction("Video Window", self.main_window, checkable=True)
+        self.video_window_action.triggered.connect(self.toggle_video_window)
+        window_menu.addAction(self.video_window_action)
+
+        self.floating_control_action = QAction("Floating Control", self.main_window, checkable=True)
+        self.floating_control_action.triggered.connect(self.toggle_floating_control)
+        window_menu.addAction(self.floating_control_action)
+
+        self.video_control_window_action = QAction("Video Control Window", self.main_window, checkable=True)
+        self.video_control_window_action.triggered.connect(self.toggle_video_control_window)
+        window_menu.addAction(self.video_control_window_action)
+
+        self.transport_control_action = QAction("Transport Control", self.main_window, checkable=True)
+        self.transport_control_action.triggered.connect(self.toggle_transport_control)
+        window_menu.addAction(self.transport_control_action)
+
+        # Adding Control, Input, and Output Frames to Window Menu
+        self.control_frame_action = QAction("Control Frame", self.main_window, checkable=True)
+        self.control_frame_action.setChecked(True)
+        self.control_frame_action.triggered.connect(self.toggle_control_frame)
+        window_menu.addAction(self.control_frame_action)
+
+        self.input_frame_action = QAction("Input Frame", self.main_window, checkable=True)
+        self.input_frame_action.setChecked(True)
+        self.input_frame_action.triggered.connect(self.toggle_input_frame)
+        window_menu.addAction(self.input_frame_action)
+
+        self.output_frame_action = QAction("Output Frame", self.main_window, checkable=True)
+        self.output_frame_action.setChecked(True)
+        self.output_frame_action.triggered.connect(self.toggle_output_frame)
+        window_menu.addAction(self.output_frame_action)
+
+        # Edit Menu
+        edit_menu = menu_bar.addMenu("Edit")
+
+        edit_database_action = QAction("Edit Database", self.main_window)
+        edit_menu.addAction(edit_database_action)  # Placeholder, no connection yet
+
+        edit_logs_action = QAction("Edit Logs", self.main_window)
+        edit_menu.addAction(edit_logs_action)  # Placeholder, no connection yet
+
+        self.main_window.setMenuBar(menu_bar)
+
+    def toggle_video_window(self):
+        if self.video_window_action.isChecked():
+            self.video_window.show()
+        else:
+            self.video_window.hide()
+
+    def toggle_floating_control(self):
+        if self.floating_control_action.isChecked():
+            self.floating_control.show()
+        else:
+            self.floating_control.hide()
+
+    def toggle_video_control_window(self):
+        if self.video_control_window_action.isChecked():
+            self.video_control_window.show()
+        else:
+            self.video_control_window.hide()
+
+    def toggle_transport_control(self):
+        if self.transport_control_action.isChecked():
+            self.transport_control.show()
+        else:
+            self.transport_control.hide()
+
+    def toggle_control_frame(self):
+        if self.control_frame_action.isChecked():
+            self.main_window.control_frame.show()
+        else:
+            self.main_window.control_frame.hide()
+
+    def toggle_input_frame(self):
+        if self.input_frame_action.isChecked():
+            self.main_window.input_frame.show()
+        else:
+            self.main_window.input_frame.hide()
+
+    def toggle_output_frame(self):
+        if self.output_frame_action.isChecked():
+            self.main_window.output_frame.show()
+        else:
+            self.main_window.output_frame.hide()
 
     def emit_test_debug_signals(self):
         self.sd.SIG_DebugMessage.emit(f"Debug Mode State: {DEBUG_MODE_STATE}")
