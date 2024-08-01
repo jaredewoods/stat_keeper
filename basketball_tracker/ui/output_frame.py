@@ -30,12 +30,14 @@ class OutputFrame(QWidget):
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
         self.tabs = QTabWidget(self)
-        self.setup_stats_tab()
+
         self.setup_debug_log_tab()
         self.setup_event_log_tab()
         self.setup_database_tab()
         self.setup_roster_tab()
         self.setup_events_tab()
+        self.setup_stats_tab()
+
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
 
@@ -80,16 +82,7 @@ class OutputFrame(QWidget):
 
     def load_database_data(self, table_widget):
         headers, data = self.player_stats_dao.fetch_all_player_stats()
-        table_widget.setColumnCount(len(headers))
-        table_widget.setHorizontalHeaderLabels(headers)
-        table_widget.setRowCount(len(data))
-        for row_idx, row_data in enumerate(data):
-            for col_idx, col_data in enumerate(row_data):
-                table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
-        # Scroll to the bottom and to the right
-        # does not work right on PC
-        if headers:
-            table_widget.scrollToItem(table_widget.item(0, len(headers) - 1))
+        self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
     def refresh_database_tab(self):
@@ -99,6 +92,7 @@ class OutputFrame(QWidget):
         table_widget.scrollToBottom()
 
     def setup_roster_tab(self):
+        self.roster_tab = QWidget()
         layout = QVBoxLayout(self.roster_tab)
         roster_table_widget = QTableWidget(self.roster_tab)
         layout.addWidget(roster_table_widget)
@@ -108,12 +102,7 @@ class OutputFrame(QWidget):
 
     def load_roster_tab(self, table_widget):
         headers, data = self.rosters_dao.fetch_all_roster()
-        table_widget.setColumnCount(len(headers))
-        table_widget.setHorizontalHeaderLabels(headers)
-        table_widget.setRowCount(len(data))
-        for row_idx, row_data in enumerate(data):
-            for col_idx, col_data in enumerate(row_data):
-                table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
+        self.populate_table_widget(table_widget, headers, data)
 
     def setup_events_tab(self):
         layout = QVBoxLayout(self.events_tab)
@@ -125,12 +114,7 @@ class OutputFrame(QWidget):
 
     def load_events_tab(self, table_widget):
         headers, data = self.events_dao.fetch_all_events()
-        table_widget.setColumnCount(len(headers))
-        table_widget.setHorizontalHeaderLabels(headers)
-        table_widget.setRowCount(len(data))
-        for row_idx, row_data in enumerate(data):
-            for col_idx, col_data in enumerate(row_data):
-                table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
+        self.populate_table_widget(table_widget, headers, data)
 
     def setup_stats_tab(self):
         self.stats_tab = QWidget()
@@ -142,4 +126,24 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
     def load_stats_tab(self, table_widget):
-        pass
+        headers, data = self.player_stats_dao.fetch_all_player_stats()
+        self.populate_table_widget(table_widget, headers, data)
+
+    @pyqtSlot()
+    def refresh_stats_tab(self):
+        table_widget = self.stats_tab.findChild(QTableWidget)
+        if table_widget:
+            self.load_stats_tab(table_widget)
+        table_widget.scrollToBottom()
+
+    def populate_table_widget(self, table_widget, headers, data):
+        table_widget.setColumnCount(len(headers))
+        table_widget.setHorizontalHeaderLabels(headers)
+        table_widget.setRowCount(len(data))
+
+        for row_idx, row_data in enumerate(data):
+            for col_idx, col_data in enumerate(row_data):
+                table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
+
+        if headers:
+            table_widget.scrollToItem(table_widget.item(table_widget.rowCount() - 1, 0))
