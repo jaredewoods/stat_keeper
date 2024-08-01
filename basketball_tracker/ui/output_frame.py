@@ -142,10 +142,4 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
     def load_stats_tab(self, table_widget):
-        headers, data = self.events_dao.fetch_all_events()
-        table_widget.setColumnCount(len(headers))
-        table_widget.setHorizontalHeaderLabels(headers)
-        table_widget.setRowCount(len(data))
-        for row_idx, row_data in enumerate(data):
-            for col_idx, col_data in enumerate(row_data):
-                table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
+        pass
