@@ -58,7 +58,7 @@ class PlayerStatsDAO:
         (JerseyNo, FirstName, LastName, PTS, FGM, FGA, "FG%", "3PM", "3PA", "3P%", FTM, FTA, "FT%", OREB, DREB, REB, AST, TOV, STL, BLK, PFL, SFL) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        print(f"Inserting stats for player {updated_stats['FirstName']} {updated_stats['LastName']}")
+        print(f"Inserting stats for player {updated_stats['FirstName']} {updated_stats['LastName']}: {updated_stats}")
         cursor.execute(query, (
             updated_stats['JerseyNo'],
             updated_stats['FirstName'],
@@ -123,6 +123,7 @@ class PlayerStatsDAO:
                 }
 
             event_code = event[headers.index('Code')]
+            print(f"Processing event code {event_code} for {first_name} {last_name}")
             if event_code == '2pt Field Goal':
                 aggregated_stats[player_key]['PTS'] += 2
                 aggregated_stats[player_key]['FGM'] += 1
@@ -160,12 +161,15 @@ class PlayerStatsDAO:
             elif event_code == 'Shooting Foul':
                 aggregated_stats[player_key]['SFL'] += 1
 
+        print(f"Aggregated stats: {aggregated_stats}")
+
         with self.connect() as connection:
             cursor = connection.cursor()
             for player_key, stats in aggregated_stats.items():
                 stats['FG%'] = stats['FGM'] / stats['FGA'] if stats['FGA'] > 0 else 0
                 stats['3P%'] = stats['3PM'] / stats['3PA'] if stats['3PA'] > 0 else 0
                 stats['FT%'] = stats['FTM'] / stats['FTA'] if stats['FTA'] > 0 else 0
+                print(f"Updating processed stats for {stats['FirstName']} {stats['LastName']}")
                 self.update_processed_stats(cursor, stats)
             connection.commit()
 
