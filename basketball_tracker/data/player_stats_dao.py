@@ -58,6 +58,7 @@ class PlayerStatsDAO:
         (JerseyNo, FirstName, LastName, PTS, FGM, FGA, "FG%", "3PM", "3PA", "3P%", FTM, FTA, "FT%", OREB, DREB, REB, AST, TOV, STL, BLK, PFL, SFL) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
+        print(f"Inserting stats for player {updated_stats['FirstName']} {updated_stats['LastName']}")
         cursor.execute(query, (
             updated_stats['JerseyNo'],
             updated_stats['FirstName'],

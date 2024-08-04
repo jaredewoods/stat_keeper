@@ -126,11 +126,12 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
     def load_stats_tab(self, table_widget):
+        print("Loading stats tab data...")  # Debugging print
         headers, data = self.player_stats_dao.fetch_all_processed_stats()
         self.populate_table_widget(table_widget, headers, data)
 
-    @pyqtSlot()
     def refresh_stats_tab(self):
+        print("Refreshing stats tab...")  # Debugging print
         table_widget = self.stats_tab.findChild(QTableWidget)
         if table_widget:
             self.load_stats_tab(table_widget)
@@ -144,6 +145,7 @@ class OutputFrame(QWidget):
 
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
+                print(f"Setting item at row {row_idx}, col {col_idx}: {col_data}")  # Debugging print
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
         if headers and data:
