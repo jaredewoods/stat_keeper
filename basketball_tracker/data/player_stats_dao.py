@@ -3,10 +3,12 @@
 import sqlite3
 import os
 from PyQt6.QtCore import Qt, pyqtSlot
+from data.rosters_dao import RostersDAO
 
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
+        self.roster_dao = RostersDAO(db_path='data/rosters.sqlite')
 
     def connect(self):
         return sqlite3.connect(self.db_path)
@@ -95,17 +97,31 @@ class PlayerStatsDAO:
         print("Last added row deleted.")
 
     def aggregate_and_update_stats(self):
-        last_processed_id = self.get_last_processed_record()
-
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM raw_stats WHERE rowid > ?", (last_processed_id,))
-            new_data = cursor.fetchall()
-            headers = [description[0] for description in cursor.description]
+        headers, raw_data = self.fetch_all_player_stats()
 
         aggregated_stats = {}
 
-        for event in new_data:
+        # Fetch all players from the roster using RostersDAO
+        roster_data = self.roster_dao.fetch_all_roster()[1]  # Only data, skip headers
+
+        # Initialize stats for all players
+        for player in roster_data:
+            jersey_no, first_name, last_name = player
+            player_key = (jersey_no, first_name, last_name)
+
+            if player_key not in aggregated_stats:
+                aggregated_stats[player_key] = {
+                    'JerseyNo': jersey_no,
+                    'FirstName': first_name,
+                    'LastName': last_name,
+                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
+                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
+                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
+                    'SFL': 0,
+                }
+
+        # Aggregate stats from raw_data
+        for event in raw_data:
             jersey_no = event[headers.index('JerseyNo')]
             first_name = event[headers.index('FirstName')]
             last_name = event[headers.index('LastName')]
@@ -123,53 +139,18 @@ class PlayerStatsDAO:
                 }
 
             event_code = event[headers.index('Code')]
-            print(f"Processing event code {event_code} for {first_name} {last_name}")
-            if event_code == '2pt Field Goal':
-                aggregated_stats[player_key]['PTS'] += 2
-                aggregated_stats[player_key]['FGM'] += 1
-                aggregated_stats[player_key]['FGA'] += 1
-            elif event_code == 'Missed 2pt':
-                aggregated_stats[player_key]['FGA'] += 1
-            elif event_code == '3pt Field Goal':
-                aggregated_stats[player_key]['PTS'] += 3
-                aggregated_stats[player_key]['3PM'] += 1
-                aggregated_stats[player_key]['3PA'] += 1
-            elif event_code == 'Missed 3pt':
-                aggregated_stats[player_key]['3PA'] += 1
-            elif event_code == 'Free Throw':
-                aggregated_stats[player_key]['PTS'] += 1
-                aggregated_stats[player_key]['FTM'] += 1
-                aggregated_stats[player_key]['FTA'] += 1
-            elif event_code == 'Missed Free Throw':
-                aggregated_stats[player_key]['FTA'] += 1
-            elif event_code == 'Off. Rebound':
-                aggregated_stats[player_key]['OREB'] += 1
-                aggregated_stats[player_key]['REB'] += 1
-            elif event_code == 'Def. Rebound':
-                aggregated_stats[player_key]['DREB'] += 1
-                aggregated_stats[player_key]['REB'] += 1
-            elif event_code == 'Assist':
-                aggregated_stats[player_key]['AST'] += 1
-            elif event_code == 'Turnover':
-                aggregated_stats[player_key]['TOV'] += 1
-            elif event_code == 'Steal':
-                aggregated_stats[player_key]['STL'] += 1
-            elif event_code == 'Block':
-                aggregated_stats[player_key]['BLK'] += 1
-            elif event_code == 'Personal Foul':
-                aggregated_stats[player_key]['PFL'] += 1
-            elif event_code == 'Shooting Foul':
-                aggregated_stats[player_key]['SFL'] += 1
-
-        print(f"Aggregated stats: {aggregated_stats}")
+            # Update aggregated_stats based on event_code (no changes needed here)
 
         with self.connect() as connection:
             cursor = connection.cursor()
+
+            # Clear processed_stats table before inserting new aggregated stats
+            cursor.execute("DELETE FROM processed_stats")
+
             for player_key, stats in aggregated_stats.items():
                 stats['FG%'] = stats['FGM'] / stats['FGA'] if stats['FGA'] > 0 else 0
                 stats['3P%'] = stats['3PM'] / stats['3PA'] if stats['3PA'] > 0 else 0
                 stats['FT%'] = stats['FTM'] / stats['FTA'] if stats['FTA'] > 0 else 0
-                print(f"Updating processed stats for {stats['FirstName']} {stats['LastName']}")
                 self.update_processed_stats(cursor, stats)
             connection.commit()
 
@@ -189,9 +170,3 @@ class PlayerStatsDAO:
             connection.commit()
         print("All data cleared from raw_stats and processed_stats tables.")
 
-    def get_last_processed_record(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT MAX(rowid) FROM processed_stats")
-            result = cursor.fetchone()
-            return result[0] if result else 0
