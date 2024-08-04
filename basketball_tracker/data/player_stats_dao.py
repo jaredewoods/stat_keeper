@@ -100,7 +100,7 @@ class PlayerStatsDAO:
         aggregated_stats = {}
 
         # Fetch all players from the roster using RostersDAO
-        roster_data = self.roster_dao.fetch_all_roster()[1]  # Only data, skip headers
+        roster_data = self.fetch_all_roster()[1]  # Only data, skip headers
 
         # Initialize stats for all players
         for player in roster_data:
