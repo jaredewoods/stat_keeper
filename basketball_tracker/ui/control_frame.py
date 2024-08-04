@@ -3,7 +3,7 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFont
-from data.events_dao import EventsDAO
+from data.player_stats_dao import PlayerStatsDAO
 
 CONTROL_BUTTON_LABELS = [
     ("00:00", "Reset to zero timecode"),
@@ -30,7 +30,7 @@ class ControlFrame(QWidget):
         self.omni_button = None
         self.omni_state = "RUN VIDEO"
         self.spin_value = -2
-        self.events_dao = EventsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -87,7 +87,7 @@ class ControlFrame(QWidget):
 
     def create_event_buttons(self, layout):
         event_layout = QGridLayout()
-        event_button_names = self.events_dao.fetch_events_sans_headers()  # Fetch button names (codes and descriptions)
+        event_button_names = self.player_stats_dao.fetch_events_sans_headers()  # Fetch button names (codes and descriptions)
 
         for i, (code, description) in enumerate(event_button_names):
             button = QPushButton(code)  # Use the event code as the button text

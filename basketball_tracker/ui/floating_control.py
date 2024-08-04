@@ -3,8 +3,7 @@ from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QFont
 import sys
 import os
-from data.rosters_dao import RostersDAO
-from data.events_dao import EventsDAO
+from data.player_stats_dao import PlayerStatsDAO
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 images_dir = os.path.join(script_dir, '../images/')
@@ -18,8 +17,7 @@ class FloatingControl(QWidget):
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-        self.rosters_dao = RostersDAO()
-        self.events_dao = EventsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
 
         main_layout = QVBoxLayout(self)
         self.stacked_widget = QStackedWidget()
@@ -117,7 +115,7 @@ class FloatingControl(QWidget):
             }
             """)
 
-        roster_data = self.rosters_dao.fetch_roster_sans_headers()
+        roster_data = self.player_stats_dao.fetch_roster_sans_headers()
         for player in roster_data:
             item = QListWidgetItem(f"{player[0]} {player[1]} {player[2]}")
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -156,7 +154,7 @@ class FloatingControl(QWidget):
             }
         """)
 
-        events = self.events_dao.fetch_event_descriptions()
+        events = self.player_stats_dao.fetch_event_descriptions()
         for event in events:
             item = QListWidgetItem(event)
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)

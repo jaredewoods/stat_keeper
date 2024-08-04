@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QListWidget, QListWidgetItem, QApplication
 from PyQt6.QtGui import QFont
 import sqlite3
-from data.rosters_dao import RostersDAO
+from data.player_stats_dao import PlayerStatsDAO
 from PyQt6.QtCore import Qt, pyqtSlot
 
 
@@ -30,7 +30,7 @@ class InputFrame(QWidget):
         self.date_entry = None
         self.event_entry = None
         self.game_info_frame = None
-        self.rosters_dao = RostersDAO()
+        self.player_stats_dao = PlayerStatsDAO()
 
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
@@ -120,7 +120,7 @@ class InputFrame(QWidget):
         layout = QVBoxLayout(self.team_roster_frame)
 
         self.roster_list_widget = QListWidget(self.team_roster_frame)
-        roster_data = self.rosters_dao.fetch_roster_sans_headers()
+        roster_data = self.player_stats_dao.fetch_roster_sans_headers()
         for player in roster_data:
             player_name = f"{player[0]}  {player[1]} {player[2]}"
             QListWidgetItem(player_name, self.roster_list_widget)

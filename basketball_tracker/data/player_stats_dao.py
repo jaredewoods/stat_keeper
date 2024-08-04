@@ -3,12 +3,10 @@
 import sqlite3
 import os
 from PyQt6.QtCore import Qt, pyqtSlot
-from data.rosters_dao import RostersDAO
 
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
-        self.roster_dao = RostersDAO('data/rosters.sqlite')
 
     def connect(self):
         return sqlite3.connect(self.db_path)

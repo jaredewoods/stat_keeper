@@ -3,8 +3,6 @@ from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
 from data.player_stats_dao import PlayerStatsDAO
-from data.rosters_dao import RostersDAO
-from data.events_dao import EventsDAO
 
 
 class OutputFrame(QWidget):
@@ -22,8 +20,8 @@ class OutputFrame(QWidget):
         self.event_log_tab = None
         self.debug_log_tab = None
         self.stats_tab = None
-        self.rosters_dao = RostersDAO()
-        self.events_dao = EventsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
         self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
@@ -101,7 +99,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.roster_tab, "🔲 Roster")
 
     def load_roster_tab(self, table_widget):
-        headers, data = self.rosters_dao.fetch_all_roster()
+        headers, data = self.player_stats_dao.fetch_all_roster()
         self.populate_table_widget(table_widget, headers, data)
 
     def setup_events_tab(self):
@@ -113,7 +111,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.events_tab, "🔲 Events")
 
     def load_events_tab(self, table_widget):
-        headers, data = self.events_dao.fetch_all_events()
+        headers, data = self.player_stats_dao.fetch_all_events()
         self.populate_table_widget(table_widget, headers, data)
 
     def setup_stats_tab(self):
