@@ -8,7 +8,7 @@ from data.rosters_dao import RostersDAO
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
-        self.roster_dao = RostersDAO(db_path='data/rosters.sqlite')
+        self.roster_dao = RostersDAO('data/rosters.sqlite')
 
     def connect(self):
         return sqlite3.connect(self.db_path)
