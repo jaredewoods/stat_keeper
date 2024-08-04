@@ -129,7 +129,7 @@ class OutputFrame(QWidget):
     # Stats Tab
     def load_stats_tab(self, table_widget):
         print("Loading stats tab data...")  # Debugging print
-        headers, data = self.player_stats_dao.fetch_raw_stats()
+        headers, data = self.player_stats_dao.fetch_processed_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     def refresh_stats_tab(self):

@@ -7,6 +7,7 @@ class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
         self.connection = self.connect()
+        self.initialize_processed_stats()
 
     # Connection Methods
     def connect(self):
@@ -82,14 +83,6 @@ class PlayerStatsDAO:
         headers = [description[0] for description in cursor.description]
         return headers, data
 
-    def update_roster(self, jersey_no, last_name, first_name):
-        cursor = self.connection.cursor()
-        cursor.execute(
-            "UPDATE roster SET LastName=?, FirstName=? WHERE JerseyNo=?",
-            (last_name, first_name, jersey_no)
-        )
-        self.connection.commit()
-
     # Event Methods
     def fetch_events_sans_headers(self):
         cursor = self.connection.cursor()
@@ -109,3 +102,27 @@ class PlayerStatsDAO:
         data = cursor.fetchall()
         descriptions = [row[0] for row in data]
         return descriptions
+
+    # Processed Methods
+    def initialize_processed_stats(self):
+        cursor = self.connection.cursor()
+
+        cursor.execute("DELETE FROM processed_stats")
+
+        cursor.execute("""
+            INSERT INTO processed_stats 
+            ("JerseyNo", "FirstName", "LastName", "PTS", "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", 
+             "FTM", "FTA", "FT%", "OREB", "DREB", "REB", "AST", "TOV", "STL", "BLK", "PFL", "SFL")
+            SELECT JerseyNo, FirstName, LastName, 0, 0, 0, 0.0, 0, 0, 0.0, 0, 0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            FROM roster
+        """)
+
+        self.connection.commit()
+        print("Processed stats initialized with roster data.")
+
+    def fetch_processed_stats(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM processed_stats")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
