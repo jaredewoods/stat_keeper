@@ -121,6 +121,7 @@ class OutputFrame(QWidget):
         layout = QVBoxLayout(self.stats_tab)
         stats_table_widget = QTableWidget(self.stats_tab)
         layout.addWidget(stats_table_widget)
+        self.load_stats_tab(stats_table_widget)
         self.stats_tab.setLayout(layout)
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 

@@ -94,11 +94,17 @@ class PlayerStatsDAO:
         print("Last added row deleted.")
 
     def aggregate_and_update_stats(self):
-        headers, raw_data = self.fetch_all_player_stats()
+        last_processed_id = self.get_last_processed_record()
+
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM raw_stats WHERE rowid > ?", (last_processed_id,))
+            new_data = cursor.fetchall()
+            headers = [description[0] for description in cursor.description]
 
         aggregated_stats = {}
 
-        for event in raw_data:
+        for event in new_data:
             jersey_no = event[headers.index('JerseyNo')]
             first_name = event[headers.index('FirstName')]
             last_name = event[headers.index('LastName')]
@@ -177,3 +183,10 @@ class PlayerStatsDAO:
             cursor.execute("DELETE FROM processed_stats")
             connection.commit()
         print("All data cleared from raw_stats and processed_stats tables.")
+
+    def get_last_processed_record(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT MAX(rowid) FROM processed_stats")
+            result = cursor.fetchone()
+            return result[0] if result else 0

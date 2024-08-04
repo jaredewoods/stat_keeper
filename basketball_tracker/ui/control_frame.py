@@ -11,11 +11,11 @@ CONTROL_BUTTON_LABELS = [
     ("< 10", "Go back 10 seconds"),
     (">>", "Change playback speed"),
     ("O", "Capture current frame"),
-    ("O + II", "Capture and pause"),
+    ("clear", "clears all tables"),
     ("II", "Pause playback"),
     ("undo", "Undo last action"),
-    ("Play", "Play the video"),
-    ("Enter", "Log current entries")
+    ("play", "Play the video"),
+    ("enter", "Log current entries")
 ]
 
 class ControlFrame(QWidget):
@@ -134,14 +134,13 @@ class ControlFrame(QWidget):
             self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
         if n == "O":
             self.sd.SIG_CaptureButtonClicked.emit()
-        if n == "O + II":
-            self.sd.SIG_CaptureButtonClicked.emit()
-            self.sd.SIG_PauseButtonClicked.emit()
+        if n == "clear":
+            self.sd.SIG_ClearAllTables.emit()
         if n == "II":
             self.sd.SIG_PauseButtonClicked.emit()
         if n == "undo":
             self.sd.SIG_UndoButtonClicked.emit()
-        if n == "Play":
+        if n == "play":
             self.sd.SIG_PlayButtonClicked.emit()
-        if n == "Enter":
+        if n == "enter":
             self.sd.SIG_LogEntriesButtonClicked.emit()
