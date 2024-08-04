@@ -126,7 +126,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
     def load_stats_tab(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_all_player_stats()
+        headers, data = self.player_stats_dao.fetch_all_processed_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()

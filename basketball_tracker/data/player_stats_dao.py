@@ -162,4 +162,11 @@ class PlayerStatsDAO:
                 self.update_processed_stats(cursor, stats)
             connection.commit()
 
+    def fetch_all_processed_stats(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM processed_stats")
+            data = cursor.fetchall()
+            headers = [description[0] for description in cursor.description]
+            return headers, data
 
