@@ -170,3 +170,10 @@ class PlayerStatsDAO:
             headers = [description[0] for description in cursor.description]
             return headers, data
 
+    def clear_all_tables(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM raw_stats")
+            cursor.execute("DELETE FROM processed_stats")
+            connection.commit()
+        print("All data cleared from raw_stats and processed_stats tables.")

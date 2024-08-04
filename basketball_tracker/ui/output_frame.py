@@ -142,7 +142,6 @@ class OutputFrame(QWidget):
         table_widget.setRowCount(len(data))
 
         for row_idx, row_data in enumerate(data):
-            print(f"Populating row {row_idx} with data: {row_data}")
             for col_idx, col_data in enumerate(row_data):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 

@@ -174,6 +174,7 @@ class Main(QObject):
 
     def connect_signals_to_slots(self):
         self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
+        self.sd.SIG_ClearAllTables.connect(self.player_stats_dao.clear_all_tables)
         self.sd.SIG_FieldDataRetrieved.connect(self.player_stats_dao.update_player_stats)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.append_event_log)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_database_tab)
