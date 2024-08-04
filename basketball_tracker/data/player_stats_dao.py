@@ -1,32 +1,33 @@
-# player_stats_dao.py
-
 import sqlite3
-import os
 from PyQt6.QtCore import Qt, pyqtSlot
 
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
+        self.connection = self.connect()
 
+    # Connection Methods
     def connect(self):
         return sqlite3.connect(self.db_path)
 
-    def fetch_all_player_stats(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM raw_stats")
-            data = cursor.fetchall()
-            headers = [description[0] for description in cursor.description]
-            return headers, data
+    def close_db_connection(self):
+        if self.connection:
+            self.connection.close()
 
-    def fetch_player_stats_sans_headers(self, jersey_no):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM raw_stats WHERE JerseyNo=?", (jersey_no,))
-            return cursor.fetchall()
+    # Raw Stats Methods
+    def fetch_raw_stats(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM raw_stats")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
 
-    # TODO: why won't '@pyqtSlot()' work here?
-    def update_player_stats(self, data):
+    def fetch_raw_stats_sans_headers(self, jersey_no):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM raw_stats WHERE JerseyNo=?", (jersey_no,))
+        return cursor.fetchall()
+
+    def update_raw_stats(self, data):
         date = data['date']
         time = data['time']
         venue = data['venue']
@@ -39,17 +40,77 @@ class PlayerStatsDAO:
         last_name = player_info[1]
         first_name = " ".join(player_info[2:])
 
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """INSERT INTO raw_stats 
-                   (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
-            )
-            connection.commit()
-        self.aggregate_and_update_stats()
+        cursor = self.connection.cursor()
+        cursor.execute(
+            """INSERT INTO raw_stats 
+               (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
+        )
+        self.connection.commit()
+        self.process_raw_stats()
         print(f"Player stats updated for: {first_name} {last_name}")
+
+    def process_raw_stats(self):
+        headers, raw_data = self.fetch_raw_stats()
+
+        aggregated_stats = {}
+
+        roster_data = self.fetch_roster()[1]  # Only data, skip headers
+
+        for player in roster_data:
+            jersey_no, first_name, last_name = player
+            player_key = (jersey_no, first_name, last_name)
+
+            if player_key not in aggregated_stats:
+                aggregated_stats[player_key] = {
+                    'JerseyNo': jersey_no,
+                    'FirstName': first_name,
+                    'LastName': last_name,
+                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
+                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
+                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
+                    'SFL': 0,
+                }
+
+        for event in raw_data:
+            jersey_no = event[headers.index('JerseyNo')]
+            first_name = event[headers.index('FirstName')]
+            last_name = event[headers.index('LastName')]
+            player_key = (jersey_no, first_name, last_name)
+
+            if player_key not in aggregated_stats:
+                aggregated_stats[player_key] = {
+                    'JerseyNo': jersey_no,
+                    'FirstName': first_name,
+                    'LastName': last_name,
+                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
+                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
+                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
+                    'SFL': 0,
+                }
+
+            event_code = event[headers.index('Code')]
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("DELETE FROM processed_stats")
+
+        for player_key, stats in aggregated_stats.items():
+            stats['FG%'] = stats['FGM'] / stats['FGA'] if stats['FGA'] > 0 else 0
+            stats['3P%'] = stats['3PM'] / stats['3PA'] if stats['3PA'] > 0 else 0
+            stats['FT%'] = stats['FTM'] / stats['FTA'] if stats['FTA'] > 0 else 0
+            self.update_processed_stats(cursor, stats)
+        self.connection.commit()
+
+    # Processed Stats Methods
+
+    def fetch_processed_stats(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM processed_stats")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
 
     @staticmethod
     def update_processed_stats(cursor, updated_stats):
@@ -84,152 +145,60 @@ class PlayerStatsDAO:
             updated_stats['SFL']
         ))
 
+    # Utility Methods
     def delete_last_added_row(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """DELETE FROM raw_stats
-                   WHERE rowid = (SELECT rowid FROM raw_stats ORDER BY rowid DESC LIMIT 1)"""
-            )
-            connection.commit()
+        cursor = self.connection.cursor()
+        cursor.execute(
+            """DELETE FROM raw_stats
+               WHERE rowid = (SELECT rowid FROM raw_stats ORDER BY rowid DESC LIMIT 1)"""
+        )
+        self.connection.commit()
         print("Last added row deleted.")
 
-    def aggregate_and_update_stats(self):
-        headers, raw_data = self.fetch_all_player_stats()
-
-        aggregated_stats = {}
-
-        # Fetch all players from the roster using RostersDAO
-        roster_data = self.fetch_all_roster()[1]  # Only data, skip headers
-
-        # Initialize stats for all players
-        for player in roster_data:
-            jersey_no, first_name, last_name = player
-            player_key = (jersey_no, first_name, last_name)
-
-            if player_key not in aggregated_stats:
-                aggregated_stats[player_key] = {
-                    'JerseyNo': jersey_no,
-                    'FirstName': first_name,
-                    'LastName': last_name,
-                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
-                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
-                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
-                    'SFL': 0,
-                }
-
-        # Aggregate stats from raw_data
-        for event in raw_data:
-            jersey_no = event[headers.index('JerseyNo')]
-            first_name = event[headers.index('FirstName')]
-            last_name = event[headers.index('LastName')]
-            player_key = (jersey_no, first_name, last_name)
-
-            if player_key not in aggregated_stats:
-                aggregated_stats[player_key] = {
-                    'JerseyNo': jersey_no,
-                    'FirstName': first_name,
-                    'LastName': last_name,
-                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
-                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
-                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
-                    'SFL': 0,
-                }
-
-            event_code = event[headers.index('Code')]
-            # Update aggregated_stats based on event_code (no changes needed here)
-
-        with self.connect() as connection:
-            cursor = connection.cursor()
-
-            # Clear processed_stats table before inserting new aggregated stats
-            cursor.execute("DELETE FROM processed_stats")
-
-            for player_key, stats in aggregated_stats.items():
-                stats['FG%'] = stats['FGM'] / stats['FGA'] if stats['FGA'] > 0 else 0
-                stats['3P%'] = stats['3PM'] / stats['3PA'] if stats['3PA'] > 0 else 0
-                stats['FT%'] = stats['FTM'] / stats['FTA'] if stats['FTA'] > 0 else 0
-                self.update_processed_stats(cursor, stats)
-            connection.commit()
-
-    def fetch_all_processed_stats(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM processed_stats")
-            data = cursor.fetchall()
-            headers = [description[0] for description in cursor.description]
-            return headers, data
-
     def clear_all_tables(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("DELETE FROM raw_stats")
-            cursor.execute("DELETE FROM processed_stats")
-            connection.commit()
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM raw_stats")
+        cursor.execute("DELETE FROM processed_stats")
+        self.connection.commit()
         print("All data cleared from raw_stats and processed_stats tables.")
 
+    # Roster Methods
     def fetch_roster_sans_headers(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM roster")
-            return cursor.fetchall()
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM roster")
+        return cursor.fetchall()
 
-    def fetch_all_roster(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM roster")
-            data = cursor.fetchall()
-            headers = [description[0] for description in cursor.description]
-            return headers, data
+    def fetch_roster(self):
+        cursor = self.connection.cursor()
+        cursor.execute(f"SELECT * FROM roster")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
 
     def update_roster(self, jersey_no, last_name, first_name):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                "UPDATE roster SET LastName=?, FirstName=? WHERE JerseyNo=?",
-                (last_name, first_name, jersey_no)
-            )
-            connection.commit()
+        cursor = self.connection.cursor()
+        cursor.execute(
+            "UPDATE roster SET LastName=?, FirstName=? WHERE JerseyNo=?",
+            (last_name, first_name, jersey_no)
+        )
+        self.connection.commit()
 
+    # Event Methods
     def fetch_events_sans_headers(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute("SELECT Code, Description FROM basketball_events")
-            return cursor.fetchall()
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT Code, Description FROM basketball_events")
+        return cursor.fetchall()
 
-    def fetch_all_events(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM basketball_events")
-            data = cursor.fetchall()
-            headers = [description[0] for description in cursor.description]
-            return headers, data
-
-    def update_event(self, code, description):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                "UPDATE basketball_events SET Description=? WHERE Code=?",
-                (description, code)
-            )
-            connection.commit()
-
-    def fetch_all_events_sans_headers(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-
-    def fetch_event_codes(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(f"SELECT Code FROM basketball_events")
-            data = cursor.fetchall()
-            codes = [row[0] for row in data]
-            return codes
+    def fetch_events(self):
+        cursor = self.connection.cursor()
+        cursor.execute(f"SELECT * FROM basketball_events")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
 
     def fetch_event_descriptions(self):
-        with self.connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(f"SELECT Description FROM basketball_events")
-            data = cursor.fetchall()
-            descriptions = [row[0] for row in data]
-            return descriptions
+        cursor = self.connection.cursor()
+        cursor.execute(f"SELECT Description FROM basketball_events")
+        data = cursor.fetchall()
+        descriptions = [row[0] for row in data]
+        return descriptions

@@ -79,7 +79,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.database_tab, "🔲 Database")
 
     def load_database_data(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_all_player_stats()
+        headers, data = self.player_stats_dao.fetch_raw_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
@@ -99,7 +99,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.roster_tab, "🔲 Roster")
 
     def load_roster_tab(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_all_roster()
+        headers, data = self.player_stats_dao.fetch_roster()
         self.populate_table_widget(table_widget, headers, data)
 
     def setup_events_tab(self):
@@ -111,7 +111,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.events_tab, "🔲 Events")
 
     def load_events_tab(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_all_events()
+        headers, data = self.player_stats_dao.fetch_events()
         self.populate_table_widget(table_widget, headers, data)
 
     def setup_stats_tab(self):
@@ -125,7 +125,7 @@ class OutputFrame(QWidget):
 
     def load_stats_tab(self, table_widget):
         print("Loading stats tab data...")  # Debugging print
-        headers, data = self.player_stats_dao.fetch_all_processed_stats()
+        headers, data = self.player_stats_dao.fetch_processed_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     def refresh_stats_tab(self):
