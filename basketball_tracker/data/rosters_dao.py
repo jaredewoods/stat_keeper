@@ -3,7 +3,7 @@
 import sqlite3
 
 class RostersDAO:
-    def __init__(self, db_path='data/rosters.sqlite'):
+    def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
 
     def connect(self):
