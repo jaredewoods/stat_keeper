@@ -15,13 +15,11 @@ class OutputFrame(QWidget):
         self.events_tab = QWidget()
         self.roster_tab = QWidget()
         self.stats_tab = QWidget()
-        self.database_tab = None
+        self.raw_stats_tab = None
         self.tabs = None
         self.event_log_tab = None
         self.debug_log_tab = None
         self.stats_tab = None
-        self.player_stats_dao = PlayerStatsDAO()
-        self.player_stats_dao = PlayerStatsDAO()
         self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
@@ -31,7 +29,7 @@ class OutputFrame(QWidget):
 
         self.setup_debug_log_tab()
         self.setup_event_log_tab()
-        self.setup_database_tab()
+        self.setup_raw_stats_tab()
         self.setup_roster_tab()
         self.setup_events_tab()
         self.setup_stats_tab()
@@ -69,24 +67,24 @@ class OutputFrame(QWidget):
                      f"{data['context']},{data['timecode']},{data['player']},{data['event']}")
         self.event_log_text.append(log_entry)
 
-    def setup_database_tab(self):
-        self.database_tab = QWidget()
-        layout = QVBoxLayout(self.database_tab)
-        database_table_widget = QTableWidget(self.database_tab)
-        layout.addWidget(database_table_widget)
-        self.load_database_data(database_table_widget)
-        self.database_tab.setLayout(layout)
-        self.tabs.addTab(self.database_tab, "🔲 Database")
+    def setup_raw_stats_tab(self):
+        self.raw_stats_tab = QWidget()
+        layout = QVBoxLayout(self.raw_stats_tab)
+        raw_stats_table_widget = QTableWidget(self.raw_stats_tab)
+        layout.addWidget(raw_stats_table_widget)
+        self.load_raw_stats_data(raw_stats_table_widget)
+        self.raw_stats_tab.setLayout(layout)
+        self.tabs.addTab(self.raw_stats_tab, "🔲 Raw Stats")
 
-    def load_database_data(self, table_widget):
+    def load_raw_stats_data(self, table_widget):
         headers, data = self.player_stats_dao.fetch_raw_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
     def refresh_database_tab(self):
-        table_widget = self.database_tab.findChild(QTableWidget)
+        table_widget = self.raw_stats_tab.findChild(QTableWidget)
         if table_widget:
-            self.load_database_data(table_widget)
+            self.load_raw_stats_data(table_widget)
         table_widget.scrollToBottom()
 
     def setup_roster_tab(self):
