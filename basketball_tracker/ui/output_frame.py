@@ -121,7 +121,6 @@ class OutputFrame(QWidget):
         layout = QVBoxLayout(self.stats_tab)
         stats_table_widget = QTableWidget(self.stats_tab)
         layout.addWidget(stats_table_widget)
-        self.load_stats_tab(stats_table_widget)
         self.stats_tab.setLayout(layout)
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
@@ -137,13 +136,16 @@ class OutputFrame(QWidget):
         table_widget.scrollToBottom()
 
     def populate_table_widget(self, table_widget, headers, data):
+        table_widget.clear()
         table_widget.setColumnCount(len(headers))
         table_widget.setHorizontalHeaderLabels(headers)
         table_widget.setRowCount(len(data))
 
         for row_idx, row_data in enumerate(data):
+            print(f"Populating row {row_idx} with data: {row_data}")
             for col_idx, col_data in enumerate(row_data):
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
-        if headers:
+        if headers and data:
             table_widget.scrollToItem(table_widget.item(table_widget.rowCount() - 1, 0))
+
