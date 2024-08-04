@@ -2,7 +2,7 @@ import sqlite3
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
-from data.raw_stats_dao import RawStatsDAO
+from data.player_stats_dao import PlayerStatsDAO
 from data.rosters_dao import RostersDAO
 from data.events_dao import EventsDAO
 
@@ -24,7 +24,7 @@ class OutputFrame(QWidget):
         self.stats_tab = None
         self.rosters_dao = RostersDAO()
         self.events_dao = EventsDAO()
-        self.raw_stats_dao = RawStatsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -81,7 +81,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.database_tab, "🔲 Database")
 
     def load_database_data(self, table_widget):
-        headers, data = self.raw_stats_dao.fetch_all_player_stats()
+        headers, data = self.player_stats_dao.fetch_all_player_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
@@ -126,7 +126,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
     def load_stats_tab(self, table_widget):
-        headers, data = self.raw_stats_dao.fetch_all_player_stats()
+        headers, data = self.player_stats_dao.fetch_all_player_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()

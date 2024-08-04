@@ -7,7 +7,7 @@ from core.signal_distributor import SignalDistributor
 from core.state_manager import StateManager
 from data.rosters_dao import RostersDAO
 from data.events_dao import EventsDAO
-from data.raw_stats_dao import RawStatsDAO
+from data.player_stats_dao import PlayerStatsDAO
 from ui.floating_control import FloatingControl
 from video.video_window import VideoWindow
 from video.video_control_window import VideoControlWindow
@@ -27,7 +27,7 @@ class Main(QObject):
         self.sm = StateManager(self.sd)
         self.rosters_dao = RostersDAO()
         self.events_dao = EventsDAO()
-        self.player_stats_dao = RawStatsDAO()
+        self.player_stats_dao = PlayerStatsDAO()
 
         self.load_configurations()
         self.main_window = MainWindow(self.sd, self.sm)
