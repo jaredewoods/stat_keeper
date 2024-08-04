@@ -1,10 +1,10 @@
-# player_stats.py
+# raw_stats_dao.py
 
 import sqlite3
 import os
 from PyQt6.QtCore import Qt, pyqtSlot
 
-class PlayerStatsDAO:
+class RawStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
 
@@ -14,7 +14,7 @@ class PlayerStatsDAO:
     def fetch_all_player_stats(self):
         with self.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM player_stats")
+            cursor.execute("SELECT * FROM raw_stats")
             data = cursor.fetchall()
             headers = [description[0] for description in cursor.description]
             return headers, data
@@ -22,7 +22,7 @@ class PlayerStatsDAO:
     def fetch_player_stats_sans_headers(self, jersey_no):
         with self.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM player_stats WHERE JerseyNo=?", (jersey_no,))
+            cursor.execute("SELECT * FROM raw_stats WHERE JerseyNo=?", (jersey_no,))
             return cursor.fetchall()
 
     # TODO: why won't '@pyqtSlot()' work here?
@@ -42,7 +42,7 @@ class PlayerStatsDAO:
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(
-                """INSERT INTO player_stats 
+                """INSERT INTO raw_stats 
                    (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
@@ -82,8 +82,8 @@ class PlayerStatsDAO:
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(
-                """DELETE FROM player_stats
-                   WHERE rowid = (SELECT rowid FROM player_stats ORDER BY rowid DESC LIMIT 1)"""
+                """DELETE FROM raw_stats
+                   WHERE rowid = (SELECT rowid FROM raw_stats ORDER BY rowid DESC LIMIT 1)"""
             )
             connection.commit()
         print("Last added row deleted.")

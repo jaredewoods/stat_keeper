@@ -1,0 +1,22 @@
+(
+    PTS   integer,
+    FGM   integer,
+    FGA   integer,
+    "FG%" REAL,
+    "3PM" integer,
+    "3PA" integer,
+    "3P%" REAL,
+    FTM   integer,
+    FTA   integer,
+    "FT%" REAL,
+    OREB  integer,
+    DREB  integer,
+    REB   integer,
+    AST   integer,
+    TOV   integer,
+    STL   integer,
+    BLK   integer,
+    PFL   integer,
+    SFL   integer,
+    IMP   integer
+, GP integer)
