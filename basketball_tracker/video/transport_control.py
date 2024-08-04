@@ -3,9 +3,12 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QSize, Qt, QEvent
 import os
 
+
 class TransportControl(QMainWindow):
     def __init__(self, signal_distributor=None, state_manager=None):
         super().__init__()
+        self.buttons = None
+        self.button_widgets = None
         self.sd = signal_distributor
         self.sm = state_manager
         self.initUI()
@@ -65,7 +68,8 @@ class TransportControl(QMainWindow):
             btn.enterEvent = self.create_event_handler(btn, button[1].replace('.png', '_hover.png'))
             btn.leaveEvent = self.create_event_handler(btn, button[1], button[1].replace('.png', '_on.png'))
             btn.mousePressEvent = self.create_event_handler(btn, button[1].replace('.png', '_pressed.png'))
-            btn.mouseReleaseEvent = self.create_event_handler(btn, button[1], button[1].replace('.png', '_on.png'), True, action=button[2])
+            btn.mouseReleaseEvent = self.create_event_handler(btn, button[1], button[1].replace('.png', '_on.png'),
+                                                              True, action=button[2])
 
             self.button_widgets.append(btn)
             layout.addWidget(btn)
@@ -73,7 +77,8 @@ class TransportControl(QMainWindow):
         self.setWindowTitle('Transport Control')
         self.setGeometry(300, 300, 800, 100)
 
-    def create_event_handler(self, button, icon_path, on_icon_path=None, toggle_state=False, action=None):
+    @staticmethod
+    def create_event_handler(button, icon_path, on_icon_path=None, toggle_state=False, action=None):
         def handler(event):
             if toggle_state and event.button() == Qt.MouseButton.LeftButton:
                 button.state = not button.state
@@ -97,6 +102,7 @@ class TransportControl(QMainWindow):
     def pause_action(self):
         self.sd.SIG_DebugMessage.emit("PauseButtonClicked")
         self.sd.SIG_PauseButtonClicked.emit()
+
     def capture_action(self):
         self.sd.SIG_DebugMessage.emit("CaptureButtonClicked")
         self.sd.SIG_CaptureButtonClicked.emit()
@@ -104,9 +110,11 @@ class TransportControl(QMainWindow):
     def play_action(self):
         self.sd.SIG_DebugMessage.emit("PlayButtonClicked")
         self.sd.SIG_PlayButtonClicked.emit()
+
     def forward_action(self):
         self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
         self.sd.SIG_DebugMessage.emit("ChangePlaybackSpeedButtonClicked")
+
 
 if __name__ == '__main__':
     app = QApplication([])

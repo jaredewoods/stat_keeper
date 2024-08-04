@@ -1,6 +1,8 @@
 import sqlite3
 from PyQt6.QtCore import Qt, pyqtSlot
 
+
+# noinspection SqlWithoutWhere
 class PlayerStatsDAO:
     def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
@@ -48,102 +50,7 @@ class PlayerStatsDAO:
             (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
         )
         self.connection.commit()
-        self.process_raw_stats()
         print(f"Player stats updated for: {first_name} {last_name}")
-
-    def process_raw_stats(self):
-        headers, raw_data = self.fetch_raw_stats()
-
-        aggregated_stats = {}
-
-        roster_data = self.fetch_roster()[1]  # Only data, skip headers
-
-        for player in roster_data:
-            jersey_no, first_name, last_name = player
-            player_key = (jersey_no, first_name, last_name)
-
-            if player_key not in aggregated_stats:
-                aggregated_stats[player_key] = {
-                    'JerseyNo': jersey_no,
-                    'FirstName': first_name,
-                    'LastName': last_name,
-                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
-                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
-                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
-                    'SFL': 0,
-                }
-
-        for event in raw_data:
-            jersey_no = event[headers.index('JerseyNo')]
-            first_name = event[headers.index('FirstName')]
-            last_name = event[headers.index('LastName')]
-            player_key = (jersey_no, first_name, last_name)
-
-            if player_key not in aggregated_stats:
-                aggregated_stats[player_key] = {
-                    'JerseyNo': jersey_no,
-                    'FirstName': first_name,
-                    'LastName': last_name,
-                    'PTS': 0, 'FGM': 0, 'FGA': 0, '3PM': 0, '3PA': 0,
-                    'FTM': 0, 'FTA': 0, 'OREB': 0, 'DREB': 0, 'REB': 0,
-                    'AST': 0, 'TOV': 0, 'STL': 0, 'BLK': 0, 'PFL': 0,
-                    'SFL': 0,
-                }
-
-            event_code = event[headers.index('Code')]
-
-        cursor = self.connection.cursor()
-
-        cursor.execute("DELETE FROM processed_stats")
-
-        for player_key, stats in aggregated_stats.items():
-            stats['FG%'] = stats['FGM'] / stats['FGA'] if stats['FGA'] > 0 else 0
-            stats['3P%'] = stats['3PM'] / stats['3PA'] if stats['3PA'] > 0 else 0
-            stats['FT%'] = stats['FTM'] / stats['FTA'] if stats['FTA'] > 0 else 0
-            self.update_processed_stats(cursor, stats)
-        self.connection.commit()
-
-    # Processed Stats Methods
-
-    def fetch_processed_stats(self):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM processed_stats")
-        data = cursor.fetchall()
-        headers = [description[0] for description in cursor.description]
-        return headers, data
-
-    @staticmethod
-    def update_processed_stats(cursor, updated_stats):
-        query = r"""
-        INSERT OR REPLACE INTO "processed_stats" 
-        (JerseyNo, FirstName, LastName, PTS, FGM, FGA, "FG%", "3PM", "3PA", "3P%", FTM, FTA, "FT%", OREB, DREB, REB, AST, TOV, STL, BLK, PFL, SFL) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        print(f"Inserting stats for player {updated_stats['FirstName']} {updated_stats['LastName']}: {updated_stats}")
-        cursor.execute(query, (
-            updated_stats['JerseyNo'],
-            updated_stats['FirstName'],
-            updated_stats['LastName'],
-            updated_stats['PTS'],
-            updated_stats['FGM'],
-            updated_stats['FGA'],
-            updated_stats['FG%'],
-            updated_stats['3PM'],
-            updated_stats['3PA'],
-            updated_stats['3P%'],
-            updated_stats['FTM'],
-            updated_stats['FTA'],
-            updated_stats['FT%'],
-            updated_stats['OREB'],
-            updated_stats['DREB'],
-            updated_stats['REB'],
-            updated_stats['AST'],
-            updated_stats['TOV'],
-            updated_stats['STL'],
-            updated_stats['BLK'],
-            updated_stats['PFL'],
-            updated_stats['SFL']
-        ))
 
     # Utility Methods
     def delete_last_added_row(self):

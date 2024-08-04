@@ -20,6 +20,13 @@ VIDEO_BROWSER_PATH = ""
 class Main(QObject):
     def __init__(self):
         super().__init__()
+        self.control_frame_action = None
+        self.output_frame_action = None
+        self.input_frame_action = None
+        self.transport_control_action = None
+        self.video_control_window_action = None
+        self.floating_control_action = None
+        self.video_window_action = None
         self.app = QApplication(sys.argv)
         self.sd = SignalDistributor()
         self.sm = StateManager(self.sd)
@@ -50,13 +57,9 @@ class Main(QObject):
         sys.exit(self.app.exec())
 
     def setup_menu(self):
-        # Set up the menu bar and menus
         menu_bar = QMenuBar(self.main_window)
-
-        # File Menu
         file_menu = menu_bar.addMenu("File")
 
-        # Open Action
         open_action = QAction("Open", self.main_window)
         open_action.triggered.connect(self.video_control_window.open_file)  # Connect to open_file method
         file_menu.addAction(open_action)
@@ -65,7 +68,6 @@ class Main(QObject):
         quit_action.triggered.connect(QApplication.instance().quit)
         file_menu.addAction(quit_action)
 
-        # Window Menu
         window_menu = menu_bar.addMenu("Window")
 
         self.video_window_action = QAction("Video Window", self.main_window, checkable=True)
@@ -84,7 +86,6 @@ class Main(QObject):
         self.transport_control_action.triggered.connect(self.toggle_transport_control)
         window_menu.addAction(self.transport_control_action)
 
-        # Adding Control, Input, and Output Frames to Window Menu
         self.control_frame_action = QAction("Control Frame", self.main_window, checkable=True)
         self.control_frame_action.setChecked(True)
         self.control_frame_action.triggered.connect(self.toggle_control_frame)
@@ -100,7 +101,6 @@ class Main(QObject):
         self.output_frame_action.triggered.connect(self.toggle_output_frame)
         window_menu.addAction(self.output_frame_action)
 
-        # Edit Menu
         edit_menu = menu_bar.addMenu("Edit")
 
         edit_database_action = QAction("Edit Database", self.main_window)
@@ -169,28 +169,28 @@ class Main(QObject):
         VIDEO_BROWSER_PATH = _settings.value('Paths/VIDEO_BROWSER_PATH', "")
 
     def connect_signals_to_slots(self):
-        self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
         self.sd.SIG_ClearAllTables.connect(self.player_stats_dao.clear_all_tables)
         self.sd.SIG_FieldDataRetrieved.connect(self.player_stats_dao.update_raw_stats)
+        self.sd.SIG_UndoButtonClicked.connect(self.player_stats_dao.delete_last_added_row)
+        self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.append_event_log)
-        self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_database_tab)
+        self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_raw_stats_tab)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_stats_tab)
+        self.sd.SIG_UndoButtonClicked.connect(self.main_window.output_frame.refresh_raw_stats_tab)
         self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
         self.sd.SIG_RosterPlayerSelected.connect(self.main_window.input_frame.player_selected)
+        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.input_frame.show_event_entry_tab)
+        self.sd.SIG_LogEntriesButtonClicked.connect(self.main_window.input_frame.log_entries)
+        self.sd.SIG_EnterCapturedTimecode.connect(self.main_window.input_frame.enter_captured_timecode)
+        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.control_frame.capture_timecode)
+        self.sd.SIG_TimeUpdate.connect(self.main_window.control_frame.update_time)
         self.sd.SIG_BackToZeroButtonClicked.connect(self.video_control_window.back_to_zero)
         self.sd.SIG_Back20ButtonClicked.connect(self.video_control_window.back20)
         self.sd.SIG_Back10ButtonClicked.connect(self.video_control_window.back10)
         self.sd.SIG_ChangePlaybackSpeedButtonClicked.connect(self.video_control_window.change_playback_speed)
         self.sd.SIG_PauseButtonClicked.connect(self.video_control_window.pause_video)
-        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.control_frame.capture_timecode)
-        self.sd.SIG_CaptureButtonClicked.connect(self.main_window.input_frame.show_event_entry_tab)
-        self.sd.SIG_UndoButtonClicked.connect(self.player_stats_dao.delete_last_added_row)
-        self.sd.SIG_UndoButtonClicked.connect(self.main_window.output_frame.refresh_database_tab)
         self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)
-        self.sd.SIG_LogEntriesButtonClicked.connect(self.main_window.input_frame.log_entries)
         self.sd.SIG_ShowVideoWindow.connect(self.video_window.show)
-        self.sd.SIG_TimeUpdate.connect(self.main_window.control_frame.update_time)
-        self.sd.SIG_EnterCapturedTimecode.connect(self.main_window.input_frame.enter_captured_timecode)
         print("4 Signals and Slots connected")
 
 if __name__ == "__main__":

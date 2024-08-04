@@ -37,6 +37,7 @@ class OutputFrame(QWidget):
         main_layout.addWidget(self.tabs)
         self.setLayout(main_layout)
 
+    # Debug Tab
     def setup_debug_log_tab(self):
         self.debug_log_tab = QWidget()
         layout = QVBoxLayout(self.debug_log_tab)
@@ -51,6 +52,7 @@ class OutputFrame(QWidget):
     def append_debug_message(self, message):
         self.debug_display.append(message)
 
+    # Event Tab
     def setup_event_log_tab(self):
         self.event_log_tab = QWidget()
         layout = QVBoxLayout(self.event_log_tab)
@@ -67,6 +69,7 @@ class OutputFrame(QWidget):
                      f"{data['context']},{data['timecode']},{data['player']},{data['event']}")
         self.event_log_text.append(log_entry)
 
+    # Raw Stats Tab
     def setup_raw_stats_tab(self):
         self.raw_stats_tab = QWidget()
         layout = QVBoxLayout(self.raw_stats_tab)
@@ -81,12 +84,13 @@ class OutputFrame(QWidget):
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
-    def refresh_database_tab(self):
+    def refresh_raw_stats_tab(self):
         table_widget = self.raw_stats_tab.findChild(QTableWidget)
         if table_widget:
             self.load_raw_stats_data(table_widget)
         table_widget.scrollToBottom()
 
+    # Roster Tab
     def setup_roster_tab(self):
         self.roster_tab = QWidget()
         layout = QVBoxLayout(self.roster_tab)
@@ -100,6 +104,7 @@ class OutputFrame(QWidget):
         headers, data = self.player_stats_dao.fetch_roster()
         self.populate_table_widget(table_widget, headers, data)
 
+    # Events Tab
     def setup_events_tab(self):
         layout = QVBoxLayout(self.events_tab)
         events_table_widget = QTableWidget(self.events_tab)
@@ -121,9 +126,10 @@ class OutputFrame(QWidget):
         self.stats_tab.setLayout(layout)
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
+    # Stats Tab
     def load_stats_tab(self, table_widget):
         print("Loading stats tab data...")  # Debugging print
-        headers, data = self.player_stats_dao.fetch_processed_stats()
+        headers, data = self.player_stats_dao.fetch_raw_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     def refresh_stats_tab(self):
@@ -133,7 +139,9 @@ class OutputFrame(QWidget):
             self.load_stats_tab(table_widget)
         table_widget.scrollToBottom()
 
-    def populate_table_widget(self, table_widget, headers, data):
+    # Helper
+    @staticmethod
+    def populate_table_widget(table_widget, headers, data):
         table_widget.clear()
         table_widget.setColumnCount(len(headers))
         table_widget.setHorizontalHeaderLabels(headers)
@@ -146,4 +154,3 @@ class OutputFrame(QWidget):
 
         if headers and data:
             table_widget.scrollToItem(table_widget.item(table_widget.rowCount() - 1, 0))
-
