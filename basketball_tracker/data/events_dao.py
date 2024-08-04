@@ -4,7 +4,7 @@ import sqlite3
 
 
 class EventsDAO:
-    def __init__(self, db_path='data/events.sqlite'):
+    def __init__(self, db_path='data/player_stats.sqlite'):
         self.db_path = db_path
 
     def connect(self):
