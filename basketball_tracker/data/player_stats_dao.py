@@ -148,31 +148,25 @@ class PlayerStatsDAO:
         # Initialize the update query and values
         update_query_parts = []
 
-        # Determine which stats to update based on the event type
+        # Update stats based on the event type
         if event == '2pt Field Goal':
             update_query_parts.append('PTS = PTS + 2')
             update_query_parts.append('FGM = FGM + 1')
             update_query_parts.append('FGA = FGA + 1')
-            update_query_parts.append('"FG%" = ROUND((CAST(FGM AS FLOAT) / FGA) * 100, 1)')
         elif event == '3pt Field Goal':
             update_query_parts.append('PTS = PTS + 3')
             update_query_parts.append('"3PM" = "3PM" + 1')
             update_query_parts.append('"3PA" = "3PA" + 1')
-            update_query_parts.append('"3P%" = ROUND((CAST("3PM" AS FLOAT) / "3PA") * 100, 1)')
         elif event == 'Free Throw':
             update_query_parts.append('PTS = PTS + 1')
             update_query_parts.append('FTM = FTM + 1')
             update_query_parts.append('FTA = FTA + 1')
-            update_query_parts.append('"FT%" = ROUND((CAST(FTM AS FLOAT) / FTA) * 100, 1)')
         elif event == 'Missed 2pt':
             update_query_parts.append('FGA = FGA + 1')
-            update_query_parts.append('"FG%" = ROUND((CAST(FGM AS FLOAT) / FGA) * 100, 1)')
         elif event == 'Missed 3pt':
             update_query_parts.append('"3PA" = "3PA" + 1')
-            update_query_parts.append('"3P%" = ROUND((CAST("3PM" AS FLOAT) / "3PA") * 100, 1)')
         elif event == 'Missed FT':
             update_query_parts.append('FTA = FTA + 1')
-            update_query_parts.append('"FT%" = ROUND((CAST(FTM AS FLOAT) / FTA) * 100, 1)')
         elif event == 'Off. Rebound':
             update_query_parts.append('OREB = OREB + 1')
             update_query_parts.append('REB = REB + 1')
@@ -192,14 +186,25 @@ class PlayerStatsDAO:
         elif event == 'Shooting Foul':
             update_query_parts.append('SFL = SFL + 1')
 
+        # Execute the first part of the update (statistical changes)
         if update_query_parts:
             update_query = "UPDATE processed_stats SET " + ", ".join(update_query_parts)
             update_query += " WHERE JerseyNo = ?"
             cursor = self.connection.cursor()
             cursor.execute(update_query, (jersey_no,))
             self.connection.commit()
-        else:
-            self.sd.SIG_DebugMessage.emit("No update query parts were generated, skipping update.")
+
+        # Now calculate the percentages based on the updated stats
+        percentage_update_query_parts = [
+            '"FG%" = ROUND((CAST(FGM AS FLOAT) / CASE WHEN FGA = 0 THEN 1 ELSE FGA END) * 100, 1)',
+            '"3P%" = ROUND((CAST("3PM" AS FLOAT) / CASE WHEN "3PA" = 0 THEN 1 ELSE "3PA" END) * 100, 1)',
+            '"FT%" = ROUND((CAST(FTM AS FLOAT) / CASE WHEN FTA = 0 THEN 1 ELSE FTA END) * 100, 1)'
+        ]
+
+        percentage_update_query = "UPDATE processed_stats SET " + ", ".join(percentage_update_query_parts)
+        percentage_update_query += " WHERE JerseyNo = ?"
+        cursor.execute(percentage_update_query, (jersey_no,))
+        self.connection.commit()
 
         # Emit the signal to refresh the UI
         self.sd.SIG_RawStatsProcessed.emit()
