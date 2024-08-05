@@ -1,11 +1,13 @@
 import sqlite3
 from PyQt6.QtCore import Qt, pyqtSlot
+from core.signal_distributor import SignalDistributor
 
 
 # noinspection SqlWithoutWhere
 class PlayerStatsDAO:
-    def __init__(self, db_path='data/player_stats.sqlite'):
-        self.db_path = db_path
+    def __init__(self, signal_distributor=None):
+        self.db_path = 'data/player_stats.sqlite'
+        self.sd = signal_distributor
         self.connection = self.connect()
         self.initialize_processed_stats()
 
@@ -16,42 +18,6 @@ class PlayerStatsDAO:
     def close_db_connection(self):
         if self.connection:
             self.connection.close()
-
-    # Raw Stats Methods
-    def fetch_raw_stats(self):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM raw_stats")
-        data = cursor.fetchall()
-        headers = [description[0] for description in cursor.description]
-        return headers, data
-
-    def fetch_raw_stats_sans_headers(self, jersey_no):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM raw_stats WHERE JerseyNo=?", (jersey_no,))
-        return cursor.fetchall()
-
-    def update_raw_stats(self, data):
-        date = data['date']
-        time = data['time']
-        venue = data['venue']
-        opponent = data['opponent']
-        context = data['context']
-        video_time = data['timecode']
-        event = data['event']
-        player_info = data['player'].strip().split()
-        jersey_no = player_info[0]
-        last_name = player_info[1]
-        first_name = " ".join(player_info[2:])
-
-        cursor = self.connection.cursor()
-        cursor.execute(
-            """INSERT INTO raw_stats 
-               (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
-        )
-        self.connection.commit()
-        print(f"Player stats updated for: {first_name} {last_name}")
 
     # Utility Methods
     def delete_last_added_row(self):
@@ -103,6 +69,53 @@ class PlayerStatsDAO:
         descriptions = [row[0] for row in data]
         return descriptions
 
+    # Raw Stats Methods
+    def fetch_raw_stats(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM raw_stats")
+        data = cursor.fetchall()
+        headers = [description[0] for description in cursor.description]
+        return headers, data
+
+    def fetch_raw_stats_sans_headers(self, jersey_no):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM raw_stats WHERE JerseyNo=?", (jersey_no,))
+        return cursor.fetchall()
+
+    def update_raw_stats(self, data):
+        try:
+            date = data['date']
+            time = data['time']
+            venue = data['venue']
+            opponent = data['opponent']
+            context = data['context']
+            video_time = data['timecode']
+            event = data['event']
+            player_info = data['player'].strip().split()
+
+            # Ensure that player_info contains at least 2 elements (jersey number and last name)
+            if len(player_info) < 2:
+                raise IndexError("Player information is incomplete. Expected at least Jersey Number and Last Name.")
+
+            jersey_no = player_info[0]
+            last_name = player_info[1]
+            first_name = " ".join(player_info[2:])
+
+            cursor = self.connection.cursor()
+            cursor.execute(
+                """INSERT INTO raw_stats 
+                   (Date, Time, Venue, Opponent, Context, VideoTime, JerseyNo, LastName, FirstName, Code)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (date, time, venue, opponent, context, video_time, jersey_no, last_name, first_name, event)
+            )
+            self.connection.commit()
+            print(f"Player stats updated for: {first_name} {last_name}")
+            self.update_processed_stats_based_on_raw(data)
+
+        except IndexError as e:
+            print(f"Error: {e}. Data not inserted into raw_stats.")  # Debugging print
+            # Optional: Emit a signal to notify the UI or log the error elsewhere
+
     # Processed Methods
     def initialize_processed_stats(self):
         cursor = self.connection.cursor()
@@ -118,7 +131,7 @@ class PlayerStatsDAO:
         """)
 
         self.connection.commit()
-        print("Processed stats initialized with roster data.")
+        print("3 Processed stats initialized with roster data.")
 
     def fetch_processed_stats(self):
         cursor = self.connection.cursor()
@@ -126,3 +139,67 @@ class PlayerStatsDAO:
         data = cursor.fetchall()
         headers = [description[0] for description in cursor.description]
         return headers, data
+
+    def update_processed_stats_based_on_raw(self, data):
+        # Extract relevant fields from the data
+        jersey_no = data['player'].strip().split()[0]
+        event = data['event']
+
+        # Initialize the update query and values
+        update_query_parts = []
+
+        # Determine which stats to update based on the event type
+        if event == '2pt Field Goal':
+            update_query_parts.append('PTS = PTS + 2')
+            update_query_parts.append('FGM = FGM + 1')
+            update_query_parts.append('FGA = FGA + 1')
+            update_query_parts.append('"FG%" = ROUND((CAST(FGM AS FLOAT) / FGA) * 100, 1)')
+        elif event == '3pt Field Goal':
+            update_query_parts.append('PTS = PTS + 3')
+            update_query_parts.append('"3PM" = "3PM" + 1')
+            update_query_parts.append('"3PA" = "3PA" + 1')
+            update_query_parts.append('"3P%" = ROUND((CAST("3PM" AS FLOAT) / "3PA") * 100, 1)')
+        elif event == 'Free Throw':
+            update_query_parts.append('PTS = PTS + 1')
+            update_query_parts.append('FTM = FTM + 1')
+            update_query_parts.append('FTA = FTA + 1')
+            update_query_parts.append('"FT%" = ROUND((CAST(FTM AS FLOAT) / FTA) * 100, 1)')
+        elif event == 'Missed 2pt':
+            update_query_parts.append('FGA = FGA + 1')
+            update_query_parts.append('"FG%" = ROUND((CAST(FGM AS FLOAT) / FGA) * 100, 1)')
+        elif event == 'Missed 3pt':
+            update_query_parts.append('"3PA" = "3PA" + 1')
+            update_query_parts.append('"3P%" = ROUND((CAST("3PM" AS FLOAT) / "3PA") * 100, 1)')
+        elif event == 'Missed FT':
+            update_query_parts.append('FTA = FTA + 1')
+            update_query_parts.append('"FT%" = ROUND((CAST(FTM AS FLOAT) / FTA) * 100, 1)')
+        elif event == 'Off. Rebound':
+            update_query_parts.append('OREB = OREB + 1')
+            update_query_parts.append('REB = REB + 1')
+        elif event == 'Def. Rebound':
+            update_query_parts.append('DREB = DREB + 1')
+            update_query_parts.append('REB = REB + 1')
+        elif event == 'Assist':
+            update_query_parts.append('AST = AST + 1')
+        elif event == 'Turnover':
+            update_query_parts.append('TOV = TOV + 1')
+        elif event == 'Steal':
+            update_query_parts.append('STL = STL + 1')
+        elif event == 'Block':
+            update_query_parts.append('BLK = BLK + 1')
+        elif event == 'Personal Foul':
+            update_query_parts.append('PFL = PFL + 1')
+        elif event == 'Shooting Foul':
+            update_query_parts.append('SFL = SFL + 1')
+
+        if update_query_parts:
+            update_query = "UPDATE processed_stats SET " + ", ".join(update_query_parts)
+            update_query += " WHERE JerseyNo = ?"
+            cursor = self.connection.cursor()
+            cursor.execute(update_query, (jersey_no,))
+            self.connection.commit()
+        else:
+            self.sd.SIG_DebugMessage.emit("No update query parts were generated, skipping update.")
+
+        # Emit the signal to refresh the UI
+        self.sd.SIG_RawStatsProcessed.emit()

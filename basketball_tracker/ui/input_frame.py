@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QFrame, QTabWidget, QListWidget, QListWidgetItem, QApplication
 from PyQt6.QtGui import QFont
 import sqlite3
-from data.player_stats_dao import PlayerStatsDAO
 from PyQt6.QtCore import Qt, pyqtSlot
 
 
@@ -12,7 +11,7 @@ class InputFrame(QWidget):
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
     label_width = 7
 
-    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__(parent)
         self.retrieved_fields = None
         self.context_combobox = None
@@ -21,6 +20,7 @@ class InputFrame(QWidget):
         self.selected_event_code = None
         self.sd = signal_distributor
         self.sm = state_manager
+        self.dao = player_stats_dao
         self.team_roster_frame = None
         self.event_entry_frame = None
         self.player_entry = None
@@ -30,7 +30,6 @@ class InputFrame(QWidget):
         self.date_entry = None
         self.event_entry = None
         self.game_info_frame = None
-        self.player_stats_dao = PlayerStatsDAO()
 
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
@@ -40,7 +39,7 @@ class InputFrame(QWidget):
         self.create_game_info_frame()
         self.create_event_entry_frame()
         self.create_team_roster_frame()
-        print("3 InputFrame initialized")
+        print("4 InputFrame initialized")
 
     def create_game_info_frame(self):
         self.game_info_frame = QWidget()
@@ -120,7 +119,7 @@ class InputFrame(QWidget):
         layout = QVBoxLayout(self.team_roster_frame)
 
         self.roster_list_widget = QListWidget(self.team_roster_frame)
-        roster_data = self.player_stats_dao.fetch_roster_sans_headers()
+        roster_data = self.dao.fetch_roster_sans_headers()
         for player in roster_data:
             player_name = f"{player[0]}  {player[1]} {player[2]}"
             QListWidgetItem(player_name, self.roster_list_widget)

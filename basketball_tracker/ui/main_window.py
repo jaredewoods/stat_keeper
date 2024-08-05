@@ -5,10 +5,11 @@ from ui.input_frame import InputFrame
 from ui.output_frame import OutputFrame
 
 class MainWindow(QMainWindow):
-    def __init__(self, signal_distributor=None, state_manager=None):
+    def __init__(self, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__()
         self.sd = signal_distributor
         self.sm = state_manager
+        self.dao = player_stats_dao
 
         self.setWindowTitle("Basketball Statistics Tracker")
         self.backup_file_path = '../backup.txt'
@@ -17,9 +18,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QHBoxLayout(central_widget)
 
-        self.control_frame = ControlFrame(self, self.sd, self.sm)
-        self.input_frame = InputFrame(self, self.sd, self.sm)
-        self.output_frame = OutputFrame(self, self.sd, self.sm)
+        self.control_frame = ControlFrame(self, self.sd, self.sm, self.dao)
+        self.input_frame = InputFrame(self, self.sd, self.sm, self.dao)
+        self.output_frame = OutputFrame(self, self.sd, self.sm, self.dao)
         self.control_frame.setFixedWidth(200)  # Adjust the width as needed
         self.input_frame.setFixedWidth(200)    # Adjust the width as needed
         layout.addWidget(self.control_frame)

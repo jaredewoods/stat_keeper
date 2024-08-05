@@ -30,10 +30,10 @@ class Main(QObject):
         self.app = QApplication(sys.argv)
         self.sd = SignalDistributor()
         self.sm = StateManager(self.sd)
-        self.player_stats_dao = PlayerStatsDAO()
+        self.dao = PlayerStatsDAO(self.sd)
 
         self.load_configurations()
-        self.main_window = MainWindow(self.sd, self.sm)
+        self.main_window = MainWindow(self.sd, self.sm, self.dao)
         self.main_window.move(0, 0)
         self.main_window.show()
 
@@ -41,7 +41,7 @@ class Main(QObject):
         self.video_window.move(0, 0)
         self.video_window.hide()
 
-        self.floating_control = FloatingControl(self.sd, self.sm)
+        self.floating_control = FloatingControl(self.sd, self.sm, self.dao)
         self.floating_control.move(0, 0)
         self.floating_control.hide()
 
@@ -169,14 +169,14 @@ class Main(QObject):
         VIDEO_BROWSER_PATH = _settings.value('Paths/VIDEO_BROWSER_PATH', "")
 
     def connect_signals_to_slots(self):
-        self.sd.SIG_ClearAllTables.connect(self.player_stats_dao.clear_all_tables)
-        self.sd.SIG_FieldDataRetrieved.connect(self.player_stats_dao.update_raw_stats)
-        self.sd.SIG_UndoButtonClicked.connect(self.player_stats_dao.delete_last_added_row)
+        self.sd.SIG_ClearAllTables.connect(self.dao.clear_all_tables)
+        self.sd.SIG_FieldDataRetrieved.connect(self.dao.update_raw_stats)
+        self.sd.SIG_UndoButtonClicked.connect(self.dao.delete_last_added_row)
         self.sd.SIG_DebugMessage.connect(self.main_window.output_frame.append_debug_message)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.append_event_log)
         self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_raw_stats_tab)
-        self.sd.SIG_FieldDataRetrieved.connect(self.main_window.output_frame.refresh_stats_tab)
         self.sd.SIG_UndoButtonClicked.connect(self.main_window.output_frame.refresh_raw_stats_tab)
+        self.sd.SIG_RawStatsProcessed.connect(self.main_window.output_frame.refresh_stats_tab)
         self.sd.SIG_EventCodeSelected.connect(self.main_window.input_frame.event_code_selected)
         self.sd.SIG_RosterPlayerSelected.connect(self.main_window.input_frame.player_selected)
         self.sd.SIG_CaptureButtonClicked.connect(self.main_window.input_frame.show_event_entry_tab)
@@ -191,7 +191,7 @@ class Main(QObject):
         self.sd.SIG_PauseButtonClicked.connect(self.video_control_window.pause_video)
         self.sd.SIG_PlayButtonClicked.connect(self.video_control_window.play_video)
         self.sd.SIG_ShowVideoWindow.connect(self.video_window.show)
-        print("4 Signals and Slots connected")
+        print("5 Signals and Slots connected")
 
 if __name__ == "__main__":
     Main()

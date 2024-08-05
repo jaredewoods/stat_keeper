@@ -23,4 +23,5 @@ class SignalDistributor(QObject):
     SIG_EnterCapturedTimecode = pyqtSignal(str)
     SIG_FieldDataRetrieved = pyqtSignal(dict)
     SIG_ClearAllTables = pyqtSignal()
+    SIG_RawStatsProcessed = pyqtSignal()
     print("1 SignalDistributor Initialized")

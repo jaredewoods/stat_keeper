@@ -2,16 +2,16 @@ import sqlite3
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QTextEdit, QFrame, QCheckBox,
                              QPushButton, QTreeWidget, QTreeWidgetItem, QTabWidget, QTableWidget, QTableWidgetItem)
-from data.player_stats_dao import PlayerStatsDAO
 
 
 class OutputFrame(QWidget):
-    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__(parent)
         self.event_log_text = None
         self.debug_display = None
         self.sd = signal_distributor
         self.sm = state_manager
+        self.dao = player_stats_dao
         self.events_tab = QWidget()
         self.roster_tab = QWidget()
         self.stats_tab = QWidget()
@@ -20,7 +20,6 @@ class OutputFrame(QWidget):
         self.event_log_tab = None
         self.debug_log_tab = None
         self.stats_tab = None
-        self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -75,19 +74,19 @@ class OutputFrame(QWidget):
         layout = QVBoxLayout(self.raw_stats_tab)
         raw_stats_table_widget = QTableWidget(self.raw_stats_tab)
         layout.addWidget(raw_stats_table_widget)
-        self.load_raw_stats_data(raw_stats_table_widget)
+        self.load_raw_stats_tab(raw_stats_table_widget)
         self.raw_stats_tab.setLayout(layout)
         self.tabs.addTab(self.raw_stats_tab, "🔲 Raw Stats")
 
-    def load_raw_stats_data(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_raw_stats()
+    def load_raw_stats_tab(self, table_widget):
+        headers, data = self.dao.fetch_raw_stats()
         self.populate_table_widget(table_widget, headers, data)
 
     @pyqtSlot()
     def refresh_raw_stats_tab(self):
         table_widget = self.raw_stats_tab.findChild(QTableWidget)
         if table_widget:
-            self.load_raw_stats_data(table_widget)
+            self.load_raw_stats_tab(table_widget)
         table_widget.scrollToBottom()
 
     # Roster Tab
@@ -101,7 +100,7 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.roster_tab, "🔲 Roster")
 
     def load_roster_tab(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_roster()
+        headers, data = self.dao.fetch_roster()
         self.populate_table_widget(table_widget, headers, data)
 
     # Events Tab
@@ -114,9 +113,10 @@ class OutputFrame(QWidget):
         self.tabs.addTab(self.events_tab, "🔲 Events")
 
     def load_events_tab(self, table_widget):
-        headers, data = self.player_stats_dao.fetch_events()
+        headers, data = self.dao.fetch_events()
         self.populate_table_widget(table_widget, headers, data)
 
+    # Stats Tab
     def setup_stats_tab(self):
         self.stats_tab = QWidget()
         layout = QVBoxLayout(self.stats_tab)
@@ -126,14 +126,12 @@ class OutputFrame(QWidget):
         self.stats_tab.setLayout(layout)
         self.tabs.addTab(self.stats_tab, "🔲 Stats")
 
-    # Stats Tab
     def load_stats_tab(self, table_widget):
-        print("Loading stats tab data...")  # Debugging print
-        headers, data = self.player_stats_dao.fetch_processed_stats()
+        headers, data = self.dao.fetch_processed_stats()
         self.populate_table_widget(table_widget, headers, data)
 
+    @pyqtSlot()
     def refresh_stats_tab(self):
-        print("Refreshing stats tab...")  # Debugging print
         table_widget = self.stats_tab.findChild(QTableWidget)
         if table_widget:
             self.load_stats_tab(table_widget)
@@ -149,8 +147,9 @@ class OutputFrame(QWidget):
 
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
-                print(f"Setting item at row {row_idx}, col {col_idx}: {col_data}")  # Debugging print
+                # print(f"Setting item at row {row_idx}, col {col_idx}: {col_data}")  # Debugging print
                 table_widget.setItem(row_idx, col_idx, QTableWidgetItem(str(col_data)))
 
+        table_widget.resizeColumnsToContents()
         if headers and data:
             table_widget.scrollToItem(table_widget.item(table_widget.rowCount() - 1, 0))

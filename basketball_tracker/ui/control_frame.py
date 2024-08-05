@@ -3,7 +3,6 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QSpinBox, QLabel, QGridLayout, QSizePolicy
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFont
-from data.player_stats_dao import PlayerStatsDAO
 
 CONTROL_BUTTON_LABELS = [
     ("00:00", "Reset to zero timecode"),
@@ -19,10 +18,11 @@ CONTROL_BUTTON_LABELS = [
 ]
 
 class ControlFrame(QWidget):
-    def __init__(self, parent=None, signal_distributor=None, state_manager=None):
+    def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__(parent)
         self.sd = signal_distributor
         self.sm = state_manager
+        self.dao = player_stats_dao
         self.code = None
         self.adjusted_value_label = None
         self.value_spinbox = None
@@ -30,7 +30,6 @@ class ControlFrame(QWidget):
         self.omni_button = None
         self.omni_state = "RUN VIDEO"
         self.spin_value = -2
-        self.player_stats_dao = PlayerStatsDAO()
         self.setup_ui()
 
     def setup_ui(self):
@@ -87,7 +86,7 @@ class ControlFrame(QWidget):
 
     def create_event_buttons(self, layout):
         event_layout = QGridLayout()
-        event_button_names = self.player_stats_dao.fetch_events_sans_headers()  # Fetch button names (codes and descriptions)
+        event_button_names = self.dao.fetch_events_sans_headers()  # Fetch button names (codes and descriptions)
 
         for i, (code, description) in enumerate(event_button_names):
             button = QPushButton(code)  # Use the event code as the button text
