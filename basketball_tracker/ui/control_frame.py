@@ -5,9 +5,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from data.events_dao import EventsDAO
 
-BUTTON_FONT = ('Arial', 14, 'bold')
+BUTTON_FONT = ('Arial', 10, 'bold')
 CONTROL_BUTTON_LABELS = [
-    "00:00", "< 20", "< 10", ">>", "O", "O + II",
+    "00:00", "< 20", "< 10", ">>", "Capture", "O + II",
     "II", "undo", "Play", "Enter"
 ]
 
@@ -40,7 +40,7 @@ class ControlFrame(QWidget):
 
         for i, name in enumerate(CONTROL_BUTTON_LABELS):
             button = QPushButton(name)
-            font = QFont("Arial", 14)
+            font = QFont("Arial", 10)
             button.setFont(font)
             button.setFixedHeight(36)
             button.setFixedWidth(80)
@@ -122,7 +122,7 @@ class ControlFrame(QWidget):
             self.sd.SIG_Back10ButtonClicked.emit()
         if n == ">>":
             self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
-        if n == "O":
+        if n == "Capture":
             self.sd.SIG_CaptureButtonClicked.emit()
         if n == "O + II":
             self.sd.SIG_CaptureButtonClicked.emit()

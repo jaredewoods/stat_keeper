@@ -53,7 +53,7 @@ class InputFrame(QWidget):
             row_layout.addWidget(label)
             entry = QLineEdit(self.game_info_frame)
             entry.setFixedHeight(30)
-            font = QFont("Arial", 14)
+            font = QFont("Arial", 10)
             entry.setFont(font)
             row_layout.addWidget(entry)
             layout.addLayout(row_layout)
@@ -86,7 +86,7 @@ class InputFrame(QWidget):
         for text in InputFrame.event_entry_labels:
             row_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
-            font = QFont("Arial", 14)
+            font = QFont("Arial", 10)
             label.setFont(font)
             row_layout.addWidget(label)
             if text == "⏳ ":
@@ -97,7 +97,7 @@ class InputFrame(QWidget):
             else:
                 entry = QLineEdit(self.event_entry_frame)
                 entry.setFixedHeight(30)
-                font = QFont("Arial", 14)
+                font = QFont("Arial", 10)
                 entry.setFont(font)
                 if text == "🏀 ":
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
