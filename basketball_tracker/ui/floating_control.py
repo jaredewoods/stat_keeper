@@ -92,14 +92,14 @@ class FloatingControl(QWidget):
             }}
         """)
         layout = QVBoxLayout(page)
-        font = QFont("Arial", 22)
+        font = QFont("Arial", 20)
         roster_list = QListWidget()
         roster_list.setFont(font)
         roster_list.setStyleSheet("""
             QListWidget::item {
                 color: white;
                 background: transparent;
-                height: 40px;
+                height: 36px;
             }
             QListWidget::item:hover {
                 color: black;
@@ -132,13 +132,14 @@ class FloatingControl(QWidget):
             }}
         """)
         layout = QVBoxLayout(page)
-        font = QFont("Arial", 22)
+        font = QFont("Arial", 20)
         events_list = QListWidget()
         events_list.setFont(font)
         events_list.setStyleSheet("""
             QListWidget::item {
                 color: white;
                 background: transparent;
+                height: 26px;
             }
             QListWidget::item:hover {
                 color: black;
