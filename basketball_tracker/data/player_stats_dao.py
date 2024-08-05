@@ -124,7 +124,7 @@ class PlayerStatsDAO:
 
         cursor.execute("""
             INSERT INTO processed_stats 
-            ("JerseyNo", "FirstName", "LastName", "PTS", "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", 
+            (No, "FirstName", "LastName", "PTS", "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", 
              "FTM", "FTA", "FT%", "OREB", "DREB", "REB", "AST", "TOV", "STL", "BLK", "PFL", "SFL")
             SELECT JerseyNo, FirstName, LastName, 0, 0, 0, 0.0, 0, 0, 0.0, 0, 0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             FROM roster
@@ -189,7 +189,7 @@ class PlayerStatsDAO:
         # Execute the first part of the update (statistical changes)
         if update_query_parts:
             update_query = "UPDATE processed_stats SET " + ", ".join(update_query_parts)
-            update_query += " WHERE JerseyNo = ?"
+            update_query += " WHERE No = ?"
             cursor = self.connection.cursor()
             cursor.execute(update_query, (jersey_no,))
             self.connection.commit()
@@ -202,7 +202,7 @@ class PlayerStatsDAO:
         ]
 
         percentage_update_query = "UPDATE processed_stats SET " + ", ".join(percentage_update_query_parts)
-        percentage_update_query += " WHERE JerseyNo = ?"
+        percentage_update_query += " WHERE No = ?"
         cursor.execute(percentage_update_query, (jersey_no,))
         self.connection.commit()
 
