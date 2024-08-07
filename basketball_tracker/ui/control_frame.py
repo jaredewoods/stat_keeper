@@ -20,6 +20,9 @@ CONTROL_BUTTON_LABELS = [
 class ControlFrame(QWidget):
     def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__(parent)
+        self.adjusted_timecode = None
+        self.offset_value = None
+        self.parsed_timecode = None
         self.sd = signal_distributor
         self.sm = state_manager
         self.dao = player_stats_dao
@@ -115,7 +118,24 @@ class ControlFrame(QWidget):
     @pyqtSlot()
     def capture_timecode(self):
         captured_timecode = self.total_time_label.text()
-        self.sd.SIG_EnterCapturedTimecode.emit(captured_timecode)
+        self.parse_timecode_to_seconds(captured_timecode)
+
+    def parse_timecode_to_seconds(self, timecode):
+        hours, minutes, seconds = map(int, timecode.split(':'))
+        self.parsed_timecode = (hours * 3600) + (minutes * 60) + seconds
+        self.adjust_parsed_timecode_with_offset(self.parsed_timecode)
+
+    def adjust_parsed_timecode_with_offset(self, parsed_timecode):
+        self.offset_value = self.value_spinbox.value()
+        self.adjusted_timecode = int(parsed_timecode + self.offset_value)
+        self.revert_adjusted_timecode_to_time_format(self.adjusted_timecode)
+
+    def revert_adjusted_timecode_to_time_format(self, adjusted_timecode):
+        hours = adjusted_timecode // 3600
+        minutes = (adjusted_timecode % 3600) // 60
+        seconds = adjusted_timecode % 60
+        hhmmss = f"{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}"
+        self.sd.SIG_EnterCapturedTimecode.emit(hhmmss)
 
     def set_event_code(self, code):
         self.code = code
