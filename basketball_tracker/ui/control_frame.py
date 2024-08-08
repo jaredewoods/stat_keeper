@@ -61,7 +61,8 @@ class ControlFrame(QWidget):
         status_layout = QHBoxLayout()
 
         self.total_time_label = QLineEdit("Loading...", self)
-        self.total_time_label.setStyleSheet("font: 14pt Arial; color: #BBBBBB;")
+        self.total_time_label.setFixedWidth(80)
+        self.total_time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the text inside the QLineEdit
         status_layout.addWidget(self.total_time_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.value_spinbox = QSpinBox(self)

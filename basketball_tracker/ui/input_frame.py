@@ -5,10 +5,10 @@ from PyQt6.QtCore import Qt, pyqtSlot
 
 
 class InputFrame(QWidget):
-    game_info_labels = ["📅 ", "⏰ ", "🏠 ", "🆚 "]
+    game_info_labels = ["📅 ", "⏰ ", "🏟 ", "🆚 "]
     event_entry_labels = ["⏳ ", "📸 ", "🏃 ", "🏀 "]
-    context_labels = ["Full_Game", "1st_Quarter", "2nd_Quarter", "3rd_Quarter", "4th_Quarter", "Overtime",
-                      "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
+    context_labels = ["Full Game", "1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter", "Overtime",
+                      "DBL Overtime", "1st Half", "2nd Half", "5th Period"]
     label_width = 7
 
     def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
@@ -64,7 +64,7 @@ class InputFrame(QWidget):
             elif text == "⏰ ":
                 entry.setText("16:30")
                 self.start_time_entry = entry
-            elif text == "🏠 ":
+            elif text == "🏟 ":
                 entry.setText("United Center")
                 self.venue_entry = entry
             elif text == "🆚 ":
@@ -118,8 +118,13 @@ class InputFrame(QWidget):
 
         self.roster_list_widget = QListWidget(self.team_roster_frame)
         roster_data = self.dao.fetch_roster_sans_headers()
+
         for player in roster_data:
-            player_name = f"{player[0]}  {player[1]} {player[2]}"
+            player_number = player[0]
+            if len(str(player_number)) == 1:
+                player_number = f"  {player_number}"  # Add a space in front of single-digit numbers
+
+            player_name = f"{player_number}  {player[1]} {player[2]}"
             QListWidgetItem(player_name, self.roster_list_widget)
 
         self.roster_list_widget.itemClicked.connect(self.player_selected)

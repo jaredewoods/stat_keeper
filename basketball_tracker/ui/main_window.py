@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.control_frame)
         layout.addWidget(self.input_frame)
         layout.addWidget(self.output_frame, stretch=1)  # Stretch factor for output frame
-        self.resize(1600, 400)  # Adjust the size here if needed
+        self.resize(1340, 400)  # Adjust the size here if needed
 
         self.center_window()
         self.update_output_frame_from_file(self.backup_file_path)
