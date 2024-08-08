@@ -4,19 +4,19 @@ from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QPushButton, QHBoxL
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFont
 
-CONTROL_BUTTON_LABELS = [
-    ("00:00", "Reset to zero timecode"),
-    ("< 20", "Go back 20 seconds"),
-    ("< 10", "Go back 10 seconds"),
-    (">>", "Change playback speed"),
-    ("O", "Capture current frame"),
-    ("clear", "clears all tables"),
-    ("II", "Pause playback"),
-    ("undo", "Undo last action"),
-    ("play", "Play the video"),
-    ("enter", "Log current entries")
-]
 
+CONTROL_BUTTON_LABELS = [
+    ("🗑️", "clears all tables"),
+    ("❌", "Undo last action"),
+    ("⏮️", "Reset to zero timecode"),
+    ("↩️", "Go back 20 seconds"),
+    ("⏪", "Go back 10 seconds"),
+    ("⏩", "Change playback speed"),
+    ("⏸️", "Pause playback"),
+    ("▶️", "Play the video"),
+    ("📸", "Capture current frame"),
+    ("✅", "Log current entries")
+]
 class ControlFrame(QWidget):
     def __init__(self, parent=None, signal_distributor=None, state_manager=None, player_stats_dao=None):
         super().__init__(parent)
@@ -143,23 +143,23 @@ class ControlFrame(QWidget):
 
     def button_actions(self, n):
         print("Button clicked: " + n)
-        if n == "00:00":
+        if n == "⏮️":
             self.sd.SIG_BackToZeroButtonClicked.emit()
-        if n == "< 20":
+        if n == "↩️":
             self.sd.SIG_Back20ButtonClicked.emit()
-        if n == "< 10":
+        if n == "⏪":
             self.sd.SIG_Back10ButtonClicked.emit()
-        if n == ">>":
+        if n == "⏩":
             self.sd.SIG_ChangePlaybackSpeedButtonClicked.emit()
-        if n == "O":
+        if n == "📸":
             self.sd.SIG_CaptureButtonClicked.emit()
-        if n == "clear":
+        if n == "🗑️":
             self.sd.SIG_ClearAllTables.emit()
-        if n == "II":
+        if n == "⏸️":
             self.sd.SIG_PauseButtonClicked.emit()
-        if n == "undo":
+        if n == "❌️":
             self.sd.SIG_UndoButtonClicked.emit()
-        if n == "play":
+        if n == "▶️":
             self.sd.SIG_PlayButtonClicked.emit()
-        if n == "enter":
+        if n == "✅":
             self.sd.SIG_LogEntriesButtonClicked.emit()

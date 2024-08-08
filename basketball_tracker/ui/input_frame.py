@@ -5,8 +5,8 @@ from PyQt6.QtCore import Qt, pyqtSlot
 
 
 class InputFrame(QWidget):
-    game_info_labels = ["📅 ", "🕐 ", "🏠 ", "🆚 "]
-    event_entry_labels = ["⏳ ", "📷 ", "🏃 ", "🏀 "]
+    game_info_labels = ["📅 ", "⏰ ", "🏠 ", "🆚 "]
+    event_entry_labels = ["⏳ ", "📸 ", "🏃 ", "🏀 "]
     context_labels = ["Full_Game", "1st_Quarter", "2nd_Quarter", "3rd_Quarter", "4th_Quarter", "Overtime",
                       "DBL_Overtime", "1st_Half", "2nd_Half", "5th_Period"]
     label_width = 7
@@ -61,7 +61,7 @@ class InputFrame(QWidget):
             if text == "📅 ":
                 entry.setText("1/24/82")
                 self.date_entry = entry
-            elif text == "🕐 ":
+            elif text == "⏰ ":
                 entry.setText("16:30")
                 self.start_time_entry = entry
             elif text == "🏠 ":
@@ -87,8 +87,6 @@ class InputFrame(QWidget):
         for text in InputFrame.event_entry_labels:
             row_layout = QHBoxLayout()
             label = QLabel(text, self.event_entry_frame)
-            font = QFont("Arial", 14)
-            label.setFont(font)
             row_layout.addWidget(label)
             if text == "⏳ ":
                 entry = QComboBox(self.event_entry_frame)
@@ -104,7 +102,7 @@ class InputFrame(QWidget):
                     self.event_entry = entry  # Store reference to the "Event" QLineEdit
                 elif text == "🏃 ":
                     self.player_entry = entry  # Store reference to the "Player" QLineEdit
-                elif text == "📷 ":
+                elif text == "📸 ":
                     self.timecode_entry = entry # Store reference to the "Timecode" QLineEdit
 
             row_layout.addWidget(entry)
